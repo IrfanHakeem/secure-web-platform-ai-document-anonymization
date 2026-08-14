@@ -1,4 +1,5 @@
-﻿from fastapi import FastAPI
+﻿
+from fastapi import FastAPI
 
 app = FastAPI(
     title="Secure Web Platform for Automated AI Document Anonymization",
