@@ -5,6 +5,7 @@ from fastapi import (
     APIRouter,
     Depends,
     HTTPException,
+    Request,
     Response,
     status,
 )
@@ -26,6 +27,9 @@ from app.schemas.original_file_request import (
     OwnerDecisionRequest,
     SecurityDecisionRequest,
 )
+from app.services.audit_service import (
+    record_audit_event,
+)
 from app.services.file_service import (
     retrieve_original_file,
 )
@@ -45,17 +49,31 @@ ACTIVE_REQUEST_STATUSES = {
 
 MEDIA_TYPES = {
     "pdf": "application/pdf",
+
     "docx": (
         "application/vnd.openxmlformats-officedocument."
         "wordprocessingml.document"
     ),
+
     "txt": "text/plain",
+
     "xlsx": (
         "application/vnd.openxmlformats-officedocument."
         "spreadsheetml.sheet"
     ),
+
     "csv": "text/csv",
 }
+
+
+def get_client_ip(
+    request: Request
+) -> str | None:
+
+    if request.client is None:
+        return None
+
+    return request.client.host
 
 
 def build_request_response(
@@ -64,22 +82,33 @@ def build_request_response(
 ) -> dict:
 
     return {
-        "id": original_request.id,
-        "document_id": document.id,
+        "id":
+            original_request.id,
+
+        "document_id":
+            document.id,
+
         "original_filename":
             document.original_filename,
+
         "requester_id":
             original_request.requester_id,
+
         "owner_id":
             document.owner_id,
+
         "security_officer_id":
             original_request.security_officer_id,
+
         "status":
             original_request.status,
+
         "requested_at":
             original_request.requested_at,
+
         "owner_reviewed_at":
             original_request.owner_reviewed_at,
+
         "security_reviewed_at":
             original_request.security_reviewed_at,
     }
@@ -110,6 +139,7 @@ def get_owner_pending_requests(
         .where(
             Document.owner_id
             == current_user.id,
+
             OriginalFileRequest.status
             == "PENDING_OWNER",
         )
@@ -184,6 +214,7 @@ def get_security_pending_requests(
 def owner_decision(
     request_id: int,
     decision: OwnerDecisionRequest,
+    request: Request,
     current_user: User = Depends(
         get_current_user
     ),
@@ -197,7 +228,9 @@ def owner_decision(
     if original_request is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Original file request not found"
+            detail=(
+                "Original file request not found"
+            )
         )
 
     document = db.get(
@@ -212,6 +245,17 @@ def owner_decision(
         )
 
     if document.owner_id != current_user.id:
+        record_audit_event(
+            action="UNAUTHORIZED_ACCESS",
+            user_id=current_user.id,
+            resource_type="original_file_request",
+            resource_id=original_request.id,
+            details=(
+                "Unauthorized owner decision attempt"
+            ),
+            ip_address=get_client_ip(request),
+        )
+
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail=(
@@ -236,9 +280,18 @@ def owner_decision(
         original_request.status = (
             "PENDING_SECURITY"
         )
+
+        audit_action = (
+            "OWNER_APPROVED"
+        )
+
     else:
         original_request.status = (
             "REJECTED_BY_OWNER"
+        )
+
+        audit_action = (
+            "OWNER_REJECTED"
         )
 
     original_request.owner_reviewed_at = (
@@ -248,6 +301,18 @@ def owner_decision(
     db.commit()
     db.refresh(
         original_request
+    )
+
+    record_audit_event(
+        action=audit_action,
+        user_id=current_user.id,
+        resource_type="original_file_request",
+        resource_id=original_request.id,
+        details=(
+            f"Owner decision: "
+            f"{decision.decision}"
+        ),
+        ip_address=get_client_ip(request),
     )
 
     return build_request_response(
@@ -263,6 +328,7 @@ def owner_decision(
 def security_decision(
     request_id: int,
     decision: SecurityDecisionRequest,
+    request: Request,
     current_user: User = Depends(
         require_role("Security Officer")
     ),
@@ -276,7 +342,9 @@ def security_decision(
     if original_request is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Original file request not found"
+            detail=(
+                "Original file request not found"
+            )
         )
 
     document = db.get(
@@ -311,15 +379,38 @@ def security_decision(
     )
 
     if decision.decision == "APPROVE":
-        original_request.status = "APPROVED"
+        original_request.status = (
+            "APPROVED"
+        )
+
+        audit_action = (
+            "SECURITY_APPROVED"
+        )
+
     else:
         original_request.status = (
             "REJECTED_BY_SECURITY"
         )
 
+        audit_action = (
+            "SECURITY_REJECTED"
+        )
+
     db.commit()
     db.refresh(
         original_request
+    )
+
+    record_audit_event(
+        action=audit_action,
+        user_id=current_user.id,
+        resource_type="original_file_request",
+        resource_id=original_request.id,
+        details=(
+            f"Security Officer decision: "
+            f"{decision.decision}"
+        ),
+        ip_address=get_client_ip(request),
     )
 
     return build_request_response(
@@ -333,6 +424,7 @@ def security_decision(
 )
 def download_approved_original(
     request_id: int,
+    request: Request,
     current_user: User = Depends(
         require_role("User")
     ),
@@ -346,13 +438,27 @@ def download_approved_original(
     if original_request is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Original file request not found"
+            detail=(
+                "Original file request not found"
+            )
         )
 
     if (
         original_request.requester_id
         != current_user.id
     ):
+        record_audit_event(
+            action="UNAUTHORIZED_ACCESS",
+            user_id=current_user.id,
+            resource_type="original_file_request",
+            resource_id=original_request.id,
+            details=(
+                "Attempted to download another "
+                "user's approved original file"
+            ),
+            ip_address=get_client_ip(request),
+        )
+
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail=(
@@ -365,6 +471,18 @@ def download_approved_original(
         original_request.status
         != "APPROVED"
     ):
+        record_audit_event(
+            action="UNAUTHORIZED_ACCESS",
+            user_id=current_user.id,
+            resource_type="original_file_request",
+            resource_id=original_request.id,
+            details=(
+                "Original file download attempted "
+                "before full approval"
+            ),
+            ip_address=get_client_ip(request),
+        )
+
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail=(
@@ -391,6 +509,17 @@ def download_approved_original(
         expected_sha256=(
             document.sha256_hash
         )
+    )
+
+    record_audit_event(
+        action="ORIGINAL_DOWNLOAD",
+        user_id=current_user.id,
+        resource_type="document",
+        resource_id=document.id,
+        details=(
+            "Approved original document downloaded"
+        ),
+        ip_address=get_client_ip(request),
     )
 
     media_type = MEDIA_TYPES.get(
@@ -422,6 +551,7 @@ def download_approved_original(
 )
 def request_original_file(
     document_id: int,
+    request: Request,
     current_user: User = Depends(
         require_role("User")
     ),
@@ -489,6 +619,18 @@ def request_original_file(
     db.commit()
     db.refresh(
         original_request
+    )
+
+    record_audit_event(
+        action="ORIGINAL_REQUEST_CREATED",
+        user_id=current_user.id,
+        resource_type="original_file_request",
+        resource_id=original_request.id,
+        details=(
+            f"Original document access requested "
+            f"for document ID {document.id}"
+        ),
+        ip_address=get_client_ip(request),
     )
 
     return build_request_response(

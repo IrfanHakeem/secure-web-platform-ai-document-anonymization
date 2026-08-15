@@ -3,6 +3,7 @@ from fastapi import (
     Depends,
     File,
     HTTPException,
+    Request,
     UploadFile,
     status,
 )
@@ -13,6 +14,7 @@ from app.core.dependencies import get_current_user
 from app.models.document import Document
 from app.models.user import User
 from app.schemas.document import DocumentUploadResponse
+from app.services.audit_service import record_audit_event
 from app.services.file_service import (
     decrypt_and_verify_file,
     process_uploaded_file,
@@ -25,11 +27,22 @@ router = APIRouter(
 )
 
 
+def get_client_ip(
+    request: Request
+) -> str | None:
+
+    if request.client is None:
+        return None
+
+    return request.client.host
+
+
 @router.post(
     "/upload",
     response_model=DocumentUploadResponse
 )
 async def upload_document(
+    request: Request,
     file: UploadFile = File(...),
     current_user: User = Depends(
         get_current_user
@@ -59,12 +72,25 @@ async def upload_document(
     db.commit()
     db.refresh(document)
 
+    record_audit_event(
+        action="DOCUMENT_UPLOAD",
+        user_id=current_user.id,
+        resource_type="document",
+        resource_id=document.id,
+        details=(
+            f"Uploaded document: "
+            f"{document.original_filename}"
+        ),
+        ip_address=get_client_ip(request),
+    )
+
     return document
 
 
 @router.get("/{document_id}/integrity")
 def verify_document_integrity(
     document_id: int,
+    request: Request,
     current_user: User = Depends(
         get_current_user
     ),
@@ -83,16 +109,53 @@ def verify_document_integrity(
 
     if (
         document.owner_id != current_user.id
-        and current_user.role.name != "Administrator"
+        and current_user.role.name
+        != "Administrator"
     ):
+        record_audit_event(
+            action="UNAUTHORIZED_ACCESS",
+            user_id=current_user.id,
+            resource_type="document",
+            resource_id=document.id,
+            details=(
+                "Unauthorized document "
+                "integrity access attempt"
+            ),
+            ip_address=get_client_ip(request),
+        )
+
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Access denied"
         )
 
-    decrypt_and_verify_file(
-        document.encrypted_file_path,
-        document.sha256_hash
+    try:
+        decrypt_and_verify_file(
+            document.encrypted_file_path,
+            document.sha256_hash
+        )
+
+    except HTTPException as error:
+        record_audit_event(
+            action="INTEGRITY_CHECK_FAILED",
+            user_id=current_user.id,
+            resource_type="document",
+            resource_id=document.id,
+            details=str(error.detail),
+            ip_address=get_client_ip(request),
+        )
+
+        raise
+
+    record_audit_event(
+        action="INTEGRITY_CHECK_SUCCESS",
+        user_id=current_user.id,
+        resource_type="document",
+        resource_id=document.id,
+        details=(
+            "Document integrity verified"
+        ),
+        ip_address=get_client_ip(request),
     )
 
     return {
