@@ -2,9 +2,10 @@ from fastapi import (
     APIRouter,
     Depends,
     File,
+    HTTPException,
     UploadFile,
+    status,
 )
-
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
@@ -12,7 +13,10 @@ from app.core.dependencies import get_current_user
 from app.models.document import Document
 from app.models.user import User
 from app.schemas.document import DocumentUploadResponse
-from app.services.file_service import process_uploaded_file
+from app.services.file_service import (
+    decrypt_and_verify_file,
+    process_uploaded_file,
+)
 
 
 router = APIRouter(
@@ -32,7 +36,6 @@ async def upload_document(
     ),
     db: Session = Depends(get_db)
 ):
-
     file_data = await process_uploaded_file(
         file
     )
@@ -57,3 +60,42 @@ async def upload_document(
     db.refresh(document)
 
     return document
+
+
+@router.get("/{document_id}/integrity")
+def verify_document_integrity(
+    document_id: int,
+    current_user: User = Depends(
+        get_current_user
+    ),
+    db: Session = Depends(get_db)
+):
+    document = db.get(
+        Document,
+        document_id
+    )
+
+    if document is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Document not found"
+        )
+
+    if (
+        document.owner_id != current_user.id
+        and current_user.role.name != "Administrator"
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied"
+        )
+
+    decrypt_and_verify_file(
+        document.encrypted_file_path,
+        document.sha256_hash
+    )
+
+    return {
+        "document_id": document.id,
+        "integrity": "verified"
+    }

@@ -6,7 +6,7 @@ import uuid
 import zipfile
 from pathlib import Path
 
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, InvalidToken
 from fastapi import HTTPException, UploadFile, status
 
 
@@ -211,3 +211,41 @@ async def process_uploaded_file(
         "encrypted_file_path":
             str(storage_path),
     }
+
+def decrypt_and_verify_file(
+    encrypted_file_path: str,
+    expected_sha256: str
+) -> bytes:
+
+    file_path = Path(encrypted_file_path)
+
+    if not file_path.exists():
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Encrypted file not found"
+        )
+
+    encrypted_data = file_path.read_bytes()
+
+    try:
+        decrypted_data = get_fernet().decrypt(
+            encrypted_data
+        )
+
+    except InvalidToken:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Encrypted file integrity check failed"
+        )
+
+    actual_sha256 = calculate_sha256(
+        decrypted_data
+    )
+
+    if actual_sha256 != expected_sha256:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Document integrity verification failed"
+        )
+
+    return decrypted_data
