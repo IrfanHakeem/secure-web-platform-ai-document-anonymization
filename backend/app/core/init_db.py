@@ -3,6 +3,7 @@ from app.models import (
     AuditLog,
     Department,
     Document,
+    DocumentShare,
     OriginalFileRequest,
     Role,
     User,

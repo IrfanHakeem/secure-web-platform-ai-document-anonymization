@@ -1,10 +1,19 @@
 ﻿from fastapi import FastAPI
 
+from app.api.admin_departments import (
+    router as admin_departments_router,
+)
 from app.api.admin_users import (
     router as admin_users_router,
 )
+from app.api.approved_original_access import (
+    router as approved_original_access_router,
+)
 from app.api.auth import (
     router as auth_router,
+)
+from app.api.document_library import (
+    router as document_library_router,
 )
 from app.api.documents import (
     router as documents_router,
@@ -26,16 +35,22 @@ app = FastAPI(
 )
 
 
-app.include_router(
-    auth_router
-)
+app.include_router(auth_router)
 
 app.include_router(
     documents_router
 )
 
 app.include_router(
+    document_library_router
+)
+
+app.include_router(
     original_file_requests_router
+)
+
+app.include_router(
+    approved_original_access_router
 )
 
 app.include_router(
@@ -44,6 +59,10 @@ app.include_router(
 
 app.include_router(
     admin_users_router
+)
+
+app.include_router(
+    admin_departments_router
 )
 
 
