@@ -7,7 +7,11 @@ import zipfile
 from pathlib import Path
 
 from cryptography.fernet import Fernet, InvalidToken
+from dotenv import load_dotenv
 from fastapi import HTTPException, UploadFile, status
+
+
+load_dotenv()
 
 
 ALLOWED_EXTENSIONS = {
@@ -28,15 +32,23 @@ MAX_FILE_SIZE_BYTES = (
 
 STORAGE_ROOT = Path("storage")
 ORIGINAL_STORAGE = STORAGE_ROOT / "originals"
+ANONYMIZED_STORAGE = STORAGE_ROOT / "anonymized"
 
 ORIGINAL_STORAGE.mkdir(
     parents=True,
     exist_ok=True
 )
 
+ANONYMIZED_STORAGE.mkdir(
+    parents=True,
+    exist_ok=True
+)
+
 
 def get_fernet() -> Fernet:
-    encryption_key = os.getenv("ENCRYPTION_KEY")
+    encryption_key = os.getenv(
+        "ENCRYPTION_KEY"
+    )
 
     if not encryption_key:
         raise RuntimeError(
@@ -48,43 +60,74 @@ def get_fernet() -> Fernet:
     )
 
 
-def calculate_sha256(data: bytes) -> str:
-    return hashlib.sha256(data).hexdigest()
+def calculate_sha256(
+    data: bytes
+) -> str:
+
+    return hashlib.sha256(
+        data
+    ).hexdigest()
 
 
-def validate_pdf(data: bytes) -> bool:
-    return data.startswith(b"%PDF-")
+def validate_pdf(
+    data: bytes
+) -> bool:
+
+    return data.startswith(
+        b"%PDF-"
+    )
 
 
-def validate_docx(data: bytes) -> bool:
+def validate_docx(
+    data: bytes
+) -> bool:
+
     try:
-        with zipfile.ZipFile(io.BytesIO(data)) as archive:
-            names = set(archive.namelist())
+        with zipfile.ZipFile(
+            io.BytesIO(data)
+        ) as archive:
+
+            names = set(
+                archive.namelist()
+            )
 
             return (
                 "[Content_Types].xml" in names
-                and "word/document.xml" in names
+                and
+                "word/document.xml" in names
             )
 
     except zipfile.BadZipFile:
         return False
 
 
-def validate_xlsx(data: bytes) -> bool:
+def validate_xlsx(
+    data: bytes
+) -> bool:
+
     try:
-        with zipfile.ZipFile(io.BytesIO(data)) as archive:
-            names = set(archive.namelist())
+        with zipfile.ZipFile(
+            io.BytesIO(data)
+        ) as archive:
+
+            names = set(
+                archive.namelist()
+            )
 
             return (
                 "[Content_Types].xml" in names
-                and "xl/workbook.xml" in names
+                and
+                "xl/workbook.xml" in names
             )
 
     except zipfile.BadZipFile:
         return False
 
 
-def validate_text(data: bytes) -> bool:
+def validate_text(
+    data: bytes
+) -> bool:
+
     try:
         data.decode("utf-8")
         return True
@@ -93,15 +136,23 @@ def validate_text(data: bytes) -> bool:
         return False
 
 
-def validate_csv(data: bytes) -> bool:
+def validate_csv(
+    data: bytes
+) -> bool:
+
     try:
-        text = data.decode("utf-8")
+        text = data.decode(
+            "utf-8"
+        )
 
         reader = csv.reader(
             io.StringIO(text)
         )
 
-        next(reader, None)
+        next(
+            reader,
+            None
+        )
 
         return True
 
@@ -125,7 +176,9 @@ def validate_file_structure(
         ".csv": validate_csv,
     }
 
-    validator = validators.get(extension)
+    validator = validators.get(
+        extension
+    )
 
     if validator is None:
         return False
@@ -179,16 +232,21 @@ async def process_uploaded_file(
             detail="Invalid file structure"
         )
 
-    sha256_hash = calculate_sha256(data)
+    sha256_hash = calculate_sha256(
+        data
+    )
 
-    encrypted_data = get_fernet().encrypt(data)
+    encrypted_data = get_fernet().encrypt(
+        data
+    )
 
     stored_filename = (
         f"{uuid.uuid4().hex}.enc"
     )
 
     storage_path = (
-        ORIGINAL_STORAGE / stored_filename
+        ORIGINAL_STORAGE
+        / stored_filename
     )
 
     storage_path.write_bytes(
@@ -212,12 +270,15 @@ async def process_uploaded_file(
             str(storage_path),
     }
 
+
 def decrypt_and_verify_file(
     encrypted_file_path: str,
     expected_sha256: str
 ) -> bytes:
 
-    file_path = Path(encrypted_file_path)
+    file_path = Path(
+        encrypted_file_path
+    )
 
     if not file_path.exists():
         raise HTTPException(
@@ -225,17 +286,24 @@ def decrypt_and_verify_file(
             detail="Encrypted file not found"
         )
 
-    encrypted_data = file_path.read_bytes()
+    encrypted_data = (
+        file_path.read_bytes()
+    )
 
     try:
-        decrypted_data = get_fernet().decrypt(
-            encrypted_data
+        decrypted_data = (
+            get_fernet().decrypt(
+                encrypted_data
+            )
         )
 
     except InvalidToken:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="Encrypted file integrity check failed"
+            detail=(
+                "Encrypted file integrity "
+                "check failed"
+            )
         )
 
     actual_sha256 = calculate_sha256(
@@ -245,7 +313,21 @@ def decrypt_and_verify_file(
     if actual_sha256 != expected_sha256:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="Document integrity verification failed"
+            detail=(
+                "Document integrity "
+                "verification failed"
+            )
         )
 
     return decrypted_data
+
+
+def retrieve_original_file(
+    encrypted_file_path: str,
+    expected_sha256: str
+) -> bytes:
+
+    return decrypt_and_verify_file(
+        encrypted_file_path=encrypted_file_path,
+        expected_sha256=expected_sha256
+    )

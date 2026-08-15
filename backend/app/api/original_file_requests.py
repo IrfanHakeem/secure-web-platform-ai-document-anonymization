@@ -1,9 +1,11 @@
 from datetime import datetime, timezone
+from urllib.parse import quote
 
 from fastapi import (
     APIRouter,
     Depends,
     HTTPException,
+    Response,
     status,
 )
 from sqlalchemy import select
@@ -24,6 +26,9 @@ from app.schemas.original_file_request import (
     OwnerDecisionRequest,
     SecurityDecisionRequest,
 )
+from app.services.file_service import (
+    retrieve_original_file,
+)
 
 
 router = APIRouter(
@@ -38,39 +43,43 @@ ACTIVE_REQUEST_STATUSES = {
 }
 
 
+MEDIA_TYPES = {
+    "pdf": "application/pdf",
+    "docx": (
+        "application/vnd.openxmlformats-officedocument."
+        "wordprocessingml.document"
+    ),
+    "txt": "text/plain",
+    "xlsx": (
+        "application/vnd.openxmlformats-officedocument."
+        "spreadsheetml.sheet"
+    ),
+    "csv": "text/csv",
+}
+
+
 def build_request_response(
     original_request: OriginalFileRequest,
     document: Document
 ) -> dict:
 
     return {
-        "id":
-            original_request.id,
-
-        "document_id":
-            document.id,
-
+        "id": original_request.id,
+        "document_id": document.id,
         "original_filename":
             document.original_filename,
-
         "requester_id":
             original_request.requester_id,
-
         "owner_id":
             document.owner_id,
-
         "security_officer_id":
             original_request.security_officer_id,
-
         "status":
             original_request.status,
-
         "requested_at":
             original_request.requested_at,
-
         "owner_reviewed_at":
             original_request.owner_reviewed_at,
-
         "security_reviewed_at":
             original_request.security_reviewed_at,
     }
@@ -188,9 +197,7 @@ def owner_decision(
     if original_request is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=(
-                "Original file request not found"
-            )
+            detail="Original file request not found"
         )
 
     document = db.get(
@@ -213,7 +220,10 @@ def owner_decision(
             )
         )
 
-    if original_request.status != "PENDING_OWNER":
+    if (
+        original_request.status
+        != "PENDING_OWNER"
+    ):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail=(
@@ -226,7 +236,6 @@ def owner_decision(
         original_request.status = (
             "PENDING_SECURITY"
         )
-
     else:
         original_request.status = (
             "REJECTED_BY_OWNER"
@@ -267,9 +276,7 @@ def security_decision(
     if original_request is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=(
-                "Original file request not found"
-            )
+            detail="Original file request not found"
         )
 
     document = db.get(
@@ -305,7 +312,6 @@ def security_decision(
 
     if decision.decision == "APPROVE":
         original_request.status = "APPROVED"
-
     else:
         original_request.status = (
             "REJECTED_BY_SECURITY"
@@ -319,6 +325,93 @@ def security_decision(
     return build_request_response(
         original_request,
         document
+    )
+
+
+@router.get(
+    "/{request_id}/download-original"
+)
+def download_approved_original(
+    request_id: int,
+    current_user: User = Depends(
+        require_role("User")
+    ),
+    db: Session = Depends(get_db)
+):
+    original_request = db.get(
+        OriginalFileRequest,
+        request_id
+    )
+
+    if original_request is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Original file request not found"
+        )
+
+    if (
+        original_request.requester_id
+        != current_user.id
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "You are not the requester "
+                "of this original file"
+            )
+        )
+
+    if (
+        original_request.status
+        != "APPROVED"
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "Original file request "
+                "has not been fully approved"
+            )
+        )
+
+    document = db.get(
+        Document,
+        original_request.document_id
+    )
+
+    if document is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Document not found"
+        )
+
+    original_data = retrieve_original_file(
+        encrypted_file_path=(
+            document.encrypted_file_path
+        ),
+        expected_sha256=(
+            document.sha256_hash
+        )
+    )
+
+    media_type = MEDIA_TYPES.get(
+        document.file_type,
+        "application/octet-stream"
+    )
+
+    encoded_filename = quote(
+        document.original_filename
+    )
+
+    return Response(
+        content=original_data,
+        media_type=media_type,
+        headers={
+            "Content-Disposition": (
+                "attachment; "
+                f"filename*=UTF-8''{encoded_filename}"
+            ),
+            "Cache-Control": "no-store",
+        }
     )
 
 
@@ -345,7 +438,10 @@ def request_original_file(
             detail="Document not found"
         )
 
-    if document.owner_id == current_user.id:
+    if (
+        document.owner_id
+        == current_user.id
+    ):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=(
