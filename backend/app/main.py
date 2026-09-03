@@ -9,6 +9,9 @@ from app.api.admin_users import (
 from app.api.ai_analysis import (
     router as ai_analysis_router,
 )
+from app.api.ai_report import (
+    router as ai_report_router,
+)
 from app.api.anonymization import (
     router as anonymization_router,
 )
@@ -51,6 +54,10 @@ app.include_router(
 
 app.include_router(
     ai_analysis_router
+)
+
+app.include_router(
+    ai_report_router
 )
 
 app.include_router(
