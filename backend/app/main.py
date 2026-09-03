@@ -6,6 +6,12 @@ from app.api.admin_departments import (
 from app.api.admin_users import (
     router as admin_users_router,
 )
+from app.api.ai_analysis import (
+    router as ai_analysis_router,
+)
+from app.api.anonymization import (
+    router as anonymization_router,
+)
 from app.api.approved_original_access import (
     router as approved_original_access_router,
 )
@@ -35,10 +41,20 @@ app = FastAPI(
 )
 
 
-app.include_router(auth_router)
+app.include_router(
+    auth_router
+)
 
 app.include_router(
     documents_router
+)
+
+app.include_router(
+    ai_analysis_router
+)
+
+app.include_router(
+    anonymization_router
 )
 
 app.include_router(

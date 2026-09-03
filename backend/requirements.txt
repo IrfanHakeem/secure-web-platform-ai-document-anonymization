@@ -10,3 +10,11 @@ python-multipart
 python-dotenv
 pydantic
 pydantic-settings
+spacy
+faker
+pypdf
+pdfplumber
+python-docx
+pandas
+openpyxl
+reportlab
