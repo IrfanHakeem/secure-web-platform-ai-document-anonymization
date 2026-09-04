@@ -3,7 +3,10 @@ from fastapi import (
     Depends,
 )
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import (
+    Session,
+    aliased,
+)
 
 from app.core.database import get_db
 from app.core.dependencies import require_role
@@ -14,6 +17,9 @@ from app.models.original_file_request import (
 from app.models.user import User
 from app.schemas.approved_original_access import (
     ApprovedOriginalAccessResponse,
+)
+from app.services.file_service import (
+    inspect_original_integrity,
 )
 
 
@@ -35,13 +41,20 @@ def get_approved_original_access(
     ),
     db: Session = Depends(get_db)
 ):
-    owner = User
+    owner = aliased(
+        User
+    )
+
+    security_officer = aliased(
+        User
+    )
 
     statement = (
         select(
             OriginalFileRequest,
             Document,
             owner.username,
+            security_officer.username,
         )
         .join(
             Document,
@@ -52,6 +65,11 @@ def get_approved_original_access(
             owner,
             Document.owner_id
             == owner.id
+        )
+        .outerjoin(
+            security_officer,
+            OriginalFileRequest.security_officer_id
+            == security_officer.id
         )
         .where(
             OriginalFileRequest.requester_id
@@ -70,35 +88,73 @@ def get_approved_original_access(
         statement
     ).all()
 
-    return [
-        {
-            "request_id":
-                original_request.id,
+    response = []
 
-            "document_id":
-                document.id,
+    for (
+        original_request,
+        document,
+        owner_username,
+        security_officer_username,
+    ) in rows:
 
-            "original_filename":
-                document.original_filename,
+        integrity = (
+            inspect_original_integrity(
+                encrypted_file_path=(
+                    document.encrypted_file_path
+                ),
+                expected_sha256=(
+                    document.sha256_hash
+                ),
+            )
+        )
 
-            "owner_id":
-                document.owner_id,
+        response.append(
+            {
+                "request_id":
+                    original_request.id,
 
-            "owner_username":
-                owner_username,
+                "document_id":
+                    document.id,
 
-            "security_officer_id":
-                original_request.security_officer_id,
+                "original_filename":
+                    document.original_filename,
 
-            "owner_reviewed_at":
-                original_request.owner_reviewed_at,
+                "owner_id":
+                    document.owner_id,
 
-            "security_reviewed_at":
-                original_request.security_reviewed_at,
-        }
-        for (
-            original_request,
-            document,
-            owner_username
-        ) in rows
-    ]
+                "owner_username":
+                    owner_username,
+
+                "security_officer_id":
+                    original_request
+                    .security_officer_id,
+
+                "security_officer_username":
+                    security_officer_username,
+
+                "owner_reviewed_at":
+                    original_request
+                    .owner_reviewed_at,
+
+                "security_reviewed_at":
+                    original_request
+                    .security_reviewed_at,
+
+                "original_sha256":
+                    integrity[
+                        "original_sha256"
+                    ],
+
+                "current_sha256":
+                    integrity[
+                        "current_sha256"
+                    ],
+
+                "integrity_status":
+                    integrity[
+                        "integrity_status"
+                    ],
+            }
+        )
+
+    return response

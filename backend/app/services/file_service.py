@@ -183,7 +183,9 @@ def validate_file_structure(
     if validator is None:
         return False
 
-    return validator(data)
+    return validator(
+        data
+    )
 
 
 async def process_uploaded_file(
@@ -216,7 +218,9 @@ async def process_uploaded_file(
 
     if len(data) > MAX_FILE_SIZE_BYTES:
         raise HTTPException(
-            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            status_code=(
+                status.HTTP_413_REQUEST_ENTITY_TOO_LARGE
+            ),
             detail=(
                 f"Maximum file size is "
                 f"{MAX_FILE_SIZE_MB} MB"
@@ -236,8 +240,10 @@ async def process_uploaded_file(
         data
     )
 
-    encrypted_data = get_fernet().encrypt(
-        data
+    encrypted_data = (
+        get_fernet().encrypt(
+            data
+        )
     )
 
     stored_filename = (
@@ -320,6 +326,73 @@ def decrypt_and_verify_file(
         )
 
     return decrypted_data
+
+
+def inspect_original_integrity(
+    encrypted_file_path: str,
+    expected_sha256: str
+) -> dict:
+
+    file_path = Path(
+        encrypted_file_path
+    )
+
+    if not file_path.exists():
+        return {
+            "original_sha256":
+                expected_sha256,
+
+            "current_sha256":
+                None,
+
+            "integrity_status":
+                "FAILED",
+        }
+
+    encrypted_data = (
+        file_path.read_bytes()
+    )
+
+    try:
+        decrypted_data = (
+            get_fernet().decrypt(
+                encrypted_data
+            )
+        )
+
+    except InvalidToken:
+        return {
+            "original_sha256":
+                expected_sha256,
+
+            "current_sha256":
+                None,
+
+            "integrity_status":
+                "FAILED",
+        }
+
+    current_sha256 = calculate_sha256(
+        decrypted_data
+    )
+
+    integrity_status = (
+        "VERIFIED"
+        if current_sha256
+        == expected_sha256
+        else "FAILED"
+    )
+
+    return {
+        "original_sha256":
+            expected_sha256,
+
+        "current_sha256":
+            current_sha256,
+
+        "integrity_status":
+            integrity_status,
+    }
 
 
 def retrieve_original_file(
