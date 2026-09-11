@@ -23,6 +23,7 @@ from app.models.original_file_request import (
 )
 from app.models.user import User
 from app.schemas.original_file_request import (
+    OriginalFileRequestCreate,
     OriginalFileRequestResponse,
     OwnerDecisionRequest,
     SecurityDecisionRequest,
@@ -78,8 +79,30 @@ def get_client_ip(
 
 def build_request_response(
     original_request: OriginalFileRequest,
-    document: Document
+    document: Document,
+    db: Session
 ) -> dict:
+
+    requester = db.get(
+        User,
+        original_request.requester_id
+    )
+
+    owner = db.get(
+        User,
+        document.owner_id
+    )
+
+    security_officer = None
+
+    if (
+        original_request.security_officer_id
+        is not None
+    ):
+        security_officer = db.get(
+            User,
+            original_request.security_officer_id
+        )
 
     return {
         "id":
@@ -94,11 +117,41 @@ def build_request_response(
         "requester_id":
             original_request.requester_id,
 
+        "requester_username":
+            requester.username
+            if requester
+            else "Unknown",
+
+        "requester_full_name":
+            requester.full_name
+            if requester
+            else None,
+
         "owner_id":
             document.owner_id,
 
+        "owner_username":
+            owner.username
+            if owner
+            else "Unknown",
+
+        "owner_full_name":
+            owner.full_name
+            if owner
+            else None,
+
         "security_officer_id":
             original_request.security_officer_id,
+
+        "security_officer_username":
+            (
+                security_officer.username
+                if security_officer
+                else None
+            ),
+
+        "reason":
+            original_request.reason,
 
         "status":
             original_request.status,
@@ -112,6 +165,53 @@ def build_request_response(
         "security_reviewed_at":
             original_request.security_reviewed_at,
     }
+
+
+@router.get(
+    "/my-requests",
+    response_model=list[
+        OriginalFileRequestResponse
+    ]
+)
+def get_my_original_requests(
+    current_user: User = Depends(
+        require_role("User")
+    ),
+    db: Session = Depends(get_db)
+):
+    statement = (
+        select(
+            OriginalFileRequest,
+            Document,
+        )
+        .join(
+            Document,
+            OriginalFileRequest.document_id
+            == Document.id
+        )
+        .where(
+            OriginalFileRequest.requester_id
+            == current_user.id
+        )
+        .order_by(
+            OriginalFileRequest.requested_at
+            .desc()
+        )
+    )
+
+    rows = db.execute(
+        statement
+    ).all()
+
+    return [
+        build_request_response(
+            original_request,
+            document,
+            db
+        )
+        for original_request, document
+        in rows
+    ]
 
 
 @router.get(
@@ -155,7 +255,8 @@ def get_owner_pending_requests(
     return [
         build_request_response(
             original_request,
-            document
+            document,
+            db
         )
         for original_request, document
         in rows
@@ -200,7 +301,8 @@ def get_security_pending_requests(
     return [
         build_request_response(
             original_request,
-            document
+            document,
+            db
         )
         for original_request, document
         in rows
@@ -299,6 +401,7 @@ def owner_decision(
     )
 
     db.commit()
+
     db.refresh(
         original_request
     )
@@ -317,7 +420,8 @@ def owner_decision(
 
     return build_request_response(
         original_request,
-        document
+        document,
+        db
     )
 
 
@@ -397,6 +501,7 @@ def security_decision(
         )
 
     db.commit()
+
     db.refresh(
         original_request
     )
@@ -415,7 +520,8 @@ def security_decision(
 
     return build_request_response(
         original_request,
-        document
+        document,
+        db
     )
 
 
@@ -551,12 +657,35 @@ def download_approved_original(
 )
 def request_original_file(
     document_id: int,
+    request_data: OriginalFileRequestCreate,
     request: Request,
     current_user: User = Depends(
         require_role("User")
     ),
     db: Session = Depends(get_db)
 ):
+    reason = (
+        request_data.reason.strip()
+    )
+
+    if not reason:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=(
+                "Reason for original file "
+                "access is required"
+            )
+        )
+
+    if len(reason) > 500:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=(
+                "Reason cannot exceed "
+                "500 characters"
+            )
+        )
+
     document = db.get(
         Document,
         document_id
@@ -609,6 +738,7 @@ def request_original_file(
         document_id=document.id,
         requester_id=current_user.id,
         security_officer_id=None,
+        reason=reason,
         status="PENDING_OWNER",
     )
 
@@ -617,6 +747,7 @@ def request_original_file(
     )
 
     db.commit()
+
     db.refresh(
         original_request
     )
@@ -635,5 +766,6 @@ def request_original_file(
 
     return build_request_response(
         original_request,
-        document
+        document,
+        db
     )

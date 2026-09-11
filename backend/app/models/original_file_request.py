@@ -28,6 +28,11 @@ class OriginalFileRequest(Base):
         nullable=True
     )
 
+    reason: Mapped[str | None] = mapped_column(
+        String(500),
+        nullable=True
+    )
+
     status: Mapped[str] = mapped_column(
         String(30),
         default="PENDING_OWNER",

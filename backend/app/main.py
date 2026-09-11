@@ -21,6 +21,9 @@ from app.api.approved_original_access import (
 from app.api.auth import (
     router as auth_router,
 )
+from app.api.departments import (
+    router as departments_router,
+)
 from app.api.document_library import (
     router as document_library_router,
 )
@@ -29,6 +32,9 @@ from app.api.documents import (
 )
 from app.api.original_file_requests import (
     router as original_file_requests_router,
+)
+from app.api.profile import (
+    router as profile_router,
 )
 from app.api.security_monitoring import (
     router as security_monitoring_router,
@@ -46,6 +52,14 @@ app = FastAPI(
 
 app.include_router(
     auth_router
+)
+
+app.include_router(
+    profile_router
+)
+
+app.include_router(
+    departments_router
 )
 
 app.include_router(

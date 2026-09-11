@@ -4,7 +4,9 @@ from app.models import (
     Department,
     Document,
     DocumentShare,
+    NetworkSecurityEvent,
     OriginalFileRequest,
+    PasswordResetOTP,
     Role,
     User,
 )

@@ -6,8 +6,11 @@ from pydantic import BaseModel
 class AdminUserResponse(BaseModel):
     id: int
     username: str
+    full_name: str | None
+    email: str | None
     role: str
     department_id: int | None
+    department_name: str | None
     is_active: bool
 
 
@@ -16,7 +19,9 @@ class PasswordResetRequest(BaseModel):
 
 
 class AdminCreateUserRequest(BaseModel):
+    full_name: str
     username: str
+    email: str
     password: str
 
     role: Literal[

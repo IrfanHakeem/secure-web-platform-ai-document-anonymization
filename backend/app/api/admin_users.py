@@ -1,3 +1,5 @@
+import re
+
 from fastapi import (
     APIRouter,
     Depends,
@@ -5,7 +7,7 @@ from fastapi import (
     Request,
     status,
 )
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
@@ -29,6 +31,11 @@ router = APIRouter(
 )
 
 
+EMAIL_PATTERN = re.compile(
+    r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
+)
+
+
 def get_client_ip(
     request: Request
 ) -> str | None:
@@ -44,12 +51,35 @@ def build_user_response(
     role_name: str
 ) -> dict:
 
+    department_name = None
+
+    if user.department is not None:
+        department_name = user.department.name
+
     return {
-        "id": user.id,
-        "username": user.username,
-        "role": role_name,
-        "department_id": user.department_id,
-        "is_active": user.is_active,
+        "id":
+            user.id,
+
+        "username":
+            user.username,
+
+        "full_name":
+            user.full_name,
+
+        "email":
+            user.email,
+
+        "role":
+            role_name,
+
+        "department_id":
+            user.department_id,
+
+        "department_name":
+            department_name,
+
+        "is_active":
+            user.is_active,
     }
 
 
@@ -103,12 +133,42 @@ def create_user(
     ),
     db: Session = Depends(get_db)
 ):
-    username = user_data.username.strip()
+    full_name = (
+        user_data.full_name.strip()
+    )
+
+    username = (
+        user_data.username.strip()
+    )
+
+    email = (
+        user_data.email.strip().lower()
+    )
+
+    if not full_name:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Full name cannot be empty"
+        )
 
     if not username:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Username cannot be empty"
+        )
+
+    if not email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email cannot be empty"
+        )
+
+    if EMAIL_PATTERN.fullmatch(
+        email
+    ) is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid email format"
         )
 
     if not user_data.password:
@@ -125,16 +185,30 @@ def create_user(
             detail="Password is too long for bcrypt"
         )
 
-    existing_user = db.scalar(
+    existing_username = db.scalar(
         select(User).where(
-            User.username == username
+            func.lower(User.username)
+            == username.lower()
         )
     )
 
-    if existing_user is not None:
+    if existing_username is not None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="Username already exists"
+        )
+
+    existing_email = db.scalar(
+        select(User).where(
+            func.lower(User.email)
+            == email
+        )
+    )
+
+    if existing_email is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Email already exists"
         )
 
     role = db.scalar(
@@ -173,10 +247,14 @@ def create_user(
                 detail="Department not found"
             )
 
-        department_id = department.id
+        department_id = (
+            department.id
+        )
 
     new_user = User(
+        full_name=full_name,
         username=username,
+        email=email,
         password_hash=hash_password(
             user_data.password
         ),
@@ -185,9 +263,15 @@ def create_user(
         is_active=True,
     )
 
-    db.add(new_user)
+    db.add(
+        new_user
+    )
+
     db.commit()
-    db.refresh(new_user)
+
+    db.refresh(
+        new_user
+    )
 
     record_audit_event(
         action="USER_CREATED",
@@ -195,10 +279,13 @@ def create_user(
         resource_type="user",
         resource_id=new_user.id,
         details=(
-            f"Created user {new_user.username} "
+            f"Created user "
+            f"{new_user.username} "
             f"with role {role.name}"
         ),
-        ip_address=get_client_ip(request),
+        ip_address=get_client_ip(
+            request
+        ),
     )
 
     return build_user_response(
@@ -264,7 +351,10 @@ def update_user_department(
     )
 
     db.commit()
-    db.refresh(target_user)
+
+    db.refresh(
+        target_user
+    )
 
     record_audit_event(
         action="USER_DEPARTMENT_UPDATED",
@@ -277,7 +367,9 @@ def update_user_department(
             f"to department "
             f"{department.name}"
         ),
-        ip_address=get_client_ip(request),
+        ip_address=get_client_ip(
+            request
+        ),
     )
 
     return build_user_response(
@@ -309,6 +401,25 @@ def reset_user_password(
             detail="User not found"
         )
 
+    target_role = db.get(
+        Role,
+        target_user.role_id
+    )
+
+    if (
+        target_role is not None
+        and target_role.name
+        == "Administrator"
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "Administrator password "
+                "cannot be reset through "
+                "User Management"
+            )
+        )
+
     new_password = (
         reset_data.new_password
     )
@@ -316,7 +427,9 @@ def reset_user_password(
     if not new_password:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="New password cannot be empty"
+            detail=(
+                "New password cannot be empty"
+            )
         )
 
     if len(
@@ -324,7 +437,9 @@ def reset_user_password(
     ) > 72:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Password is too long for bcrypt"
+            detail=(
+                "Password is too long for bcrypt"
+            )
         )
 
     target_user.password_hash = (
@@ -344,7 +459,9 @@ def reset_user_password(
             f"Password reset for username: "
             f"{target_user.username}"
         ),
-        ip_address=get_client_ip(request),
+        ip_address=get_client_ip(
+            request
+        ),
     )
 
     return {
@@ -356,4 +473,7 @@ def reset_user_password(
 
         "username":
             target_user.username,
+
+        "email":
+            target_user.email,
     }

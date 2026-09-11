@@ -5,3 +5,5 @@ from app.models.document import Document
 from app.models.document_share import DocumentShare
 from app.models.original_file_request import OriginalFileRequest
 from app.models.audit_log import AuditLog
+from app.models.password_reset_otp import PasswordResetOTP
+from app.models.network_security_event import NetworkSecurityEvent

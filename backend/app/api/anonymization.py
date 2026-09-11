@@ -107,7 +107,10 @@ def anonymize_document(
         )
 
         db.commit()
-        db.refresh(document)
+
+        db.refresh(
+            document
+        )
 
     except Exception:
         db.rollback()
@@ -145,6 +148,9 @@ def anonymize_document(
 
         "replacement_count":
             result["replacement_count"],
+
+        "replacements":
+            result["replacements"],
 
         "anonymized_ready":
             True,

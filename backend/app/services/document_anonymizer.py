@@ -58,6 +58,36 @@ def build_string_replacement_map(
     return string_map
 
 
+def build_replacement_records(
+    replacement_map: dict[
+        tuple[str, str],
+        str
+    ]
+) -> list[dict]:
+
+    records: list[dict] = []
+
+    for (
+        pii_type,
+        original_value
+    ), replacement in replacement_map.items():
+
+        records.append(
+            {
+                "type":
+                    pii_type,
+
+                "original":
+                    original_value,
+
+                "replacement":
+                    replacement,
+            }
+        )
+
+    return records
+
+
 def replace_text(
     text: str,
     replacement_map: dict[str, str]
@@ -91,7 +121,8 @@ def prepare_anonymization(
     file_type: str
 ) -> tuple[
     dict[str, str],
-    list[dict]
+    list[dict],
+    list[dict],
 ]:
 
     extracted_text = extract_text(
@@ -121,9 +152,16 @@ def prepare_anonymization(
         )
     )
 
+    replacement_records = (
+        build_replacement_records(
+            typed_replacement_map
+        )
+    )
+
     return (
         string_replacement_map,
         detections,
+        replacement_records,
     )
 
 
@@ -249,7 +287,6 @@ def anonymize_xlsx(
     )
 
     try:
-
         for worksheet in workbook.worksheets:
 
             for row in worksheet.iter_rows():
@@ -350,11 +387,13 @@ def anonymize_document_bytes(
         .lstrip(".")
     )
 
-    replacement_map, detections = (
-        prepare_anonymization(
-            data=data,
-            file_type=normalized_file_type,
-        )
+    (
+        replacement_map,
+        detections,
+        replacements,
+    ) = prepare_anonymization(
+        data=data,
+        file_type=normalized_file_type,
     )
 
     anonymizers = {
@@ -408,6 +447,9 @@ def anonymize_document_bytes(
 
         "replacement_count":
             len(replacement_map),
+
+        "replacements":
+            replacements,
     }
 
 
@@ -464,4 +506,7 @@ def anonymize_and_store_document(
 
         "replacement_count":
             result["replacement_count"],
+
+        "replacements":
+            result["replacements"],
     }
