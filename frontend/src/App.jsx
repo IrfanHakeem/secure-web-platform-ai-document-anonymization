@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 
+import AnonymizedLibrary from './pages/user/AnonymizedLibrary'
 import UserWorkspaceLayout from './layouts/UserWorkspaceLayout'
 import LoginPage from './pages/auth/LoginPage'
 import AnonymizeDocument from './pages/user/AnonymizeDocument'
@@ -85,9 +86,7 @@ function App() {
 
             <Route
               path="/user/library"
-              element={
-                <WorkspacePlaceholder title="Anonymized File Library" />
-              }
+              element={<AnonymizedLibrary />}
             />
 
             <Route
