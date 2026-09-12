@@ -1,19 +1,20 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 
 import LoginPage from './pages/auth/LoginPage'
+import UserDashboard from './pages/user/UserDashboard'
 import ProtectedRoute from './routes/ProtectedRoute'
 import RoleRoute from './routes/RoleRoute'
 import { ROLES } from './utils/roles'
 
 function Placeholder({ title }) {
   return (
-    <main className="min-h-screen bg-slate-50 p-10">
-      <div className="mx-auto max-w-5xl rounded-3xl border border-violet-100 bg-white p-10 shadow-sm">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-violet-600">
+    <main className="min-h-screen bg-[#f7f8fb] p-10">
+      <div className="mx-auto max-w-5xl rounded-[18px] border border-[#e9eaf0] bg-white p-10 shadow-sm">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#6560c9]">
           Secura
         </p>
 
-        <h1 className="mt-3 text-3xl font-semibold text-slate-900">
+        <h1 className="mt-3 text-3xl font-semibold text-[#22283b]">
           {title}
         </h1>
       </div>
@@ -26,32 +27,86 @@ function App() {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
 
+      <Route
+        path="/forgot-password"
+        element={
+          <Placeholder title="Administrator Password Recovery" />
+        }
+      />
+
       <Route element={<ProtectedRoute />}>
         <Route
           path="/"
-          element={<Placeholder title="Authenticated Workspace" />}
+          element={
+            <Placeholder title="Authenticated Workspace" />
+          }
         />
 
         <Route element={<RoleRoute allowedRoles={[ROLES.USER]} />}>
           <Route
             path="/user/dashboard"
-            element={<Placeholder title="User Dashboard" />}
+            element={<UserDashboard />}
           />
-        </Route>
 
-        <Route element={<RoleRoute allowedRoles={[ROLES.ADMINISTRATOR]} />}>
           <Route
-            path="/admin/dashboard"
-            element={<Placeholder title="Administrator Dashboard" />}
+            path="/user/anonymize"
+            element={<Placeholder title="Anonymize Document" />}
+          />
+
+          <Route
+            path="/user/library"
+            element={<Placeholder title="Anonymized File Library" />}
+          />
+
+          <Route
+            path="/user/original-access"
+            element={<Placeholder title="Original Access" />}
+          />
+
+          <Route
+            path="/user/my-requests"
+            element={<Placeholder title="My Requests" />}
+          />
+
+          <Route
+            path="/user/owner-approvals"
+            element={<Placeholder title="Owner Approval" />}
+          />
+
+          <Route
+            path="/user/approved-originals"
+            element={<Placeholder title="Approval File Library" />}
+          />
+
+          <Route
+            path="/user/profile"
+            element={<Placeholder title="Profile" />}
           />
         </Route>
 
         <Route
-          element={<RoleRoute allowedRoles={[ROLES.SECURITY_OFFICER]} />}
+          element={
+            <RoleRoute allowedRoles={[ROLES.ADMINISTRATOR]} />
+          }
+        >
+          <Route
+            path="/admin/dashboard"
+            element={
+              <Placeholder title="Administrator Dashboard" />
+            }
+          />
+        </Route>
+
+        <Route
+          element={
+            <RoleRoute allowedRoles={[ROLES.SECURITY_OFFICER]} />
+          }
         >
           <Route
             path="/security/dashboard"
-            element={<Placeholder title="Security Officer Dashboard" />}
+            element={
+              <Placeholder title="Security Officer Dashboard" />
+            }
           />
         </Route>
       </Route>
@@ -62,11 +117,9 @@ function App() {
       />
 
       <Route
-        path="/forgot-password"
-        element={<Placeholder title="Administrator Password Recovery" />}
+        path="*"
+        element={<Navigate to="/login" replace />}
       />
-      
-      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   )
 }
