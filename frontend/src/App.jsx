@@ -1,18 +1,32 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
+import {
+  Navigate,
+  Route,
+  Routes,
+} from 'react-router-dom'
 
-import UserProfile from './pages/user/UserProfile'
-import ApprovedOriginalLibrary from './pages/user/ApprovedOriginalLibrary'
+import AdminWorkspaceLayout from './layouts/AdminWorkspaceLayout'
 import SecurityWorkspaceLayout from './layouts/SecurityWorkspaceLayout'
 import UserWorkspaceLayout from './layouts/UserWorkspaceLayout'
 
 import LoginPage from './pages/auth/LoginPage'
 
+import AdminDashboard from './pages/admin/AdminDashboard'
+import AdminDepartmentManagement from './pages/admin/AdminDepartmentManagement'
+import AdminProfile from './pages/admin/AdminProfile'
+import AdminUserManagement from './pages/admin/AdminUserManagement'
+
 import OriginalAccessReview from './pages/security/OriginalAccessReview'
+import SecurityAlerts from './pages/security/SecurityAlerts'
+import SecurityDashboard from './pages/security/SecurityDashboard'
+import SecurityLogs from './pages/security/SecurityLogs'
+import SecurityProfile from './pages/security/SecurityProfile'
 
 import AnonymizedLibrary from './pages/user/AnonymizedLibrary'
 import AnonymizeDocument from './pages/user/AnonymizeDocument'
+import ApprovedOriginalLibrary from './pages/user/ApprovedOriginalLibrary'
 import OriginalAccess from './pages/user/OriginalAccess'
 import UserDashboard from './pages/user/UserDashboard'
+import UserProfile from './pages/user/UserProfile'
 
 import ProtectedRoute from './routes/ProtectedRoute'
 import RoleRoute from './routes/RoleRoute'
@@ -31,26 +45,6 @@ function Placeholder({ title }) {
         </h1>
       </div>
     </main>
-  )
-}
-
-function WorkspacePlaceholder({ title }) {
-  return (
-    <section>
-      <p className="secura-eyebrow">
-        SECURE WORKSPACE
-      </p>
-
-      <h1 className="mt-2 text-3xl font-semibold text-[#22283b]">
-        {title}
-      </h1>
-
-      <div className="mt-8 rounded-[18px] border border-[#e9eaf0] bg-white p-8 shadow-sm">
-        <p className="text-sm text-[#7d8494]">
-          This workspace will be connected in the next step.
-        </p>
-      </div>
-    </section>
   )
 }
 
@@ -84,7 +78,9 @@ function App() {
         <Route
           element={
             <RoleRoute
-              allowedRoles={[ROLES.USER]}
+              allowedRoles={[
+                ROLES.USER,
+              ]}
             />
           }
         >
@@ -93,43 +89,59 @@ function App() {
             element={<UserDashboard />}
           />
 
-          <Route element={<UserWorkspaceLayout />}>
+          <Route
+            element={
+              <UserWorkspaceLayout />
+            }
+          >
             <Route
               path="/user/anonymize"
-              element={<AnonymizeDocument />}
+              element={
+                <AnonymizeDocument />
+              }
             />
 
             <Route
               path="/user/library"
-              element={<AnonymizedLibrary />}
+              element={
+                <AnonymizedLibrary />
+              }
             />
 
             <Route
               path="/user/original-access"
-              element={<OriginalAccess />}
+              element={
+                <OriginalAccess />
+              }
             />
 
             <Route
               path="/user/my-requests"
-              element={<OriginalAccess />}
+              element={
+                <OriginalAccess />
+              }
             />
 
             <Route
               path="/user/owner-approvals"
-              element={<OriginalAccess />}
+              element={
+                <OriginalAccess />
+              }
             />
 
             <Route
               path="/user/approved-originals"
-              element={<ApprovedOriginalLibrary />}
+              element={
+                <ApprovedOriginalLibrary />
+              }
             />
           </Route>
 
-           <Route
-             path="/user/profile"
-             element={<UserProfile />}
-            />
-          </Route>
+          <Route
+            path="/user/profile"
+            element={<UserProfile />}
+          />
+        </Route>
 
         {/* =========================
             ADMINISTRATOR
@@ -146,10 +158,35 @@ function App() {
         >
           <Route
             path="/admin/dashboard"
-            element={
-              <Placeholder title="Administrator Dashboard" />
-            }
+            element={<AdminDashboard />}
           />
+
+          <Route
+            element={
+              <AdminWorkspaceLayout />
+            }
+          >
+            <Route
+              path="/admin/users"
+              element={
+                <AdminUserManagement />
+              }
+            />
+
+            <Route
+              path="/admin/departments"
+              element={
+                <AdminDepartmentManagement />
+              }
+            />
+
+            <Route
+              path="/admin/profile"
+              element={
+                <AdminProfile />
+              }
+            />
+          </Route>
         </Route>
 
         {/* =========================
@@ -168,7 +205,7 @@ function App() {
           <Route
             path="/security/dashboard"
             element={
-              <Placeholder title="Security Officer Dashboard" />
+              <SecurityDashboard />
             }
           />
 
@@ -187,21 +224,21 @@ function App() {
             <Route
               path="/security/alerts"
               element={
-                <WorkspacePlaceholder title="Security Alerts" />
+                <SecurityAlerts />
               }
             />
 
             <Route
               path="/security/logs"
               element={
-                <WorkspacePlaceholder title="Security Logs" />
+                <SecurityLogs />
               }
             />
 
             <Route
               path="/security/profile"
               element={
-                <WorkspacePlaceholder title="Security Officer Profile" />
+                <SecurityProfile />
               }
             />
           </Route>
