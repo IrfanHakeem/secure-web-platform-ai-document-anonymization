@@ -1,10 +1,19 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 
-import AnonymizedLibrary from './pages/user/AnonymizedLibrary'
+import UserProfile from './pages/user/UserProfile'
+import ApprovedOriginalLibrary from './pages/user/ApprovedOriginalLibrary'
+import SecurityWorkspaceLayout from './layouts/SecurityWorkspaceLayout'
 import UserWorkspaceLayout from './layouts/UserWorkspaceLayout'
+
 import LoginPage from './pages/auth/LoginPage'
+
+import OriginalAccessReview from './pages/security/OriginalAccessReview'
+
+import AnonymizedLibrary from './pages/user/AnonymizedLibrary'
 import AnonymizeDocument from './pages/user/AnonymizeDocument'
+import OriginalAccess from './pages/user/OriginalAccess'
 import UserDashboard from './pages/user/UserDashboard'
+
 import ProtectedRoute from './routes/ProtectedRoute'
 import RoleRoute from './routes/RoleRoute'
 import { ROLES } from './utils/roles'
@@ -68,9 +77,15 @@ function App() {
           }
         />
 
+        {/* =========================
+            USER
+        ========================= */}
+
         <Route
           element={
-            <RoleRoute allowedRoles={[ROLES.USER]} />
+            <RoleRoute
+              allowedRoles={[ROLES.USER]}
+            />
           }
         >
           <Route
@@ -91,45 +106,41 @@ function App() {
 
             <Route
               path="/user/original-access"
-              element={
-                <WorkspacePlaceholder title="Original Access" />
-              }
+              element={<OriginalAccess />}
             />
 
             <Route
               path="/user/my-requests"
-              element={
-                <WorkspacePlaceholder title="My Requests" />
-              }
+              element={<OriginalAccess />}
             />
 
             <Route
               path="/user/owner-approvals"
-              element={
-                <WorkspacePlaceholder title="Owner Approval" />
-              }
+              element={<OriginalAccess />}
             />
 
             <Route
               path="/user/approved-originals"
-              element={
-                <WorkspacePlaceholder title="Approval File Library" />
-              }
+              element={<ApprovedOriginalLibrary />}
             />
           </Route>
 
-          <Route
-            path="/user/profile"
-            element={
-              <Placeholder title="Profile" />
-            }
-          />
-        </Route>
+           <Route
+             path="/user/profile"
+             element={<UserProfile />}
+            />
+          </Route>
+
+        {/* =========================
+            ADMINISTRATOR
+        ========================= */}
 
         <Route
           element={
             <RoleRoute
-              allowedRoles={[ROLES.ADMINISTRATOR]}
+              allowedRoles={[
+                ROLES.ADMINISTRATOR,
+              ]}
             />
           }
         >
@@ -141,10 +152,16 @@ function App() {
           />
         </Route>
 
+        {/* =========================
+            SECURITY OFFICER
+        ========================= */}
+
         <Route
           element={
             <RoleRoute
-              allowedRoles={[ROLES.SECURITY_OFFICER]}
+              allowedRoles={[
+                ROLES.SECURITY_OFFICER,
+              ]}
             />
           }
         >
@@ -154,6 +171,40 @@ function App() {
               <Placeholder title="Security Officer Dashboard" />
             }
           />
+
+          <Route
+            element={
+              <SecurityWorkspaceLayout />
+            }
+          >
+            <Route
+              path="/security/reviews"
+              element={
+                <OriginalAccessReview />
+              }
+            />
+
+            <Route
+              path="/security/alerts"
+              element={
+                <WorkspacePlaceholder title="Security Alerts" />
+              }
+            />
+
+            <Route
+              path="/security/logs"
+              element={
+                <WorkspacePlaceholder title="Security Logs" />
+              }
+            />
+
+            <Route
+              path="/security/profile"
+              element={
+                <WorkspacePlaceholder title="Security Officer Profile" />
+              }
+            />
+          </Route>
         </Route>
       </Route>
 

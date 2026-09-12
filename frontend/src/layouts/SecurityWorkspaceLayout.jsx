@@ -1,9 +1,9 @@
 import {
   ArrowLeft,
-  Clock3,
-  FileCheck2,
-  Library,
-  Sparkles,
+  FileLock2,
+  ScanSearch,
+  ShieldAlert,
+  UserRound,
 } from 'lucide-react'
 import {
   Link,
@@ -13,38 +13,33 @@ import {
 
 const navigation = [
   {
-    label: 'Back to home',
-    path: '/user/dashboard',
+    label: 'Back to dashboard',
+    path: '/security/dashboard',
     icon: ArrowLeft,
   },
   {
-    label: 'Anonymize document',
-    path: '/user/anonymize',
-    icon: Sparkles,
+    label: 'Original access review',
+    path: '/security/reviews',
+    icon: ScanSearch,
   },
   {
-    label: 'Anonymized file library',
-    path: '/user/library',
-    icon: Library,
+    label: 'Security alerts',
+    path: '/security/alerts',
+    icon: ShieldAlert,
   },
   {
-    label: 'Original access',
-    path: '/user/original-access',
-    icon: Clock3,
-    activePaths: [
-      '/user/original-access',
-      '/user/my-requests',
-      '/user/owner-approvals',
-    ],
+    label: 'Security logs',
+    path: '/security/logs',
+    icon: FileLock2,
   },
   {
-    label: 'Approval file library',
-    path: '/user/approved-originals',
-    icon: FileCheck2,
+    label: 'Profile',
+    path: '/security/profile',
+    icon: UserRound,
   },
 ]
 
-function UserWorkspaceLayout() {
+function SecurityWorkspaceLayout() {
   const location = useLocation()
 
   return (
@@ -61,23 +56,19 @@ function UserWorkspaceLayout() {
         </div>
 
         <p className="secura-sidebar-brand-note">
-          DOCUMENT PRIVACY PLATFORM
+          SECURITY OPERATIONS
         </p>
 
         <p className="secura-sidebar-label">
-          WORKSPACE
+          SECURITY WORKSPACE
         </p>
 
         <nav className="secura-side-nav">
           {navigation.map((item) => {
             const Icon = item.icon
 
-            const paths =
-              item.activePaths ?? [item.path]
-
-            const isActive = paths.includes(
-              location.pathname,
-            )
+            const isActive =
+              location.pathname === item.path
 
             return (
               <Link
@@ -106,4 +97,4 @@ function UserWorkspaceLayout() {
   )
 }
 
-export default UserWorkspaceLayout
+export default SecurityWorkspaceLayout
