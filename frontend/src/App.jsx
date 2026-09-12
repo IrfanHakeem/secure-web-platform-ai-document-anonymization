@@ -64,7 +64,7 @@ function App() {
       <Route
         path="/forgot-password"
         element={<Placeholder title="Administrator Password Recovery" />}
-      />x
+      />
       
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
