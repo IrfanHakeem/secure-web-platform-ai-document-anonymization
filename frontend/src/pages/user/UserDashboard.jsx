@@ -1,61 +1,40 @@
-import { useEffect, useState } from 'react'
 import {
   ArrowRight,
   Clock3,
   FileCheck2,
-  FileText,
   FolderCheck,
   Library,
   LogOut,
+  ShieldCheck,
   Sparkles,
 } from 'lucide-react'
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import api from '../../api/client'
+import ProfileAvatar from '../../components/ProfileAvatar'
 import { useAuth } from '../../context/useAuth'
-
-function getInitials(name) {
-  if (!name) {
-    return 'U'
-  }
-
-  return name
-    .split(' ')
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join('')
-    .toUpperCase()
-}
 
 function getGreetingInfo(date) {
   const hour = date.getHours()
 
   if (hour >= 5 && hour < 12) {
-    return {
-      text: 'Good morning',
-      period: 'morning',
-    }
+    return 'Good morning'
   }
 
   if (hour >= 12 && hour < 17) {
-    return {
-      text: 'Good afternoon',
-      period: 'afternoon',
-    }
+    return 'Good afternoon'
   }
 
   if (hour >= 17 && hour < 21) {
-    return {
-      text: 'Good evening',
-      period: 'evening',
-    }
+    return 'Good evening'
   }
 
-  return {
-    text: 'Good night',
-    period: 'night',
-  }
+  return 'Good night'
 }
 
 function UserDashboard() {
@@ -65,16 +44,27 @@ function UserDashboard() {
   const [currentTime, setCurrentTime] =
     useState(() => new Date())
 
-  const [requestCounts, setRequestCounts] =
-    useState({
-      myRequests: null,
-      ownerApprovals: null,
-    })
+  const [myRequests, setMyRequests] =
+    useState([])
+
+  const [
+    ownerPendingRequests,
+    setOwnerPendingRequests,
+  ] = useState([])
+
+  const [loading, setLoading] =
+    useState(true)
+
+  const [error, setError] =
+    useState('')
 
   useEffect(() => {
-    const timer = window.setInterval(() => {
-      setCurrentTime(new Date())
-    }, 60 * 1000)
+    const timer = window.setInterval(
+      () => {
+        setCurrentTime(new Date())
+      },
+      60 * 1000,
+    )
 
     return () => {
       window.clearInterval(timer)
@@ -84,48 +74,87 @@ function UserDashboard() {
   useEffect(() => {
     let cancelled = false
 
-    const loadCounts = async () => {
-      try {
-        const [
-          myRequestsResponse,
-          ownerPendingResponse,
-        ] = await Promise.all([
-          api.get(
-            '/original-file-requests/my-requests',
-          ),
-          api.get(
-            '/original-file-requests/owner/pending',
-          ),
-        ])
+    const loadDashboard =
+      async () => {
+        setLoading(true)
+        setError('')
 
-        if (cancelled) {
-          return
+        try {
+          const [
+            myRequestsResponse,
+            ownerPendingResponse,
+          ] = await Promise.all([
+            api.get(
+              '/original-file-requests/my-requests',
+            ),
+            api.get(
+              '/original-file-requests/owner/pending',
+            ),
+          ])
+
+          if (cancelled) {
+            return
+          }
+
+          setMyRequests(
+            myRequestsResponse.data,
+          )
+
+          setOwnerPendingRequests(
+            ownerPendingResponse.data,
+          )
+        } catch {
+          if (!cancelled) {
+            setError(
+              'Unable to load your secure workspace summary.',
+            )
+          }
+        } finally {
+          if (!cancelled) {
+            setLoading(false)
+          }
         }
-
-        setRequestCounts({
-          myRequests:
-            myRequestsResponse.data.length,
-          ownerApprovals:
-            ownerPendingResponse.data.length,
-        })
-      } catch {
-        if (cancelled) {
-          return
-        }
-
-        setRequestCounts({
-          myRequests: null,
-          ownerApprovals: null,
-        })
       }
-    }
 
-    loadCounts()
+    loadDashboard()
 
     return () => {
       cancelled = true
     }
   }, [])
+
+  const statistics =
+    useMemo(() => {
+      const pending =
+        myRequests.filter(
+          (request) =>
+            request.status ===
+              'PENDING_OWNER' ||
+            request.status ===
+              'PENDING_SECURITY',
+        ).length
+
+      const approved =
+        myRequests.filter(
+          (request) =>
+            request.status ===
+            'APPROVED',
+        ).length
+
+      return {
+        totalRequests:
+          myRequests.length,
+        pendingRequests:
+          pending,
+        approvedOriginals:
+          approved,
+        ownerApprovals:
+          ownerPendingRequests.length,
+      }
+    }, [
+      myRequests,
+      ownerPendingRequests,
+    ])
 
   const displayName =
     user?.full_name ||
@@ -134,9 +163,6 @@ function UserDashboard() {
 
   const firstName =
     displayName.split(' ')[0]
-
-  const greeting =
-    getGreetingInfo(currentTime)
 
   const handleLogout = () => {
     logout()
@@ -147,271 +173,416 @@ function UserDashboard() {
   }
 
   return (
-    <main className="secura-dashboard-shell">
-      <div className="secura-dashboard-content">
-        <header className="secura-topbar">
-          <div className="secura-topbar-title">
-            <div className="secura-topbar-brand">
-              <span className="secura-brand-mark">
-                S
-              </span>
-
-              <span>Secura</span>
+    <main className="role-dashboard role-dashboard--user">
+      <div className="role-dashboard__content">
+        <header className="role-dashboard__topbar">
+          <div className="role-dashboard__brand-area">
+            <div className="role-dashboard__brand">
+              <span>S</span>
+              <b>Secura</b>
             </div>
 
-            <div>
+            <div className="role-dashboard__welcome">
               <p className="secura-eyebrow">
                 SECURE WORKSPACE
               </p>
 
-              <h1
-                className={`secura-dashboard-greeting secura-dashboard-greeting-${greeting.period}`}
-                aria-live="polite"
-              >
-                <span
-                  key={greeting.text}
-                  className="secura-dashboard-greeting-text"
-                >
-                  {greeting.text},
-                </span>{' '}
-                {firstName}!
+              <h1>
+                {getGreetingInfo(
+                  currentTime,
+                )}
+                , {firstName}!
               </h1>
 
-              <p className="secura-subtitle">
-                Here is an overview of your secure
-                document workspace.
+              <p>
+                Manage protected documents
+                and original-file access
+                from one secure workspace.
               </p>
             </div>
           </div>
 
-          <div className="secura-header-actions">
+          <div className="role-dashboard__account">
             <button
               type="button"
-              className="secura-user-menu"
+              className="role-dashboard__account-button"
               onClick={() =>
-                navigate('/user/profile')
+                navigate(
+                  '/user/profile',
+                )
               }
             >
-              <span className="secura-avatar">
-                {getInitials(displayName)}
-              </span>
+              <ProfileAvatar
+                name={displayName}
+                className="role-dashboard__avatar"
+              />
 
               <span>
                 <b>{displayName}</b>
 
                 <small>
-                  {user?.role || 'User'}
+                  {user?.role ||
+                    'User'}
                 </small>
-              </span>
-
-              <span className="secura-chevron">
-                ⌄
               </span>
             </button>
 
             <button
               type="button"
-              className="secura-logout-button"
-              onClick={handleLogout}
+              className="role-dashboard__logout"
+              onClick={
+                handleLogout
+              }
             >
               Log out
-
               <LogOut size={14} />
             </button>
           </div>
         </header>
 
-        <section className="secura-dashboard-intro">
+        <section className="role-dashboard__intro">
           <p className="secura-eyebrow">
-            YOUR SECURE WORKSPACE
+            WORKSPACE OVERVIEW
           </p>
 
           <h2>
-            What would you like to do?
+            Your secure document workspace
           </h2>
 
           <p>
-            Choose a workspace to continue
-            managing your protected documents.
+            Anonymize documents, manage
+            department sharing and track
+            original-file approval requests.
           </p>
         </section>
 
-        <section className="secura-workspace-grid">
-          <button
-            type="button"
-            className="secura-workspace-card"
-            onClick={() =>
-              navigate('/user/anonymize')
-            }
-          >
-            <span className="secura-workspace-icon">
-              <Sparkles size={20} />
+        {error && (
+          <div className="role-dashboard__error">
+            <ShieldCheck
+              size={16}
+            />
+            {error}
+          </div>
+        )}
+
+        <section className="role-dashboard__status-banner">
+          <div className="role-dashboard__status-icon user">
+            <ShieldCheck
+              size={23}
+            />
+          </div>
+
+          <div className="role-dashboard__status-copy">
+            <small>
+              DOCUMENT PRIVACY
+            </small>
+
+            <div>
+              <h3>
+                Secure workspace ready
+              </h3>
+
+              <span className="role-dashboard__status-pill active">
+                Protected
+              </span>
+            </div>
+
+            <p>
+              Original-file access is
+              protected by owner approval
+              and final Security Officer
+              review.
+            </p>
+          </div>
+
+          <div className="role-dashboard__status-meta">
+            <small>
+              Approved originals
+            </small>
+
+            <b>
+              {loading
+                ? '—'
+                : statistics
+                    .approvedOriginals}
+            </b>
+          </div>
+        </section>
+
+        <section className="role-dashboard__stats">
+          <article>
+            <span className="role-dashboard__stat-icon purple">
+              <Clock3 size={19} />
             </span>
 
-            <span className="secura-workspace-copy">
+            <div>
               <b>
-                Anonymize document
+                {loading
+                  ? '—'
+                  : statistics
+                      .totalRequests}
               </b>
 
+              <p>
+                My requests
+              </p>
+
               <small>
-                Upload a document and protect
-                sensitive information.
+                Original access
               </small>
+            </div>
+          </article>
+
+          <article>
+            <span className="role-dashboard__stat-icon blue">
+              <Clock3 size={19} />
             </span>
 
-            <ArrowRight
-              className="secura-card-arrow"
-              size={18}
-            />
-          </button>
-
-          <button
-            type="button"
-            className="secura-workspace-card secura-accent-blue"
-            onClick={() =>
-              navigate('/user/library')
-            }
-          >
-            <span className="secura-workspace-icon">
-              <Library size={20} />
-            </span>
-
-            <span className="secura-workspace-copy">
+            <div>
               <b>
-                Anonymized file library
+                {loading
+                  ? '—'
+                  : statistics
+                      .pendingRequests}
               </b>
 
+              <p>
+                Pending requests
+              </p>
+
               <small>
-                View your anonymized files and
-                files shared with your
-                department.
+                Awaiting approval
               </small>
+            </div>
+          </article>
+
+          <article>
+            <span className="role-dashboard__stat-icon green">
+              <FolderCheck
+                size={19}
+              />
             </span>
 
-            <ArrowRight
-              className="secura-card-arrow"
-              size={18}
-            />
-          </button>
-
-          <button
-            type="button"
-            className="secura-workspace-card secura-accent-mint"
-            onClick={() =>
-              navigate(
-                '/user/approved-originals',
-              )
-            }
-          >
-            <span className="secura-workspace-icon">
-              <FolderCheck size={20} />
-            </span>
-
-            <span className="secura-workspace-copy">
+            <div>
               <b>
-                Approval file library
+                {loading
+                  ? '—'
+                  : statistics
+                      .approvedOriginals}
               </b>
 
+              <p>
+                Approved originals
+              </p>
+
               <small>
-                View approved original files,
-                verify their integrity, and
-                securely download them.
+                Ready for access
               </small>
+            </div>
+          </article>
+
+          <article>
+            <span className="role-dashboard__stat-icon peach">
+              <FileCheck2
+                size={19}
+              />
             </span>
 
-            <ArrowRight
-              className="secura-card-arrow"
-              size={18}
-            />
-          </button>
+            <div>
+              <b>
+                {loading
+                  ? '—'
+                  : statistics
+                      .ownerApprovals}
+              </b>
 
-          <article className="secura-workspace-card secura-original-card">
+              <p>
+                Owner reviews
+              </p>
+
+              <small>
+                Waiting for you
+              </small>
+            </div>
+          </article>
+        </section>
+
+        <section className="role-dashboard__main-grid">
+          <div className="role-dashboard__tools">
+            <div className="role-dashboard__panel-heading">
+              <div>
+                <p className="secura-eyebrow">
+                  DOCUMENT TOOLS
+                </p>
+
+                <h2>
+                  Secure document tools
+                </h2>
+              </div>
+
+              <ShieldCheck
+                size={20}
+              />
+            </div>
+
+            <div className="role-dashboard__actions">
+              <button
+                type="button"
+                onClick={() =>
+                  navigate(
+                    '/user/anonymize',
+                  )
+                }
+              >
+                <span className="role-dashboard__action-icon purple">
+                  <Sparkles
+                    size={20}
+                  />
+                </span>
+
+                <span>
+                  <b>
+                    Anonymize document
+                  </b>
+
+                  <small>
+                    Upload a document and
+                    protect supported PII.
+                  </small>
+                </span>
+
+                <ArrowRight
+                  size={17}
+                />
+              </button>
+
+              <button
+                type="button"
+                onClick={() =>
+                  navigate(
+                    '/user/library',
+                  )
+                }
+              >
+                <span className="role-dashboard__action-icon blue">
+                  <Library
+                    size={20}
+                  />
+                </span>
+
+                <span>
+                  <b>
+                    Anonymized file library
+                  </b>
+
+                  <small>
+                    Manage your files and
+                    department-shared
+                    anonymized documents.
+                  </small>
+                </span>
+
+                <ArrowRight
+                  size={17}
+                />
+              </button>
+
+              <button
+                type="button"
+                onClick={() =>
+                  navigate(
+                    '/user/approved-originals',
+                  )
+                }
+              >
+                <span className="role-dashboard__action-icon green">
+                  <FolderCheck
+                    size={20}
+                  />
+                </span>
+
+                <span>
+                  <b>
+                    Approval file library
+                  </b>
+
+                  <small>
+                    Open fully approved
+                    originals with integrity
+                    verification.
+                  </small>
+                </span>
+
+                <ArrowRight
+                  size={17}
+                />
+              </button>
+            </div>
+          </div>
+
+          <aside className="role-dashboard__side-panel">
+            <p className="secura-eyebrow">
+              ORIGINAL ACCESS
+            </p>
+
+            <div className="role-dashboard__side-shield">
+              <ShieldCheck
+                size={26}
+              />
+            </div>
+
+            <h3>
+              Approval workflow
+            </h3>
+
+            <p>
+              Track requests you submitted
+              and review requests for
+              documents that you own.
+            </p>
+
             <button
               type="button"
-              className="secura-original-heading"
+              className="role-dashboard__side-link"
               onClick={() =>
                 navigate(
-                  '/user/original-access',
+                  '/user/my-requests',
                 )
               }
             >
-              <span className="secura-workspace-icon">
-                <Clock3 size={20} />
+              <span>
+                My requests
               </span>
 
-              <span className="secura-workspace-copy">
-                <b>
-                  Original access
-                </b>
-
-                <small>
-                  Request or review access to
-                  original documents.
-                </small>
-              </span>
-
-              <ArrowRight
-                className="secura-card-arrow"
-                size={18}
-              />
+              <b>
+                {loading
+                  ? '—'
+                  : statistics
+                      .totalRequests}
+              </b>
             </button>
 
-            <div className="secura-original-actions">
-              <button
-                type="button"
-                onClick={() =>
-                  navigate(
-                    '/user/my-requests',
-                  )
-                }
-              >
-                <span className="secura-action-label">
-                  <FileText size={14} />
+            <button
+              type="button"
+              className="role-dashboard__side-link"
+              onClick={() =>
+                navigate(
+                  '/user/owner-approvals',
+                )
+              }
+            >
+              <span>
+                Owner approvals
+              </span>
 
-                  My requests
-                </span>
-
-                <span className="secura-action-right">
-                  <span className="secura-pill-count">
-                    {requestCounts.myRequests ??
-                      '—'}
-                  </span>
-
-                  <ArrowRight
-                    size={13}
-                  />
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() =>
-                  navigate(
-                    '/user/owner-approvals',
-                  )
-                }
-              >
-                <span className="secura-action-label">
-                  <FileCheck2
-                    size={14}
-                  />
-
-                  Owner approval
-                </span>
-
-                <span className="secura-action-right">
-                  <span className="secura-pill-count">
-                    {requestCounts.ownerApprovals ??
-                      '—'}
-                  </span>
-
-                  <ArrowRight
-                    size={13}
-                  />
-                </span>
-              </button>
-            </div>
-          </article>
+              <b>
+                {loading
+                  ? '—'
+                  : statistics
+                      .ownerApprovals}
+              </b>
+            </button>
+          </aside>
         </section>
       </div>
     </main>

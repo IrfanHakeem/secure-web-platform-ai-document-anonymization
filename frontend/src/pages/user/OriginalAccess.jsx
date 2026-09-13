@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
+  ArrowRight,
   Check,
   Clock3,
   FileText,
@@ -32,7 +33,8 @@ function formatDate(value) {
 }
 
 function getApiError(error, fallback) {
-  const detail = error?.response?.data?.detail
+  const detail =
+    error?.response?.data?.detail
 
   if (typeof detail === 'string') {
     return detail
@@ -67,7 +69,11 @@ function getStatusDetails(status) {
 
   return (
     statuses[status] ?? {
-      label: status?.replaceAll('_', ' ') || 'Unknown',
+      label:
+        status?.replaceAll(
+          '_',
+          ' ',
+        ) || 'Unknown',
       className: 'default',
     }
   )
@@ -77,63 +83,91 @@ function OriginalAccess() {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const activeTab = location.pathname.includes(
-    '/owner-approvals',
-  )
-    ? 'owner'
-    : 'my'
+  const activeTab =
+    location.pathname.includes(
+      '/owner-approvals',
+    )
+      ? 'owner'
+      : 'my'
 
-  const [myRequests, setMyRequests] = useState([])
-  const [ownerRequests, setOwnerRequests] = useState([])
+  const [
+    myRequests,
+    setMyRequests,
+  ] = useState([])
 
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [message, setMessage] = useState('')
+  const [
+    ownerRequests,
+    setOwnerRequests,
+  ] = useState([])
 
-  const [decisionLoadingId, setDecisionLoadingId] =
-    useState(null)
+  const [loading, setLoading] =
+    useState(true)
 
-  const [rejectRequest, setRejectRequest] = useState(null)
+  const [error, setError] =
+    useState('')
+
+  const [message, setMessage] =
+    useState('')
+
+  const [
+    decisionLoadingId,
+    setDecisionLoadingId,
+  ] = useState(null)
+
+  const [
+    rejectRequest,
+    setRejectRequest,
+  ] = useState(null)
 
   useEffect(() => {
     let cancelled = false
 
-    const loadAccessData = async () => {
-      setLoading(true)
-      setError('')
+    const loadAccessData =
+      async () => {
+        setLoading(true)
+        setError('')
 
-      try {
-        const [
-          myRequestsResponse,
-          ownerRequestsResponse,
-        ] = await Promise.all([
-          api.get('/original-file-requests/my-requests'),
-          api.get('/original-file-requests/owner/pending'),
-        ])
+        try {
+          const [
+            myRequestsResponse,
+            ownerRequestsResponse,
+          ] = await Promise.all([
+            api.get(
+              '/original-file-requests/my-requests',
+            ),
+            api.get(
+              '/original-file-requests/owner/pending',
+            ),
+          ])
 
-        if (cancelled) {
-          return
-        }
+          if (cancelled) {
+            return
+          }
 
-        setMyRequests(myRequestsResponse.data)
-        setOwnerRequests(ownerRequestsResponse.data)
-      } catch (loadError) {
-        if (cancelled) {
-          return
-        }
+          setMyRequests(
+            myRequestsResponse.data,
+          )
 
-        setError(
-          getApiError(
-            loadError,
-            'Unable to load original access requests.',
-          ),
-        )
-      } finally {
-        if (!cancelled) {
-          setLoading(false)
+          setOwnerRequests(
+            ownerRequestsResponse.data,
+          )
+        } catch (loadError) {
+          if (cancelled) {
+            return
+          }
+
+          setError(
+            getApiError(
+              loadError,
+              'Unable to load original access requests.',
+            ),
+          )
+        } finally {
+          if (!cancelled) {
+            setLoading(false)
+          }
         }
       }
-    }
 
     loadAccessData()
 
@@ -142,66 +176,111 @@ function OriginalAccess() {
     }
   }, [])
 
+  const summary = useMemo(
+    () => ({
+      total:
+        myRequests.length,
+
+      pendingOwner:
+        myRequests.filter(
+          (request) =>
+            request.status ===
+            'PENDING_OWNER',
+        ).length,
+
+      pendingSecurity:
+        myRequests.filter(
+          (request) =>
+            request.status ===
+            'PENDING_SECURITY',
+        ).length,
+
+      ownerApprovals:
+        ownerRequests.length,
+    }),
+    [
+      myRequests,
+      ownerRequests,
+    ],
+  )
+
   const changeTab = (tab) => {
     setMessage('')
     setError('')
 
     if (tab === 'owner') {
-      navigate('/user/owner-approvals')
+      navigate(
+        '/user/owner-approvals',
+      )
       return
     }
 
-    navigate('/user/my-requests')
+    navigate(
+      '/user/my-requests',
+    )
   }
 
-  const handleOwnerDecision = async (
-    request,
-    decision,
-  ) => {
-    setDecisionLoadingId(request.id)
-    setMessage('')
-    setError('')
-
-    try {
-      const response = await api.patch(
-        `/original-file-requests/${request.id}/owner-decision`,
-        {
-          decision,
-        },
+  const handleOwnerDecision =
+    async (
+      request,
+      decision,
+    ) => {
+      setDecisionLoadingId(
+        request.id,
       )
 
-      setOwnerRequests((current) =>
-        current.filter(
-          (item) => item.id !== request.id,
-        ),
-      )
+      setMessage('')
+      setError('')
 
-      if (decision === 'APPROVE') {
-        setMessage(
-          `${request.original_filename} approved. The request has been forwarded to the Security Officer for final review.`,
+      try {
+        const response =
+          await api.patch(
+            `/original-file-requests/${request.id}/owner-decision`,
+            {
+              decision,
+            },
+          )
+
+        setOwnerRequests(
+          (current) =>
+            current.filter(
+              (item) =>
+                item.id !==
+                request.id,
+            ),
         )
-      } else {
-        setMessage(
-          `${request.original_filename} original access request was rejected.`,
+
+        if (
+          decision ===
+          'APPROVE'
+        ) {
+          setMessage(
+            `${request.original_filename} approved. The request has been forwarded to the Security Officer for final review.`,
+          )
+        } else {
+          setMessage(
+            `${request.original_filename} original access request was rejected.`,
+          )
+        }
+
+        setRejectRequest(null)
+
+        return response.data
+      } catch (decisionError) {
+        setError(
+          getApiError(
+            decisionError,
+            'Unable to update the original access request.',
+          ),
+        )
+
+        return null
+      } finally {
+        setDecisionLoadingId(
+          null,
         )
       }
-
-      setRejectRequest(null)
-
-      return response.data
-    } catch (decisionError) {
-      setError(
-        getApiError(
-          decisionError,
-          'Unable to update the original access request.',
-        ),
-      )
-
-      return null
-    } finally {
-      setDecisionLoadingId(null)
     }
-  }
 
   return (
     <>
@@ -213,40 +292,137 @@ function OriginalAccess() {
         <h1>Original access</h1>
 
         <p>
-          Manage your original-file requests and review
-          access requests for documents you own.
+          Manage your original-file
+          requests and review access
+          requests for documents you
+          own.
         </p>
       </header>
 
-      <div className="access-tabs-real">
-        <button
-          type="button"
-          className={
-            activeTab === 'my'
-              ? 'selected'
-              : ''
-          }
-          onClick={() => changeTab('my')}
-        >
-          My requests
+      <section className="access-summary-grid">
+        <article>
+          <span className="access-summary-icon total">
+            <FileText size={18} />
+          </span>
 
-          <span>{myRequests.length}</span>
-        </button>
+          <div>
+            <b>
+              {summary.total}
+            </b>
 
-        <button
-          type="button"
-          className={
-            activeTab === 'owner'
-              ? 'selected'
-              : ''
-          }
-          onClick={() => changeTab('owner')}
-        >
-          Owner approval
+            <p>
+              My requests
+            </p>
+          </div>
+        </article>
 
-          <span>{ownerRequests.length}</span>
-        </button>
-      </div>
+        <article>
+          <span className="access-summary-icon owner">
+            <Clock3 size={18} />
+          </span>
+
+          <div>
+            <b>
+              {
+                summary.pendingOwner
+              }
+            </b>
+
+            <p>
+              Awaiting owner
+            </p>
+          </div>
+        </article>
+
+        <article>
+          <span className="access-summary-icon security">
+            <ShieldCheck
+              size={18}
+            />
+          </span>
+
+          <div>
+            <b>
+              {
+                summary.pendingSecurity
+              }
+            </b>
+
+            <p>
+              Security review
+            </p>
+          </div>
+        </article>
+
+        <article>
+          <span className="access-summary-icon approvals">
+            <UserRound
+              size={18}
+            />
+          </span>
+
+          <div>
+            <b>
+              {
+                summary.ownerApprovals
+              }
+            </b>
+
+            <p>
+              Owner approvals
+            </p>
+          </div>
+        </article>
+      </section>
+
+      <section className="access-control-bar">
+        <div className="access-tabs-real">
+          <button
+            type="button"
+            className={
+              activeTab === 'my'
+                ? 'selected'
+                : ''
+            }
+            onClick={() =>
+              changeTab('my')
+            }
+          >
+            My requests
+
+            <span>
+              {myRequests.length}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            className={
+              activeTab ===
+              'owner'
+                ? 'selected'
+                : ''
+            }
+            onClick={() =>
+              changeTab('owner')
+            }
+          >
+            Owner approval
+
+            <span>
+              {
+                ownerRequests.length
+              }
+            </span>
+          </button>
+        </div>
+
+        <p>
+          {activeTab === 'my'
+            ? 'Track every stage of your original-file access requests.'
+            : 'Review requests for documents you own before Security Officer review.'}
+        </p>
+      </section>
 
       {message && (
         <div className="access-success-banner">
@@ -257,7 +433,9 @@ function OriginalAccess() {
           <button
             type="button"
             aria-label="Dismiss"
-            onClick={() => setMessage('')}
+            onClick={() =>
+              setMessage('')
+            }
           >
             <X size={14} />
           </button>
@@ -269,202 +447,295 @@ function OriginalAccess() {
           className="access-error-banner"
           role="alert"
         >
-          <ShieldCheck size={16} />
+          <ShieldCheck
+            size={16}
+          />
 
           <span>{error}</span>
 
           <button
             type="button"
             aria-label="Dismiss"
-            onClick={() => setError('')}
+            onClick={() =>
+              setError('')
+            }
           >
             <X size={14} />
           </button>
         </div>
       )}
 
-      {loading ? (
-        <div className="access-loading">
-          <div />
-          <div />
-          <div />
-        </div>
-      ) : activeTab === 'my' ? (
-        <section className="access-request-list">
-          {myRequests.length === 0 ? (
-            <div className="access-empty-state">
-              <span>
-                <Clock3 size={21} />
-              </span>
-
-              <b>No original access requests</b>
-
-              <p>
-                When you request access to another
-                user's original document, its approval
-                progress will appear here.
-              </p>
-
-              <button
-                type="button"
-                onClick={() =>
-                  navigate('/user/library')
-                }
-              >
-                Browse anonymized files
-              </button>
+      <section className="access-content-grid">
+        <div className="access-primary-area">
+          {loading ? (
+            <div className="access-loading">
+              <div />
+              <div />
+              <div />
             </div>
-          ) : (
-            myRequests.map((request) => {
-              const status =
-                getStatusDetails(request.status)
+          ) : activeTab === 'my' ? (
+            <section className="access-request-list">
+              {myRequests.length ===
+              0 ? (
+                <div className="access-empty-state">
+                  <span className="access-empty-icon">
+                    <Clock3
+                      size={24}
+                    />
 
-              return (
-                <article
-                  className="access-request-card"
-                  key={request.id}
-                >
-                  <div className="access-request-file">
-                    <span>
-                      <FileText size={17} />
-                    </span>
-
-                    <div>
-                      <b>
-                        {
-                          request.original_filename
-                        }
-                      </b>
-
-                      <p>
-                        Owner:{' '}
-                        {request.owner_full_name ||
-                          request.owner_username}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="access-request-meta">
-                    <small>Requested</small>
-
-                    <p>
-                      {formatDate(
-                        request.requested_at,
-                      )}
-                    </p>
-                  </div>
-
-                  <div className="access-request-meta">
-                    <small>Reason</small>
-
-                    <p className="access-reason-preview">
-                      {request.reason || '—'}
-                    </p>
-                  </div>
-
-                  <div className="access-request-status">
-                    <small>Current status</small>
-
-                    <span
-                      className={`access-status-badge ${status.className}`}
-                    >
-                      {status.label}
-                    </span>
-                  </div>
-                </article>
-              )
-            })
-          )}
-        </section>
-      ) : (
-        <section className="access-request-list">
-          {ownerRequests.length === 0 ? (
-            <div className="access-empty-state">
-              <span>
-                <UserRound size={21} />
-              </span>
-
-              <b>No requests waiting for you</b>
-
-              <p>
-                Original-file access requests for
-                documents you own will appear here.
-              </p>
-            </div>
-          ) : (
-            ownerRequests.map((request) => (
-              <article
-                className="access-request-card owner-request-card"
-                key={request.id}
-              >
-                <div className="access-request-file">
-                  <span>
-                    <FileText size={17} />
+                    <i />
+                    <i />
+                    <i />
                   </span>
 
-                  <div>
-                    <b>
-                      {request.original_filename}
-                    </b>
-
-                    <p>
-                      Requested by:{' '}
-                      {request.requester_full_name ||
-                        request.requester_username}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="access-owner-reason">
-                  <small>Reason for access</small>
+                  <b>
+                    No original access
+                    requests
+                  </b>
 
                   <p>
-                    {request.reason || 'No reason provided.'}
+                    When you request
+                    access to another
+                    user&apos;s original
+                    document, its
+                    approval progress
+                    will appear here.
                   </p>
 
-                  <em>
-                    Requested:{' '}
-                    {formatDate(request.requested_at)}
-                  </em>
-                </div>
-
-                <div className="access-owner-actions">
                   <button
                     type="button"
-                    className="access-approve-button"
-                    disabled={
-                      decisionLoadingId === request.id
-                    }
                     onClick={() =>
-                      handleOwnerDecision(
-                        request,
-                        'APPROVE',
+                      navigate(
+                        '/user/library',
                       )
                     }
                   >
-                    {decisionLoadingId === request.id
-                      ? 'Processing...'
-                      : 'Approve'}
-                  </button>
+                    Browse anonymized
+                    files
 
-                  <button
-                    type="button"
-                    className="access-reject-button"
-                    disabled={
-                      decisionLoadingId === request.id
-                    }
-                    onClick={() =>
-                      setRejectRequest(request)
-                    }
-                  >
-                    Reject
+                    <ArrowRight
+                      size={14}
+                    />
                   </button>
                 </div>
-              </article>
-            ))
+              ) : (
+                myRequests.map(
+                  (
+                    request,
+                    index,
+                  ) => {
+                    const status =
+                      getStatusDetails(
+                        request.status,
+                      )
+
+                    return (
+                      <article
+                        className="access-request-card access-animated-card"
+                        style={{
+                          '--access-delay':
+                            `${Math.min(index, 8) * 45}ms`,
+                        }}
+                        key={
+                          request.id
+                        }
+                      >
+                        <div className="access-request-file">
+                          <span>
+                            <FileText
+                              size={17}
+                            />
+                          </span>
+
+                          <div>
+                            <b>
+                              {
+                                request.original_filename
+                              }
+                            </b>
+
+                            <p>
+                              Owner:{' '}
+                              {request.owner_full_name ||
+                                request.owner_username}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="access-request-meta">
+                          <small>
+                            Requested
+                          </small>
+
+                          <p>
+                            {formatDate(
+                              request.requested_at,
+                            )}
+                          </p>
+                        </div>
+
+                        <div className="access-request-meta">
+                          <small>
+                            Reason
+                          </small>
+
+                          <p className="access-reason-preview">
+                            {request.reason ||
+                              '—'}
+                          </p>
+                        </div>
+
+                        <div className="access-request-status">
+                          <small>
+                            Current
+                            status
+                          </small>
+
+                          <span
+                            className={`access-status-badge ${status.className}`}
+                          >
+                            {
+                              status.label
+                            }
+                          </span>
+                        </div>
+                      </article>
+                    )
+                  },
+                )
+              )}
+            </section>
+          ) : (
+            <section className="access-request-list">
+              {ownerRequests.length ===
+              0 ? (
+                <div className="access-empty-state owner-empty">
+                  <span className="access-empty-icon">
+                    <UserRound
+                      size={24}
+                    />
+
+                    <i />
+                    <i />
+                    <i />
+                  </span>
+
+                  <b>
+                    No requests waiting
+                    for you
+                  </b>
+
+                  <p>
+                    Original-file
+                    access requests for
+                    documents you own
+                    will appear here.
+                  </p>
+                </div>
+              ) : (
+                ownerRequests.map(
+                  (
+                    request,
+                    index,
+                  ) => (
+                    <article
+                      className="access-request-card owner-request-card access-animated-card"
+                      style={{
+                        '--access-delay':
+                          `${Math.min(index, 8) * 45}ms`,
+                      }}
+                      key={
+                        request.id
+                      }
+                    >
+                      <div className="access-request-file">
+                        <span>
+                          <FileText
+                            size={17}
+                          />
+                        </span>
+
+                        <div>
+                          <b>
+                            {
+                              request.original_filename
+                            }
+                          </b>
+
+                          <p>
+                            Requested
+                            by:{' '}
+                            {request.requester_full_name ||
+                              request.requester_username}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="access-owner-reason">
+                        <small>
+                          Reason for
+                          access
+                        </small>
+
+                        <p>
+                          {request.reason ||
+                            'No reason provided.'}
+                        </p>
+
+                        <em>
+                          Requested:{' '}
+                          {formatDate(
+                            request.requested_at,
+                          )}
+                        </em>
+                      </div>
+
+                      <div className="access-owner-actions">
+                        <button
+                          type="button"
+                          className="access-approve-button"
+                          disabled={
+                            decisionLoadingId ===
+                            request.id
+                          }
+                          onClick={() =>
+                            handleOwnerDecision(
+                              request,
+                              'APPROVE',
+                            )
+                          }
+                        >
+                          {decisionLoadingId ===
+                          request.id
+                            ? 'Processing...'
+                            : 'Approve'}
+                        </button>
+
+                        <button
+                          type="button"
+                          className="access-reject-button"
+                          disabled={
+                            decisionLoadingId ===
+                            request.id
+                          }
+                          onClick={() =>
+                            setRejectRequest(
+                              request,
+                            )
+                          }
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    </article>
+                  ),
+                )
+              )}
+            </section>
           )}
-        </section>
-      )}
+        </div>
+
+      </section>
 
       {rejectRequest && (
         <div
@@ -484,7 +755,9 @@ function OriginalAccess() {
               className="access-modal-close"
               aria-label="Close"
               onClick={() =>
-                setRejectRequest(null)
+                setRejectRequest(
+                  null,
+                )
               }
             >
               <X size={18} />
@@ -494,16 +767,21 @@ function OriginalAccess() {
               ORIGINAL ACCESS
             </p>
 
-            <h2>Reject access request?</h2>
+            <h2>
+              Reject access request?
+            </h2>
 
             <p className="access-modal-file">
-              {rejectRequest.original_filename}
+              {
+                rejectRequest.original_filename
+              }
             </p>
 
             <p className="access-confirm-copy">
-              This request will be marked as rejected
-              and will not proceed to Security Officer
-              review.
+              This request will be
+              marked as rejected and
+              will not proceed to
+              Security Officer review.
             </p>
 
             <div className="access-modal-actions">
@@ -511,7 +789,9 @@ function OriginalAccess() {
                 type="button"
                 className="access-cancel-button"
                 onClick={() =>
-                  setRejectRequest(null)
+                  setRejectRequest(
+                    null,
+                  )
                 }
               >
                 Cancel

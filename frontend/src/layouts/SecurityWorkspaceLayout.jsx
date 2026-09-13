@@ -3,7 +3,6 @@ import {
   FileLock2,
   ScanSearch,
   ShieldAlert,
-  UserRound,
 } from 'lucide-react'
 import {
   Link,
@@ -31,11 +30,6 @@ const navigation = [
     label: 'Security logs',
     path: '/security/logs',
     icon: FileLock2,
-  },
-  {
-    label: 'Profile',
-    path: '/security/profile',
-    icon: UserRound,
   },
 ]
 

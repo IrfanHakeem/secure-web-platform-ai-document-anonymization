@@ -15,49 +15,60 @@ import {
 import { useNavigate } from 'react-router-dom'
 
 import api from '../../api/client'
+import ProfileAvatar from '../../components/ProfileAvatar'
 import { useAuth } from '../../context/useAuth'
 
-function getInitials(name) {
-  if (!name) {
-    return 'A'
-  }
+function getGreeting(date) {
+  const hour = date.getHours()
 
-  return name
-    .split(' ')
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join('')
-    .toUpperCase()
-}
-
-function getGreeting() {
-  const hour = new Date().getHours()
-
-  if (hour < 12) {
+  if (hour >= 5 && hour < 12) {
     return 'Good morning'
   }
 
-  if (hour < 18) {
+  if (hour >= 12 && hour < 17) {
     return 'Good afternoon'
   }
 
-  return 'Good evening'
+  if (hour >= 17 && hour < 21) {
+    return 'Good evening'
+  }
+
+  return 'Good night'
 }
 
 function AdminDashboard() {
   const navigate = useNavigate()
   const { user, logout } = useAuth()
 
-  const [users, setUsers] = useState([])
-  const [departments, setDepartments] =
+  const [currentTime, setCurrentTime] =
+    useState(() => new Date())
+
+  const [users, setUsers] =
     useState([])
+
+  const [
+    departments,
+    setDepartments,
+  ] = useState([])
 
   const [loading, setLoading] =
     useState(true)
 
   const [error, setError] =
     useState('')
+
+  useEffect(() => {
+    const timer = window.setInterval(
+      () => {
+        setCurrentTime(new Date())
+      },
+      60 * 1000,
+    )
+
+    return () => {
+      window.clearInterval(timer)
+    }
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -75,7 +86,10 @@ function AdminDashboard() {
             return
           }
 
-          setUsers(usersResponse.data)
+          setUsers(
+            usersResponse.data,
+          )
+
           setDepartments(
             departmentsResponse.data,
           )
@@ -99,43 +113,49 @@ function AdminDashboard() {
     }
   }, [])
 
-  const statistics = useMemo(() => {
-    const standardUsers =
-      users.filter(
-        (account) =>
-          account.role === 'User',
-      )
+  const statistics =
+    useMemo(() => {
+      const standardUsers =
+        users.filter(
+          (account) =>
+            account.role ===
+            'User',
+        )
 
-    const securityOfficers =
-      users.filter(
-        (account) =>
-          account.role ===
-          'Security Officer',
-      )
+      const securityOfficers =
+        users.filter(
+          (account) =>
+            account.role ===
+            'Security Officer',
+        )
 
-    const managedAccounts =
-      users.filter(
-        (account) =>
-          account.role !==
-          'Administrator',
-      )
+      const managedAccounts =
+        users.filter(
+          (account) =>
+            account.role !==
+            'Administrator',
+        )
 
-    const activeAccounts =
-      managedAccounts.filter(
-        (account) =>
-          account.is_active,
-      )
+      const activeAccounts =
+        managedAccounts.filter(
+          (account) =>
+            account.is_active,
+        )
 
-    return {
-      users: standardUsers.length,
-      securityOfficers:
-        securityOfficers.length,
-      managedAccounts:
-        managedAccounts.length,
-      activeAccounts:
-        activeAccounts.length,
-    }
-  }, [users])
+      return {
+        users:
+          standardUsers.length,
+
+        securityOfficers:
+          securityOfficers.length,
+
+        managedAccounts:
+          managedAccounts.length,
+
+        activeAccounts:
+          activeAccounts.length,
+      }
+    }, [users])
 
   const displayName =
     user?.full_name ||
@@ -154,46 +174,55 @@ function AdminDashboard() {
   }
 
   return (
-    <main className="admin-dashboard-shell">
-      <div className="admin-dashboard-content">
-        <header className="admin-topbar">
-          <div className="admin-topbar-title">
-            <div className="admin-brand">
+    <main className="role-dashboard role-dashboard--admin">
+      <div className="role-dashboard__content">
+        <header className="role-dashboard__topbar">
+          <div className="role-dashboard__brand-area">
+            <div className="role-dashboard__brand">
               <span>S</span>
               <b>Secura</b>
             </div>
 
-            <div>
+            <div className="role-dashboard__welcome">
               <p className="secura-eyebrow">
                 ADMINISTRATION
               </p>
 
               <h1>
-                {getGreeting()}, {firstName}!
+                {getGreeting(
+                  currentTime,
+                )}
+                , {firstName}!
               </h1>
 
               <p>
-                Manage Secura users,
+                Manage users,
                 departments and account
-                administration.
+                administration across
+                Secura.
               </p>
             </div>
           </div>
 
-          <div className="admin-topbar-actions">
+          <div className="role-dashboard__account">
             <button
               type="button"
-              className="admin-profile-button"
+              className="role-dashboard__account-button"
               onClick={() =>
-                navigate('/admin/profile')
+                navigate(
+                  '/admin/profile',
+                )
               }
             >
-              <span className="admin-avatar">
-                {getInitials(displayName)}
-              </span>
+              <ProfileAvatar
+                name={displayName}
+                className="role-dashboard__avatar"
+              />
 
               <span>
-                <b>{displayName}</b>
+                <b>
+                  {displayName}
+                </b>
 
                 <small>
                   Administrator
@@ -203,8 +232,10 @@ function AdminDashboard() {
 
             <button
               type="button"
-              className="admin-logout-button"
-              onClick={handleLogout}
+              className="role-dashboard__logout"
+              onClick={
+                handleLogout
+              }
             >
               Log out
               <LogOut size={14} />
@@ -212,7 +243,7 @@ function AdminDashboard() {
           </div>
         </header>
 
-        <section className="admin-dashboard-intro">
+        <section className="role-dashboard__intro">
           <p className="secura-eyebrow">
             ADMIN OVERVIEW
           </p>
@@ -222,23 +253,70 @@ function AdminDashboard() {
           </h2>
 
           <p>
-            Review account and department
-            information across the Secura
-            platform.
+            Review managed accounts and
+            department configuration
+            across the Secura platform.
           </p>
         </section>
 
         {error && (
-          <div className="admin-dashboard-error">
-            <ShieldCheck size={16} />
+          <div className="role-dashboard__error">
+            <ShieldCheck
+              size={16}
+            />
             {error}
           </div>
         )}
 
-        <section className="admin-stat-grid">
+        <section className="role-dashboard__status-banner">
+          <div className="role-dashboard__status-icon admin">
+            <ShieldCheck
+              size={23}
+            />
+          </div>
+
+          <div className="role-dashboard__status-copy">
+            <small>
+              ADMIN ACCESS
+            </small>
+
+            <div>
+              <h3>
+                Administrator access active
+              </h3>
+
+              <span className="role-dashboard__status-pill active">
+                Active
+              </span>
+            </div>
+
+            <p>
+              Your account can manage
+              Users, Security Officers and
+              department configuration.
+            </p>
+          </div>
+
+          <div className="role-dashboard__status-meta">
+            <small>
+              Active managed accounts
+            </small>
+
+            <b>
+              {loading
+                ? '—'
+                : statistics
+                    .activeAccounts}
+            </b>
+          </div>
+        </section>
+
+        <section className="role-dashboard__stats">
           <article>
-            <span className="admin-stat-icon">
-              <UsersRound size={19} />
+            <span className="role-dashboard__stat-icon purple">
+              <UsersRound
+                size={19}
+              />
             </span>
 
             <div>
@@ -249,17 +327,21 @@ function AdminDashboard() {
                       .managedAccounts}
               </b>
 
-              <p>Managed accounts</p>
+              <p>
+                Managed accounts
+              </p>
 
               <small>
-                Users and Security Officers
+                Users + Security Officers
               </small>
             </div>
           </article>
 
           <article>
-            <span className="admin-stat-icon blue">
-              <UserRound size={19} />
+            <span className="role-dashboard__stat-icon blue">
+              <UserRound
+                size={19}
+              />
             </span>
 
             <div>
@@ -269,7 +351,9 @@ function AdminDashboard() {
                   : statistics.users}
               </b>
 
-              <p>User accounts</p>
+              <p>
+                User accounts
+              </p>
 
               <small>
                 Department users
@@ -278,8 +362,10 @@ function AdminDashboard() {
           </article>
 
           <article>
-            <span className="admin-stat-icon green">
-              <ShieldCheck size={19} />
+            <span className="role-dashboard__stat-icon green">
+              <ShieldCheck
+                size={19}
+              />
             </span>
 
             <div>
@@ -290,17 +376,21 @@ function AdminDashboard() {
                       .securityOfficers}
               </b>
 
-              <p>Security Officers</p>
+              <p>
+                Security Officers
+              </p>
 
               <small>
-                Security review accounts
+                Review accounts
               </small>
             </div>
           </article>
 
           <article>
-            <span className="admin-stat-icon peach">
-              <Building2 size={19} />
+            <span className="role-dashboard__stat-icon peach">
+              <Building2
+                size={19}
+              />
             </span>
 
             <div>
@@ -310,7 +400,9 @@ function AdminDashboard() {
                   : departments.length}
               </b>
 
-              <p>Departments</p>
+              <p>
+                Departments
+              </p>
 
               <small>
                 Registered departments
@@ -319,9 +411,9 @@ function AdminDashboard() {
           </article>
         </section>
 
-        <section className="admin-dashboard-body">
-          <div className="admin-management-panel">
-            <div className="admin-panel-heading">
+        <section className="role-dashboard__main-grid">
+          <div className="role-dashboard__tools">
+            <div className="role-dashboard__panel-heading">
               <div>
                 <p className="secura-eyebrow">
                   MANAGEMENT
@@ -335,28 +427,37 @@ function AdminDashboard() {
               <UserCog size={20} />
             </div>
 
-            <div className="admin-action-grid">
+            <div className="role-dashboard__actions">
               <button
                 type="button"
                 onClick={() =>
-                  navigate('/admin/users')
+                  navigate(
+                    '/admin/users',
+                  )
                 }
               >
-                <span className="admin-action-icon">
-                  <UsersRound size={20} />
+                <span className="role-dashboard__action-icon purple">
+                  <UsersRound
+                    size={20}
+                  />
                 </span>
 
                 <span>
-                  <b>User management</b>
+                  <b>
+                    User management
+                  </b>
 
                   <small>
-                    Create users, assign
-                    departments and reset
-                    account passwords.
+                    Create accounts,
+                    assign departments and
+                    reset User or Security
+                    Officer passwords.
                   </small>
                 </span>
 
-                <ArrowRight size={17} />
+                <ArrowRight
+                  size={17}
+                />
               </button>
 
               <button
@@ -367,8 +468,10 @@ function AdminDashboard() {
                   )
                 }
               >
-                <span className="admin-action-icon department">
-                  <Building2 size={20} />
+                <span className="role-dashboard__action-icon blue">
+                  <Building2
+                    size={20}
+                  />
                 </span>
 
                 <span>
@@ -377,23 +480,29 @@ function AdminDashboard() {
                   </b>
 
                   <small>
-                    View and create
-                    departments for User
-                    accounts.
+                    Create and review
+                    departments used by
+                    Secura accounts.
                   </small>
                 </span>
 
-                <ArrowRight size={17} />
+                <ArrowRight
+                  size={17}
+                />
               </button>
 
               <button
                 type="button"
                 onClick={() =>
-                  navigate('/admin/profile')
+                  navigate(
+                    '/admin/profile',
+                  )
                 }
               >
-                <span className="admin-action-icon profile">
-                  <UserRound size={20} />
+                <span className="role-dashboard__action-icon green">
+                  <UserRound
+                    size={20}
+                  />
                 </span>
 
                 <span>
@@ -402,37 +511,44 @@ function AdminDashboard() {
                   </b>
 
                   <small>
-                    Manage your administrator
-                    account information.
+                    Manage your profile and
+                    administrator account
+                    security.
                   </small>
                 </span>
 
-                <ArrowRight size={17} />
+                <ArrowRight
+                  size={17}
+                />
               </button>
             </div>
           </div>
 
-          <aside className="admin-status-panel">
+          <aside className="role-dashboard__side-panel">
             <p className="secura-eyebrow">
-              ACCOUNT STATUS
+              PLATFORM STATUS
             </p>
 
-            <div className="admin-status-shield">
-              <ShieldCheck size={25} />
+            <div className="role-dashboard__side-shield">
+              <ShieldCheck
+                size={26}
+              />
             </div>
 
             <h3>
-              Administrator access active
+              Account management
             </h3>
 
             <p>
-              Your account has access to
-              Secura administration tools.
+              Current account and
+              department totals are loaded
+              directly from the Secura
+              backend.
             </p>
 
-            <div className="admin-status-row">
+            <div className="role-dashboard__side-row">
               <span>
-                Active managed accounts
+                Active accounts
               </span>
 
               <b>
@@ -443,9 +559,9 @@ function AdminDashboard() {
               </b>
             </div>
 
-            <div className="admin-status-row">
+            <div className="role-dashboard__side-row">
               <span>
-                Total departments
+                Departments
               </span>
 
               <b>

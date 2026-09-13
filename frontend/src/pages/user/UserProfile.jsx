@@ -1,7 +1,9 @@
 import {
+  ArrowLeft,
+  Building2,
   Camera,
   Check,
-  ChevronLeft,
+  LockKeyhole,
   Mail,
   Save,
   ShieldCheck,
@@ -33,7 +35,8 @@ function getInitials(name) {
 }
 
 function getApiError(error, fallback) {
-  const detail = error?.response?.data?.detail
+  const detail =
+    error?.response?.data?.detail
 
   if (typeof detail === 'string') {
     return detail
@@ -45,33 +48,45 @@ function getApiError(error, fallback) {
 function UserProfile() {
   const navigate = useNavigate()
   const photoInputRef = useRef(null)
+  const photoUrlRef = useRef(null)
 
   const { verifySession } = useAuth()
 
-  const [profile, setProfile] = useState(null)
+  const [profile, setProfile] =
+    useState(null)
 
   const [form, setForm] = useState({
     full_name: '',
     email: '',
   })
 
-  const [photoUrl, setPhotoUrl] = useState(null)
+  const [photoUrl, setPhotoUrl] =
+    useState(null)
 
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
-  const [uploadingPhoto, setUploadingPhoto] =
+  const [loading, setLoading] =
+    useState(true)
+
+  const [saving, setSaving] =
     useState(false)
 
-  const [error, setError] = useState('')
-  const [message, setMessage] = useState('')
+  const [
+    uploadingPhoto,
+    setUploadingPhoto,
+  ] = useState(false)
+
+  const [message, setMessage] =
+    useState('')
+
+  const [error, setError] =
+    useState('')
 
   useEffect(() => {
     let cancelled = false
-    let createdPhotoUrl = null
 
     const loadProfile = async () => {
       try {
-        const response = await api.get('/profile')
+        const response =
+          await api.get('/profile')
 
         if (cancelled) {
           return
@@ -86,41 +101,47 @@ function UserProfile() {
             response.data.email || '',
         })
 
-        if (response.data.has_profile_photo) {
+        if (
+          response.data
+            .has_profile_photo
+        ) {
           try {
-            const photoResponse = await api.get(
-              '/profile/photo',
-              {
-                responseType: 'blob',
-              },
-            )
+            const photoResponse =
+              await api.get(
+                '/profile/photo',
+                {
+                  responseType:
+                    'blob',
+                },
+              )
 
             if (cancelled) {
               return
             }
 
-            createdPhotoUrl =
+            const objectUrl =
               URL.createObjectURL(
                 photoResponse.data,
               )
 
-            setPhotoUrl(createdPhotoUrl)
+            photoUrlRef.current =
+              objectUrl
+
+            setPhotoUrl(objectUrl)
           } catch {
-            // Profile data can still load even
-            // if the stored photo is unavailable.
+            // Profile remains usable
+            // without a stored photo.
           }
         }
       } catch (loadError) {
-        if (cancelled) {
-          return
+        if (!cancelled) {
+          setError(
+            getApiError(
+              loadError,
+              'Unable to load your profile.',
+            ),
+          )
         }
-
-        setError(
-          getApiError(
-            loadError,
-            'Unable to load your profile.',
-          ),
-        )
       } finally {
         if (!cancelled) {
           setLoading(false)
@@ -133,15 +154,17 @@ function UserProfile() {
     return () => {
       cancelled = true
 
-      if (createdPhotoUrl) {
+      if (photoUrlRef.current) {
         URL.revokeObjectURL(
-          createdPhotoUrl,
+          photoUrlRef.current,
         )
       }
     }
   }, [])
 
-  const handleSave = async (event) => {
+  const handleSave = async (
+    event,
+  ) => {
     event.preventDefault()
 
     if (!profile) {
@@ -152,15 +175,21 @@ function UserProfile() {
       form.full_name.trim()
 
     const email =
-      form.email.trim().toLowerCase()
+      form.email
+        .trim()
+        .toLowerCase()
 
     if (!fullName) {
-      setError('Full name is required.')
+      setError(
+        'Full name is required.',
+      )
       return
     }
 
     if (!email) {
-      setError('Email is required.')
+      setError(
+        'Email is required.',
+      )
       return
     }
 
@@ -170,19 +199,26 @@ function UserProfile() {
       fullName !==
       (profile.full_name || '')
     ) {
-      payload.full_name = fullName
+      payload.full_name =
+        fullName
     }
 
     if (
       email !==
-      (profile.email || '').toLowerCase()
+      (profile.email || '')
+        .toLowerCase()
     ) {
       payload.email = email
     }
 
-    if (Object.keys(payload).length === 0) {
-      setMessage('No profile changes to save.')
+    if (
+      Object.keys(payload)
+        .length === 0
+    ) {
       setError('')
+      setMessage(
+        'No profile changes to save.',
+      )
       return
     }
 
@@ -191,10 +227,11 @@ function UserProfile() {
     setMessage('')
 
     try {
-      const response = await api.patch(
-        '/profile',
-        payload,
-      )
+      const response =
+        await api.patch(
+          '/profile',
+          payload,
+        )
 
       setProfile(response.data)
 
@@ -222,186 +259,232 @@ function UserProfile() {
     }
   }
 
-  const handlePhotoChange = async (event) => {
-    const file =
-      event.target.files?.[0]
+  const handlePhotoChange =
+    async (event) => {
+      const file =
+        event.target.files?.[0]
 
-    event.target.value = ''
+      event.target.value = ''
 
-    if (!file) {
-      return
-    }
+      if (!file) {
+        return
+      }
 
-    const extension =
-      file.name
-        .split('.')
-        .pop()
-        ?.toLowerCase()
+      const extension =
+        file.name
+          .split('.')
+          .pop()
+          ?.toLowerCase()
 
-    const allowedExtensions = [
-      'jpg',
-      'jpeg',
-      'png',
-      'webp',
-    ]
+      const allowed = [
+        'jpg',
+        'jpeg',
+        'png',
+        'webp',
+      ]
 
-    if (
-      !extension ||
-      !allowedExtensions.includes(
-        extension,
-      )
-    ) {
-      setError(
-        'Only JPG, JPEG, PNG, and WEBP photos are allowed.',
-      )
-      return
-    }
+      if (
+        !extension ||
+        !allowed.includes(extension)
+      ) {
+        setError(
+          'Only JPG, JPEG, PNG, and WEBP photos are allowed.',
+        )
+        return
+      }
 
-    if (file.size > 5 * 1024 * 1024) {
-      setError(
-        'Profile photo cannot exceed 5 MB.',
-      )
-      return
-    }
+      if (
+        file.size >
+        5 * 1024 * 1024
+      ) {
+        setError(
+          'Profile photo cannot exceed 5 MB.',
+        )
+        return
+      }
 
-    setUploadingPhoto(true)
-    setError('')
-    setMessage('')
+      setUploadingPhoto(true)
+      setError('')
+      setMessage('')
 
-    try {
-      const formData =
-        new FormData()
+      try {
+        const formData =
+          new FormData()
 
-      formData.append(
-        'photo',
-        file,
-      )
-
-      const response = await api.post(
-        '/profile/photo',
-        formData,
-      )
-
-      setProfile(response.data)
-
-      const photoResponse = await api.get(
-        '/profile/photo',
-        {
-          responseType: 'blob',
-        },
-      )
-
-      const newPhotoUrl =
-        URL.createObjectURL(
-          photoResponse.data,
+        formData.append(
+          'photo',
+          file,
         )
 
-      setPhotoUrl((current) => {
-        if (current) {
+        const response =
+          await api.post(
+            '/profile/photo',
+            formData,
+          )
+
+        setProfile(response.data)
+
+        const photoResponse =
+          await api.get(
+            '/profile/photo',
+            {
+              responseType: 'blob',
+            },
+          )
+
+        const newPhotoUrl =
+          URL.createObjectURL(
+            photoResponse.data,
+          )
+
+        if (photoUrlRef.current) {
           URL.revokeObjectURL(
-            current,
+            photoUrlRef.current,
           )
         }
 
-        return newPhotoUrl
-      })
+        photoUrlRef.current =
+          newPhotoUrl
 
-      setMessage(
-        'Profile photo updated successfully.',
-      )
-    } catch (photoError) {
-      setError(
-        getApiError(
-          photoError,
-          'Unable to update your profile photo.',
-        ),
-      )
-    } finally {
-      setUploadingPhoto(false)
+        setPhotoUrl(newPhotoUrl)
+
+        await verifySession()
+
+        window.dispatchEvent(
+          new Event(
+            'secura-profile-photo-updated',
+          ),
+        )
+
+        setMessage(
+          'Profile photo updated successfully.',
+        )
+      } catch (photoError) {
+        setError(
+          getApiError(
+            photoError,
+            'Unable to update your profile photo.',
+          ),
+        )
+      } finally {
+        setUploadingPhoto(false)
+      }
     }
+
+  const resetChanges = () => {
+    if (!profile) {
+      return
+    }
+
+    setForm({
+      full_name:
+        profile.full_name || '',
+      email:
+        profile.email || '',
+    })
+
+    setError('')
+    setMessage('')
   }
 
   if (loading) {
     return (
-      <main className="profile-page-shell">
-        <div className="profile-loading-card">
-          <div />
-          <div />
-          <div />
-        </div>
-      </main>
+      <div className="security-profile-pro-loading">
+        <div />
+        <div />
+        <div />
+      </div>
     )
   }
 
   return (
-    <main className="profile-page-shell">
-      <div className="profile-page-content">
-        <button
-          type="button"
-          className="profile-back-button"
-          onClick={() =>
-            navigate('/user/dashboard')
-          }
-        >
-          <ChevronLeft size={15} />
-          Back to dashboard
-        </button>
-
-        <header className="profile-page-header">
+    <section className="security-profile-pro role-profile-user page-enter">
+      <header className="security-profile-pro__header">
+        <div>
           <p className="secura-eyebrow">
-            SECURE WORKSPACE
+            SECURE WORKSPACE ACCOUNT
           </p>
 
           <h1>Profile</h1>
 
           <p>
-            Manage your Secura account information
-            and profile photo.
+            Manage your personal
+            information and Secura
+            document-workspace profile.
           </p>
-        </header>
+        </div>
 
-        {message && (
-          <div className="profile-success-message">
-            <Check size={16} />
+        <div className="security-profile-pro__header-actions">
+          <button
+            type="button"
+            className="role-profile-back"
+            onClick={() =>
+              navigate(
+                '/user/dashboard',
+              )
+            }
+          >
+            <ArrowLeft size={14} />
+            Back to dashboard
+          </button>
 
-            <span>{message}</span>
+          {profile && (
+            <span className="security-profile-pro__active-badge">
+              <span />
+              {profile.is_active
+                ? 'Account active'
+                : 'Account inactive'}
+            </span>
+          )}
+        </div>
+      </header>
 
-            <button
-              type="button"
-              onClick={() =>
-                setMessage('')
-              }
-            >
-              <X size={14} />
-            </button>
-          </div>
-        )}
+      {message && (
+        <div className="security-profile-pro__success">
+          <Check size={16} />
+          <span>{message}</span>
 
-        {error && (
-          <div className="profile-error-message">
-            <ShieldCheck size={16} />
+          <button
+            type="button"
+            aria-label="Dismiss message"
+            onClick={() =>
+              setMessage('')
+            }
+          >
+            <X size={14} />
+          </button>
+        </div>
+      )}
 
-            <span>{error}</span>
+      {error && (
+        <div
+          className="security-profile-pro__error"
+          role="alert"
+        >
+          <ShieldCheck size={16} />
+          <span>{error}</span>
 
-            <button
-              type="button"
-              onClick={() =>
-                setError('')
-              }
-            >
-              <X size={14} />
-            </button>
-          </div>
-        )}
+          <button
+            type="button"
+            aria-label="Dismiss error"
+            onClick={() =>
+              setError('')
+            }
+          >
+            <X size={14} />
+          </button>
+        </div>
+      )}
 
-        {profile && (
-          <section className="profile-layout">
-            <aside className="profile-identity-card">
-              <div className="profile-avatar-large">
+      {profile && (
+        <div className="security-profile-pro__layout">
+          <aside className="security-profile-pro__identity-card">
+            <div className="security-profile-pro__avatar-wrap">
+              <div className="security-profile-pro__avatar">
                 {photoUrl ? (
                   <img
                     src={photoUrl}
-                    alt="Profile"
+                    alt="User profile"
                   />
                 ) : (
                   <span>
@@ -415,180 +498,195 @@ function UserProfile() {
 
               <button
                 type="button"
-                className="profile-photo-button"
-                disabled={uploadingPhoto}
+                className="security-profile-pro__camera"
+                aria-label="Change profile photo"
+                disabled={
+                  uploadingPhoto
+                }
                 onClick={() =>
-                  photoInputRef.current?.click()
+                  photoInputRef
+                    .current
+                    ?.click()
                 }
               >
-                <Camera size={14} />
-
-                {uploadingPhoto
-                  ? 'Uploading...'
-                  : 'Change photo'}
+                <Camera size={16} />
               </button>
+            </div>
 
-              <input
-                ref={photoInputRef}
-                className="profile-photo-input"
-                type="file"
-                accept=".jpg,.jpeg,.png,.webp"
-                onChange={
-                  handlePhotoChange
-                }
-              />
+            <input
+              ref={photoInputRef}
+              type="file"
+              className="security-profile-photo-input"
+              accept=".jpg,.jpeg,.png,.webp"
+              onChange={
+                handlePhotoChange
+              }
+            />
 
-              <h2>
-                {profile.full_name ||
-                  profile.username}
-              </h2>
+            <h2>
+              {profile.full_name ||
+                profile.username}
+            </h2>
 
-              <p>{profile.email}</p>
+            <p>{profile.email}</p>
 
-              <span className="profile-role-badge">
-                {profile.role}
+            <div className="security-profile-pro__role-pill">
+              <UserRound size={14} />
+              {profile.role}
+            </div>
+
+            <button
+              type="button"
+              className="security-profile-pro__photo-action"
+              disabled={
+                uploadingPhoto
+              }
+              onClick={() =>
+                photoInputRef
+                  .current
+                  ?.click()
+              }
+            >
+              <Camera size={14} />
+
+              {uploadingPhoto
+                ? 'Uploading...'
+                : 'Change profile photo'}
+            </button>
+
+            <p className="security-profile-pro__photo-help">
+              JPG, JPEG, PNG or WEBP.
+              Maximum 5 MB.
+            </p>
+
+            <div className="security-profile-pro__security-note">
+              <span>
+                <ShieldCheck
+                  size={18}
+                />
               </span>
 
-              <small>
-                JPG, PNG or WEBP · Max 5 MB
-              </small>
-            </aside>
+              <div>
+                <b>
+                  Secure workspace access active
+                </b>
 
+                <small>
+                  This account can
+                  anonymize documents and
+                  use the approved
+                  original-access workflow.
+                </small>
+              </div>
+            </div>
+          </aside>
+
+          <div className="security-profile-pro__main">
             <form
-              className="profile-settings-card"
+              className="security-profile-pro__card"
               onSubmit={handleSave}
             >
-              <div className="profile-settings-heading">
+              <div className="security-profile-pro__section-heading">
                 <div>
                   <p className="secura-eyebrow">
-                    ACCOUNT DETAILS
+                    PERSONAL INFORMATION
                   </p>
 
                   <h2>
-                    Personal information
+                    Account details
                   </h2>
+
+                  <p>
+                    Full name and email can
+                    be updated from your
+                    profile.
+                  </p>
                 </div>
 
                 <span>
-                  <UserRound size={18} />
+                  <UserRound
+                    size={19}
+                  />
                 </span>
               </div>
 
-              <div className="profile-form-grid">
+              <div className="security-profile-pro__editable-grid">
                 <label>
-                  Full name
+                  <span>
+                    Full name
+                  </span>
 
-                  <input
-                    type="text"
-                    value={form.full_name}
-                    maxLength={150}
-                    onChange={(event) =>
-                      setForm((current) => ({
-                        ...current,
-                        full_name:
-                          event.target.value,
-                      }))
-                    }
-                  />
-                </label>
-
-                <label>
-                  Email address
-
-                  <div className="profile-input-icon">
-                    <Mail size={14} />
+                  <div className="security-profile-pro__input">
+                    <UserRound
+                      size={15}
+                    />
 
                     <input
-                      type="email"
-                      value={form.email}
-                      onChange={(event) =>
-                        setForm((current) => ({
-                          ...current,
-                          email:
-                            event.target.value,
-                        }))
+                      type="text"
+                      maxLength={150}
+                      value={
+                        form.full_name
+                      }
+                      onChange={(
+                        event,
+                      ) =>
+                        setForm(
+                          (
+                            current,
+                          ) => ({
+                            ...current,
+                            full_name:
+                              event
+                                .target
+                                .value,
+                          }),
+                        )
                       }
                     />
                   </div>
                 </label>
 
                 <label>
-                  Username
+                  <span>
+                    Email address
+                  </span>
 
-                  <input
-                    type="text"
-                    value={profile.username}
-                    disabled
-                  />
-                </label>
+                  <div className="security-profile-pro__input">
+                    <Mail
+                      size={15}
+                    />
 
-                <label>
-                  Role
-
-                  <input
-                    type="text"
-                    value={profile.role}
-                    disabled
-                  />
-                </label>
-
-                <label>
-                  Department
-
-                  <input
-                    type="text"
-                    value={
-                      profile.department_name ||
-                      'Not assigned'
-                    }
-                    disabled
-                  />
-                </label>
-
-                <label>
-                  Account status
-
-                  <input
-                    type="text"
-                    value={
-                      profile.is_active
-                        ? 'Active'
-                        : 'Inactive'
-                    }
-                    disabled
-                  />
+                    <input
+                      type="email"
+                      value={
+                        form.email
+                      }
+                      onChange={(
+                        event,
+                      ) =>
+                        setForm(
+                          (
+                            current,
+                          ) => ({
+                            ...current,
+                            email:
+                              event
+                                .target
+                                .value,
+                          }),
+                        )
+                      }
+                    />
+                  </div>
                 </label>
               </div>
 
-              <div className="profile-security-note">
-                <ShieldCheck size={17} />
-
-                <div>
-                  <b>
-                    Secura account security
-                  </b>
-
-                  <p>
-                    Username, role and department
-                    are controlled by the system
-                    administrator and cannot be
-                    edited here.
-                  </p>
-                </div>
-              </div>
-
-              <div className="profile-form-actions">
+              <div className="security-profile-pro__actions">
                 <button
                   type="button"
-                  className="profile-cancel-button"
-                  onClick={() =>
-                    setForm({
-                      full_name:
-                        profile.full_name ||
-                        '',
-                      email:
-                        profile.email || '',
-                    })
+                  className="security-profile-pro__reset"
+                  onClick={
+                    resetChanges
                   }
                 >
                   Reset changes
@@ -596,7 +694,7 @@ function UserProfile() {
 
                 <button
                   type="submit"
-                  className="profile-save-button"
+                  className="security-profile-pro__save"
                   disabled={saving}
                 >
                   <Save size={14} />
@@ -607,10 +705,134 @@ function UserProfile() {
                 </button>
               </div>
             </form>
-          </section>
-        )}
-      </div>
-    </main>
+
+            <section className="security-profile-pro__card">
+              <div className="security-profile-pro__section-heading">
+                <div>
+                  <p className="secura-eyebrow">
+                    SYSTEM INFORMATION
+                  </p>
+
+                  <h2>
+                    Workspace account
+                  </h2>
+
+                  <p>
+                    These values are
+                    controlled by Secura
+                    and cannot be edited
+                    here.
+                  </p>
+                </div>
+
+                <span>
+                  <LockKeyhole
+                    size={19}
+                  />
+                </span>
+              </div>
+
+              <div className="security-profile-pro__facts">
+                <article>
+                  <span>
+                    <UserRound
+                      size={16}
+                    />
+                  </span>
+
+                  <div>
+                    <small>
+                      Username
+                    </small>
+
+                    <b>
+                      {profile.username}
+                    </b>
+                  </div>
+                </article>
+
+                <article>
+                  <span>
+                    <ShieldCheck
+                      size={16}
+                    />
+                  </span>
+
+                  <div>
+                    <small>
+                      Role
+                    </small>
+
+                    <b>
+                      {profile.role}
+                    </b>
+                  </div>
+                </article>
+
+                <article>
+                  <span>
+                    <Building2
+                      size={16}
+                    />
+                  </span>
+
+                  <div>
+                    <small>
+                      Department
+                    </small>
+
+                    <b>
+                      {profile.department_name ||
+                        'Not assigned'}
+                    </b>
+                  </div>
+                </article>
+
+                <article>
+                  <span>
+                    <Check size={16} />
+                  </span>
+
+                  <div>
+                    <small>
+                      Account status
+                    </small>
+
+                    <b>
+                      {profile.is_active
+                        ? 'Active'
+                        : 'Inactive'}
+                    </b>
+                  </div>
+                </article>
+              </div>
+
+              <div className="security-profile-pro__managed-note">
+                <ShieldCheck
+                  size={18}
+                />
+
+                <div>
+                  <b>
+                    Protected Secura account
+                  </b>
+
+                  <p>
+                    Username, role,
+                    department and account
+                    status are managed by
+                    an Administrator.
+                    Password resets are
+                    also handled by an
+                    Administrator.
+                  </p>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      )}
+    </section>
   )
 }
 

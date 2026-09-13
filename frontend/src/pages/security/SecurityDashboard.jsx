@@ -7,30 +7,15 @@ import {
   ShieldCheck,
   UserRound,
 } from 'lucide-react'
-
 import {
   useEffect,
   useState,
 } from 'react'
-
 import { useNavigate } from 'react-router-dom'
 
 import api from '../../api/client'
+import ProfileAvatar from '../../components/ProfileAvatar'
 import { useAuth } from '../../context/useAuth'
-
-function getInitials(name) {
-  if (!name) {
-    return 'SO'
-  }
-
-  return name
-    .split(' ')
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join('')
-    .toUpperCase()
-}
 
 function getGreeting() {
   const hour = new Date().getHours()
@@ -48,20 +33,29 @@ function getGreeting() {
 
 function countLast24Hours(records) {
   const cutoff =
-    Date.now() - 24 * 60 * 60 * 1000
+    Date.now() -
+    24 * 60 * 60 * 1000
 
-  return records.filter((record) => {
-    const timestamp =
-      new Date(record.created_at).getTime()
+  return records.filter(
+    (record) => {
+      const timestamp =
+        new Date(
+          record.created_at,
+        ).getTime()
 
-    return (
-      Number.isFinite(timestamp) &&
-      timestamp >= cutoff
-    )
-  }).length
+      return (
+        Number.isFinite(
+          timestamp,
+        ) &&
+        timestamp >= cutoff
+      )
+    },
+  ).length
 }
 
-function getNetworkStatusDetails(status) {
+function getNetworkStatusDetails(
+  status,
+) {
   const statuses = {
     ACTIVE: {
       label: 'Active',
@@ -86,7 +80,8 @@ function getNetworkStatusDetails(status) {
 
     NOT_CONFIGURED: {
       label: 'Not configured',
-      className: 'not-configured',
+      className:
+        'not-configured',
       description:
         'Network sensor integration has not been configured yet.',
     },
@@ -94,8 +89,10 @@ function getNetworkStatusDetails(status) {
 
   return (
     statuses[status] ?? {
-      label: status || 'Unknown',
-      className: 'not-configured',
+      label:
+        status || 'Unknown',
+      className:
+        'not-configured',
       description:
         'Network monitoring status is unavailable.',
     }
@@ -104,12 +101,18 @@ function getNetworkStatusDetails(status) {
 
 function formatDateTime(value) {
   if (!value) {
-    return 'No network events received'
+    return (
+      'No network events received'
+    )
   }
 
   const date = new Date(value)
 
-  if (Number.isNaN(date.getTime())) {
+  if (
+    Number.isNaN(
+      date.getTime(),
+    )
+  ) {
     return 'Unavailable'
   }
 
@@ -127,8 +130,8 @@ function formatDateTime(value) {
 
 function SecurityDashboard() {
   const navigate = useNavigate()
-
-  const { user, logout } = useAuth()
+  const { user, logout } =
+    useAuth()
 
   const [summary, setSummary] =
     useState(null)
@@ -258,13 +261,14 @@ function SecurityDashboard() {
               </p>
 
               <h1>
-                {getGreeting()}, {firstName}!
+                {getGreeting()},{' '}
+                {firstName}!
               </h1>
 
               <p>
-                Review access requests and
-                monitor security activity
-                across Secura.
+                Review access requests
+                and monitor security
+                activity across Secura.
               </p>
             </div>
           </div>
@@ -279,11 +283,10 @@ function SecurityDashboard() {
                 )
               }
             >
-              <span className="security-account-avatar">
-                {getInitials(
-                  displayName,
-                )}
-              </span>
+              <ProfileAvatar
+                name={displayName}
+                className="security-account-avatar"
+              />
 
               <span>
                 <b>

@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
+  AlertTriangle,
+  Archive,
   Building2,
   Check,
   CheckCircle2,
@@ -9,11 +11,14 @@ import {
   Files,
   FileText,
   LockKeyhole,
+  MoreVertical,
+  RotateCcw,
   Search,
   Share2,
   ShieldCheck,
   X,
 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 import api from '../../api/client'
 
@@ -79,10 +84,15 @@ function getFileIcon(type) {
 }
 
 function AnonymizedLibrary() {
+  const navigate = useNavigate()
+
   const [myFiles, setMyFiles] =
     useState([])
 
   const [sharedFiles, setSharedFiles] =
+    useState([])
+
+  const [archivedFiles, setArchivedFiles] =
     useState([])
 
   const [myRequests, setMyRequests] =
@@ -156,6 +166,36 @@ function AnonymizedLibrary() {
     setAccessSuccess,
   ] = useState('')
 
+  const [
+    rowMenuFileId,
+    setRowMenuFileId,
+  ] = useState(null)
+
+  const [
+    archiveFile,
+    setArchiveFile,
+  ] = useState(null)
+
+  const [
+    archiving,
+    setArchiving,
+  ] = useState(false)
+
+  const [
+    archiveError,
+    setArchiveError,
+  ] = useState('')
+
+  const [
+    archiveSuccess,
+    setArchiveSuccess,
+  ] = useState('')
+
+  const [
+    restoringFileId,
+    setRestoringFileId,
+  ] = useState(null)
+
   useEffect(() => {
     let cancelled = false
 
@@ -167,6 +207,7 @@ function AnonymizedLibrary() {
         const [
           myFilesResponse,
           sharedFilesResponse,
+          archivedFilesResponse,
           myRequestsResponse,
           departmentsResponse,
         ] = await Promise.all([
@@ -175,6 +216,9 @@ function AnonymizedLibrary() {
           ),
           api.get(
             '/document-library/shared-with-me',
+          ),
+          api.get(
+            '/document-library/archived',
           ),
           api.get(
             '/original-file-requests/my-requests',
@@ -192,6 +236,10 @@ function AnonymizedLibrary() {
 
         setSharedFiles(
           sharedFilesResponse.data,
+        )
+
+        setArchivedFiles(
+          archivedFilesResponse.data,
         )
 
         setMyRequests(
@@ -235,6 +283,24 @@ function AnonymizedLibrary() {
               ACTIVE_REQUEST_STATUSES.has(
                 request.status,
               ),
+            )
+            .map(
+              (request) =>
+                request.document_id,
+            ),
+        ),
+      [myRequests],
+    )
+
+  const approvedRequestDocumentIds =
+    useMemo(
+      () =>
+        new Set(
+          myRequests
+            .filter(
+              (request) =>
+                request.status ===
+                'APPROVED',
             )
             .map(
               (request) =>
@@ -337,6 +403,20 @@ function AnonymizedLibrary() {
         )
       }
 
+      if (
+        activeTab ===
+        'archived'
+      ) {
+        files =
+          archivedFiles.map(
+            (file) => ({
+              ...file,
+              libraryGroup:
+                'archived',
+            }),
+          )
+      }
+
       const normalizedQuery =
         query
           .trim()
@@ -362,6 +442,7 @@ function AnonymizedLibrary() {
     }, [
       activeTab,
       allFiles,
+      archivedFiles,
       query,
     ])
 
@@ -370,12 +451,16 @@ function AnonymizedLibrary() {
       const [
         myFilesResponse,
         sharedFilesResponse,
+        archivedFilesResponse,
       ] = await Promise.all([
         api.get(
           '/document-library/my-anonymized',
         ),
         api.get(
           '/document-library/shared-with-me',
+        ),
+        api.get(
+          '/document-library/archived',
         ),
       ])
 
@@ -385,6 +470,10 @@ function AnonymizedLibrary() {
 
       setSharedFiles(
         sharedFilesResponse.data,
+      )
+
+      setArchivedFiles(
+        archivedFilesResponse.data,
       )
     }
 
@@ -725,6 +814,91 @@ function AnonymizedLibrary() {
       }
     }
 
+  const openArchiveModal =
+    (file) => {
+      setRowMenuFileId(null)
+      setArchiveFile(file)
+      setArchiveError('')
+      setArchiveSuccess('')
+    }
+
+  const closeArchiveModal =
+    () => {
+      if (archiving) {
+        return
+      }
+
+      setArchiveFile(null)
+      setArchiveError('')
+    }
+
+  const archiveDocument =
+    async () => {
+      if (!archiveFile) {
+        return
+      }
+
+      setArchiving(true)
+      setArchiveError('')
+      setError('')
+
+      try {
+        await api.patch(
+          `/document-library/${archiveFile.id}/archive`,
+        )
+
+        const archivedName =
+          archiveFile.original_filename
+
+        await refreshFileLists()
+
+        setArchiveFile(null)
+
+        setArchiveSuccess(
+          `${archivedName} was removed from the active library.`,
+        )
+      } catch (archiveRequestError) {
+        setArchiveError(
+          getApiError(
+            archiveRequestError,
+            'Unable to remove this document from the library.',
+          ),
+        )
+      } finally {
+        setArchiving(false)
+      }
+    }
+
+  const restoreDocument =
+    async (file) => {
+      setRestoringFileId(file.id)
+      setError('')
+      setArchiveSuccess('')
+
+      try {
+        await api.patch(
+          `/document-library/${file.id}/restore`,
+        )
+
+        await refreshFileLists()
+
+        setArchiveSuccess(
+          `${file.original_filename} was restored to My Files as a private document.`,
+        )
+
+        setActiveTab('my')
+      } catch (restoreError) {
+        setError(
+          getApiError(
+            restoreError,
+            'Unable to restore this document.',
+          ),
+        )
+      } finally {
+        setRestoringFileId(null)
+      }
+    }
+
   return (
     <>
       <header className="library-page-header">
@@ -759,6 +933,28 @@ function AnonymizedLibrary() {
             aria-label="Dismiss error"
             onClick={() =>
               setError('')
+            }
+          >
+            <X size={15} />
+          </button>
+        </div>
+      )}
+
+      {archiveSuccess && (
+        <div className="library-archive-success">
+          <CheckCircle2
+            size={17}
+          />
+
+          <span>
+            {archiveSuccess}
+          </span>
+
+          <button
+            type="button"
+            aria-label="Dismiss message"
+            onClick={() =>
+              setArchiveSuccess('')
             }
           >
             <X size={15} />
@@ -886,6 +1082,26 @@ function AnonymizedLibrary() {
                 }
               </span>
             </button>
+
+            <button
+              type="button"
+              className={
+                activeTab ===
+                'archived'
+                  ? 'selected'
+                  : ''
+              }
+              onClick={() =>
+                setActiveTab(
+                  'archived',
+                )
+              }
+            >
+              Archived
+              <span>
+                {archivedFiles.length}
+              </span>
+            </button>
           </div>
 
           <div className="library-toolbar-real">
@@ -938,7 +1154,10 @@ function AnonymizedLibrary() {
             <b>
               {query
                 ? 'No matching files'
-                : 'No anonymized files yet'}
+                : activeTab ===
+                    'archived'
+                  ? 'No archived files'
+                  : 'No anonymized files yet'}
             </b>
 
             <p>
@@ -947,7 +1166,10 @@ function AnonymizedLibrary() {
                 : activeTab ===
                     'department'
                   ? 'Anonymized files shared with your department will appear here.'
-                  : 'Anonymized documents will appear here after processing.'}
+                  : activeTab ===
+                      'archived'
+                    ? 'Files you remove from the active library will appear here and can be restored.'
+                    : 'Anonymized documents will appear here after processing.'}
             </p>
           </div>
         ) : (
@@ -971,12 +1193,22 @@ function AnonymizedLibrary() {
                       file.file_type,
                     )
 
+                  const isArchived =
+                    file.libraryGroup ===
+                    'archived'
+
                   const isOwn =
                     file.libraryGroup ===
-                    'my'
+                      'my' ||
+                    isArchived
 
                   const hasActiveRequest =
                     activeRequestDocumentIds.has(
+                      file.id,
+                    )
+
+                  const hasApprovedOriginal =
+                    approvedRequestDocumentIds.has(
                       file.id,
                     )
 
@@ -1022,7 +1254,11 @@ function AnonymizedLibrary() {
                       </span>
 
                       <span>
-                        {isOwn ? (
+                        {isArchived ? (
+                          <em className="library-access-archived">
+                            Archived
+                          </em>
+                        ) : isOwn ? (
                           <button
                             type="button"
                             className="library-access-editor"
@@ -1058,44 +1294,133 @@ function AnonymizedLibrary() {
 
                       <span className="library-date">
                         {formatDate(
-                          file.created_at,
+                          isArchived
+                            ? file.archived_at
+                            : file.created_at,
                         )}
                       </span>
 
                       <div className="library-actions-real">
-                        <button
-                          type="button"
-                          className="library-download-button"
-                          onClick={() =>
-                            handleDownload(
-                              file,
-                            )
-                          }
-                        >
-                          <Download
-                            size={14}
-                          />
-                          Download
-                        </button>
-
-                        {!isOwn && (
+                        {isArchived ? (
                           <button
                             type="button"
-                            className="library-request-button"
+                            className="library-restore-button"
                             disabled={
-                              hasActiveRequest
+                              restoringFileId ===
+                              file.id
                             }
                             onClick={() =>
-                              openRequestModal(
+                              restoreDocument(
                                 file,
                               )
                             }
                           >
-                            {hasActiveRequest
-                              ? 'Request pending'
-                              : 'Request original'}
+                            <RotateCcw
+                              size={14}
+                            />
+
+                            {restoringFileId ===
+                            file.id
+                              ? 'Restoring...'
+                              : 'Restore'}
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            className="library-download-button"
+                            onClick={() =>
+                              handleDownload(
+                                file,
+                              )
+                            }
+                          >
+                            <Download
+                              size={14}
+                            />
+                            Download
                           </button>
                         )}
+
+                        {isOwn &&
+                          !isArchived && (
+                          <div className="library-row-menu-wrap">
+                            <button
+                              type="button"
+                              className="library-row-menu-trigger"
+                              aria-label={`More actions for ${file.original_filename}`}
+                              onClick={() =>
+                                setRowMenuFileId(
+                                  (current) =>
+                                    current === file.id
+                                      ? null
+                                      : file.id,
+                                )
+                              }
+                            >
+                              <MoreVertical
+                                size={15}
+                              />
+                            </button>
+
+                            {rowMenuFileId ===
+                              file.id && (
+                              <div className="library-row-menu">
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    openArchiveModal(
+                                      file,
+                                    )
+                                  }
+                                >
+                                  <Archive
+                                    size={14}
+                                  />
+
+                                  <span>
+                                    Remove from library
+                                  </span>
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {!isOwn &&
+                          !isArchived &&
+                          (hasApprovedOriginal ? (
+                            <button
+                              type="button"
+                              className="library-approved-button"
+                              onClick={() =>
+                                navigate(
+                                  '/user/approved-originals',
+                                )
+                              }
+                            >
+                              <CheckCircle2
+                                size={14}
+                              />
+                              Original approved
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              className="library-request-button"
+                              disabled={
+                                hasActiveRequest
+                              }
+                              onClick={() =>
+                                openRequestModal(
+                                  file,
+                                )
+                              }
+                            >
+                              {hasActiveRequest
+                                ? 'Request pending'
+                                : 'Request original'}
+                            </button>
+                          ))}
                       </div>
                     </div>
                   )
@@ -1322,6 +1647,151 @@ function AnonymizedLibrary() {
                 </div>
               </>
             )}
+          </section>
+        </div>
+      )}
+
+      {archiveFile && (
+        <div
+          className="library-modal-backdrop"
+          onClick={
+            closeArchiveModal
+          }
+        >
+          <section
+            className="library-archive-modal"
+            onClick={(event) =>
+              event.stopPropagation()
+            }
+          >
+            <button
+              type="button"
+              className="library-modal-close"
+              onClick={
+                closeArchiveModal
+              }
+              aria-label="Close"
+            >
+              <X size={18} />
+            </button>
+
+            <span className="library-archive-modal-icon">
+              <Archive
+                size={22}
+              />
+            </span>
+
+            <p className="secura-eyebrow">
+              DOCUMENT LIFECYCLE
+            </p>
+
+            <h2>
+              Remove from library?
+            </h2>
+
+            <p className="library-modal-file">
+              {
+                archiveFile.original_filename
+              }
+            </p>
+
+            <p className="library-archive-description">
+              This is a soft removal.
+              Secura keeps the document
+              record for audit and approval
+              history instead of permanently
+              deleting security records.
+            </p>
+
+            <div className="library-archive-impact">
+              <div>
+                <Share2
+                  size={15}
+                />
+
+                <span>
+                  Department sharing will
+                  stop immediately.
+                </span>
+              </div>
+
+              <div>
+                <LockKeyhole
+                  size={15}
+                />
+
+                <span>
+                  The file will disappear
+                  from the active anonymized
+                  library.
+                </span>
+              </div>
+
+              <div>
+                <ShieldCheck
+                  size={15}
+                />
+
+                <span>
+                  New original-access
+                  requests will be blocked.
+                </span>
+              </div>
+            </div>
+
+            <div className="library-archive-warning">
+              <AlertTriangle
+                size={16}
+              />
+
+              <span>
+                Pending original-access
+                requests must be resolved
+                before this document can
+                be removed.
+              </span>
+            </div>
+
+            {archiveError && (
+              <div className="library-access-feedback error">
+                <ShieldCheck
+                  size={15}
+                />
+
+                <span>
+                  {archiveError}
+                </span>
+              </div>
+            )}
+
+            <div className="library-modal-actions">
+              <button
+                type="button"
+                className="library-cancel-button"
+                onClick={
+                  closeArchiveModal
+                }
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                className="library-archive-confirm"
+                disabled={archiving}
+                onClick={
+                  archiveDocument
+                }
+              >
+                <Archive
+                  size={14}
+                />
+
+                {archiving
+                  ? 'Removing...'
+                  : 'Remove document'}
+              </button>
+            </div>
           </section>
         </div>
       )}

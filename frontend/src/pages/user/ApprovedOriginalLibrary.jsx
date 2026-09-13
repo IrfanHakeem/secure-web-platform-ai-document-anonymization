@@ -4,6 +4,7 @@ import {
   Download,
   FileCheck2,
   FileText,
+  Hash,
   Search,
   ShieldAlert,
   ShieldCheck,
@@ -33,7 +34,8 @@ function formatDate(value) {
 }
 
 function getApiError(error, fallback) {
-  const detail = error?.response?.data?.detail
+  const detail =
+    error?.response?.data?.detail
 
   if (typeof detail === 'string') {
     return detail
@@ -55,16 +57,27 @@ function shortHash(value) {
 }
 
 function ApprovedOriginalLibrary() {
-  const [records, setRecords] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [query, setQuery] = useState('')
+  const [records, setRecords] =
+    useState([])
 
-  const [selectedRecord, setSelectedRecord] =
-    useState(null)
+  const [loading, setLoading] =
+    useState(true)
 
-  const [downloadingId, setDownloadingId] =
-    useState(null)
+  const [error, setError] =
+    useState('')
+
+  const [query, setQuery] =
+    useState('')
+
+  const [
+    selectedRecord,
+    setSelectedRecord,
+  ] = useState(null)
+
+  const [
+    downloadingId,
+    setDownloadingId,
+  ] = useState(null)
 
   useEffect(() => {
     let cancelled = false
@@ -73,7 +86,9 @@ function ApprovedOriginalLibrary() {
       .get('/approved-original-access')
       .then((response) => {
         if (!cancelled) {
-          setRecords(response.data)
+          setRecords(
+            response.data,
+          )
         }
       })
       .catch((loadError) => {
@@ -97,84 +112,121 @@ function ApprovedOriginalLibrary() {
     }
   }, [])
 
-  const visibleRecords = useMemo(() => {
-    const normalizedQuery = query
-      .trim()
-      .toLowerCase()
+  const visibleRecords =
+    useMemo(() => {
+      const normalizedQuery =
+        query
+          .trim()
+          .toLowerCase()
 
-    if (!normalizedQuery) {
-      return records
-    }
+      if (!normalizedQuery) {
+        return records
+      }
 
-    return records.filter((record) =>
-      [
-        record.original_filename,
-        record.owner_username,
-        record.security_officer_username,
-        record.integrity_status,
-      ]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase()
-        .includes(normalizedQuery),
+      return records.filter(
+        (record) =>
+          [
+            record.original_filename,
+            record.owner_username,
+            record.security_officer_username,
+            record.integrity_status,
+          ]
+            .filter(Boolean)
+            .join(' ')
+            .toLowerCase()
+            .includes(
+              normalizedQuery,
+            ),
+      )
+    }, [query, records])
+
+  const verifiedCount =
+    useMemo(
+      () =>
+        records.filter(
+          (record) =>
+            record.integrity_status ===
+            'VERIFIED',
+        ).length,
+      [records],
     )
-  }, [query, records])
 
-  const verifiedCount = records.filter(
-    (record) =>
-      record.integrity_status === 'VERIFIED',
-  ).length
+  const failedCount =
+    useMemo(
+      () =>
+        records.filter(
+          (record) =>
+            record.integrity_status ===
+            'FAILED',
+        ).length,
+      [records],
+    )
 
-  const failedCount = records.filter(
-    (record) =>
-      record.integrity_status === 'FAILED',
-  ).length
+  const handleDownload =
+    async (record) => {
+      if (
+        record.integrity_status !==
+        'VERIFIED'
+      ) {
+        setError(
+          'Original file download is blocked because the integrity check failed.',
+        )
 
-  const handleDownload = async (record) => {
-    if (record.integrity_status !== 'VERIFIED') {
-      setError(
-        'Original file download is blocked because the integrity check failed.',
+        return
+      }
+
+      setDownloadingId(
+        record.request_id,
       )
-      return
+
+      setError('')
+
+      try {
+        const response =
+          await api.get(
+            `/original-file-requests/${record.request_id}/download-original`,
+            {
+              responseType:
+                'blob',
+            },
+          )
+
+        const objectUrl =
+          URL.createObjectURL(
+            response.data,
+          )
+
+        const link =
+          document.createElement(
+            'a',
+          )
+
+        link.href = objectUrl
+
+        link.download =
+          record.original_filename
+
+        document.body.appendChild(
+          link,
+        )
+
+        link.click()
+        link.remove()
+
+        URL.revokeObjectURL(
+          objectUrl,
+        )
+      } catch (downloadError) {
+        setError(
+          getApiError(
+            downloadError,
+            'Unable to download the approved original file.',
+          ),
+        )
+      } finally {
+        setDownloadingId(null)
+      }
     }
-
-    setDownloadingId(record.request_id)
-    setError('')
-
-    try {
-      const response = await api.get(
-        `/original-file-requests/${record.request_id}/download-original`,
-        {
-          responseType: 'blob',
-        },
-      )
-
-      const objectUrl = URL.createObjectURL(
-        response.data,
-      )
-
-      const link =
-        document.createElement('a')
-
-      link.href = objectUrl
-      link.download = record.original_filename
-
-      document.body.appendChild(link)
-      link.click()
-      link.remove()
-
-      URL.revokeObjectURL(objectUrl)
-    } catch (downloadError) {
-      setError(
-        getApiError(
-          downloadError,
-          'Unable to download the approved original file.',
-        ),
-      )
-    } finally {
-      setDownloadingId(null)
-    }
-  }
 
   return (
     <>
@@ -183,54 +235,76 @@ function ApprovedOriginalLibrary() {
           SECURE WORKSPACE
         </p>
 
-        <h1>Approval file library</h1>
+        <h1>
+          Approval file library
+        </h1>
 
         <p>
-          Access original documents that have completed
-          both owner and Security Officer approval.
+          Access original documents
+          that have completed both
+          owner and Security Officer
+          approval.
         </p>
       </header>
 
       <section className="approved-library-summary">
         <article>
           <span className="approved-summary-icon">
-            <FileCheck2 size={18} />
+            <FileCheck2
+              size={19}
+            />
           </span>
 
           <div>
             <b>
-              {loading ? '—' : records.length}
+              {loading
+                ? '—'
+                : records.length}
             </b>
 
-            <p>Approved originals</p>
+            <p>
+              Approved originals
+            </p>
           </div>
         </article>
 
         <article>
           <span className="approved-summary-icon verified">
-            <ShieldCheck size={18} />
+            <ShieldCheck
+              size={19}
+            />
           </span>
 
           <div>
             <b>
-              {loading ? '—' : verifiedCount}
+              {loading
+                ? '—'
+                : verifiedCount}
             </b>
 
-            <p>Integrity verified</p>
+            <p>
+              Integrity verified
+            </p>
           </div>
         </article>
 
         <article>
           <span className="approved-summary-icon failed">
-            <ShieldAlert size={18} />
+            <ShieldAlert
+              size={19}
+            />
           </span>
 
           <div>
             <b>
-              {loading ? '—' : failedCount}
+              {loading
+                ? '—'
+                : failedCount}
             </b>
 
-            <p>Integrity failed</p>
+            <p>
+              Integrity failed
+            </p>
           </div>
         </article>
       </section>
@@ -240,14 +314,18 @@ function ApprovedOriginalLibrary() {
           className="approved-library-error"
           role="alert"
         >
-          <ShieldAlert size={16} />
+          <ShieldAlert
+            size={16}
+          />
 
           <span>{error}</span>
 
           <button
             type="button"
             aria-label="Dismiss error"
-            onClick={() => setError('')}
+            onClick={() =>
+              setError('')
+            }
           >
             <X size={14} />
           </button>
@@ -256,13 +334,35 @@ function ApprovedOriginalLibrary() {
 
       <section className="approved-library-card">
         <div className="approved-library-toolbar">
+          <div className="approved-library-toolbar-copy">
+            <span>
+              <ShieldCheck
+                size={16}
+              />
+            </span>
+
+            <div>
+              <b>
+                Fully approved access
+              </b>
+
+              <small>
+                Only requests approved
+                by both review stages
+                appear here.
+              </small>
+            </div>
+          </div>
+
           <div className="approved-library-search">
             <Search size={15} />
 
             <input
               value={query}
               onChange={(event) =>
-                setQuery(event.target.value)
+                setQuery(
+                  event.target.value,
+                )
               }
               placeholder="Search approved files"
             />
@@ -271,7 +371,9 @@ function ApprovedOriginalLibrary() {
               <button
                 type="button"
                 aria-label="Clear search"
-                onClick={() => setQuery('')}
+                onClick={() =>
+                  setQuery('')
+                }
               >
                 <X size={14} />
               </button>
@@ -285,10 +387,13 @@ function ApprovedOriginalLibrary() {
             <div />
             <div />
           </div>
-        ) : visibleRecords.length === 0 ? (
+        ) : visibleRecords.length ===
+          0 ? (
           <div className="approved-library-empty">
             <span>
-              <FileCheck2 size={22} />
+              <FileCheck2
+                size={24}
+              />
             </span>
 
             <b>
@@ -309,105 +414,139 @@ function ApprovedOriginalLibrary() {
               <div className="approved-library-row approved-library-heading">
                 <span>File</span>
                 <span>Owner</span>
-                <span>Security Officer</span>
+                <span>
+                  Security Officer
+                </span>
                 <span>Integrity</span>
-                <span>Final approval</span>
+                <span>
+                  Final approval
+                </span>
                 <span>Action</span>
               </div>
 
-              {visibleRecords.map((record) => {
-                const verified =
-                  record.integrity_status ===
-                  'VERIFIED'
+              {visibleRecords.map(
+                (
+                  record,
+                  index,
+                ) => {
+                  const verified =
+                    record.integrity_status ===
+                    'VERIFIED'
 
-                return (
-                  <div
-                    className="approved-library-row"
-                    key={record.request_id}
-                  >
-                    <div className="approved-file-cell">
-                      <span>
-                        <FileText size={16} />
-                      </span>
-
-                      <div>
-                        <b>
-                          {
-                            record.original_filename
-                          }
-                        </b>
-
-                        <small>
-                          Request #{record.request_id}
-                        </small>
-                      </div>
-                    </div>
-
-                    <span className="approved-library-muted">
-                      {record.owner_username}
-                    </span>
-
-                    <span className="approved-library-muted">
-                      {record.security_officer_username ||
-                        '—'}
-                    </span>
-
-                    <span
-                      className={
-                        verified
-                          ? 'approved-integrity verified'
-                          : 'approved-integrity failed'
+                  return (
+                    <div
+                      className="approved-library-row approved-library-animated-row"
+                      style={{
+                        '--approved-row-delay':
+                          `${Math.min(index, 8) * 45}ms`,
+                      }}
+                      key={
+                        record.request_id
                       }
                     >
-                      {verified ? (
-                        <CheckCircle2 size={13} />
-                      ) : (
-                        <ShieldAlert size={13} />
-                      )}
+                      <div className="approved-file-cell">
+                        <span>
+                          <FileText
+                            size={16}
+                          />
+                        </span>
 
-                      {record.integrity_status}
-                    </span>
+                        <div>
+                          <b>
+                            {
+                              record.original_filename
+                            }
+                          </b>
 
-                    <span className="approved-library-muted">
-                      {formatDate(
-                        record.security_reviewed_at,
-                      )}
-                    </span>
+                          <small>
+                            Request #
+                            {
+                              record.request_id
+                            }
+                          </small>
+                        </div>
+                      </div>
 
-                    <div className="approved-library-actions">
-                      <button
-                        type="button"
-                        className="approved-details-button"
-                        onClick={() =>
-                          setSelectedRecord(record)
+                      <span className="approved-library-muted">
+                        {
+                          record.owner_username
+                        }
+                      </span>
+
+                      <span className="approved-library-muted">
+                        {record.security_officer_username ||
+                          '—'}
+                      </span>
+
+                      <span
+                        className={
+                          verified
+                            ? 'approved-integrity verified'
+                            : 'approved-integrity failed'
                         }
                       >
-                        Details
-                      </button>
+                        {verified ? (
+                          <CheckCircle2
+                            size={13}
+                          />
+                        ) : (
+                          <ShieldAlert
+                            size={13}
+                          />
+                        )}
 
-                      <button
-                        type="button"
-                        className="approved-download-button"
-                        disabled={
-                          !verified ||
-                          downloadingId ===
-                            record.request_id
+                        {
+                          record.integrity_status
                         }
-                        onClick={() =>
-                          handleDownload(record)
-                        }
-                      >
-                        <Download size={13} />
+                      </span>
 
-                        {downloadingId ===
-                        record.request_id
-                          ? 'Downloading...'
-                          : 'Download original'}
-                      </button>
+                      <span className="approved-library-muted">
+                        {formatDate(
+                          record.security_reviewed_at,
+                        )}
+                      </span>
+
+                      <div className="approved-library-actions">
+                        <button
+                          type="button"
+                          className="approved-details-button"
+                          onClick={() =>
+                            setSelectedRecord(
+                              record,
+                            )
+                          }
+                        >
+                          Details
+                        </button>
+
+                        <button
+                          type="button"
+                          className="approved-download-button"
+                          disabled={
+                            !verified ||
+                            downloadingId ===
+                              record.request_id
+                          }
+                          onClick={() =>
+                            handleDownload(
+                              record,
+                            )
+                          }
+                        >
+                          <Download
+                            size={13}
+                          />
+
+                          {downloadingId ===
+                          record.request_id
+                            ? 'Downloading...'
+                            : 'Download original'}
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                )
-              })}
+                  )
+                },
+              )}
             </div>
           </div>
         )}
@@ -431,7 +570,9 @@ function ApprovedOriginalLibrary() {
               className="approved-details-close"
               aria-label="Close"
               onClick={() =>
-                setSelectedRecord(null)
+                setSelectedRecord(
+                  null,
+                )
               }
             >
               <X size={18} />
@@ -442,11 +583,14 @@ function ApprovedOriginalLibrary() {
             </p>
 
             <h2>
-              Approved original details
+              Approved original
+              details
             </h2>
 
             <p className="approved-details-filename">
-              {selectedRecord.original_filename}
+              {
+                selectedRecord.original_filename
+              }
             </p>
 
             <div className="approved-details-status">
@@ -460,56 +604,107 @@ function ApprovedOriginalLibrary() {
               >
                 {selectedRecord.integrity_status ===
                 'VERIFIED' ? (
-                  <ShieldCheck size={17} />
+                  <ShieldCheck
+                    size={17}
+                  />
                 ) : (
-                  <ShieldAlert size={17} />
+                  <ShieldAlert
+                    size={17}
+                  />
                 )}
 
                 Integrity{' '}
-                {selectedRecord.integrity_status}
+                {
+                  selectedRecord.integrity_status
+                }
               </span>
+            </div>
+
+            <div className="approved-details-flow">
+              <div>
+                <span>
+                  <CheckCircle2
+                    size={14}
+                  />
+                </span>
+
+                <div>
+                  <b>
+                    Owner approved
+                  </b>
+
+                  <small>
+                    {formatDate(
+                      selectedRecord.owner_reviewed_at,
+                    )}
+                  </small>
+                </div>
+              </div>
+
+              <i />
+
+              <div>
+                <span>
+                  <ShieldCheck
+                    size={14}
+                  />
+                </span>
+
+                <div>
+                  <b>
+                    Security approved
+                  </b>
+
+                  <small>
+                    {formatDate(
+                      selectedRecord.security_reviewed_at,
+                    )}
+                  </small>
+                </div>
+              </div>
+
+              <i />
+
+              <div>
+                <span>
+                  <Hash size={14} />
+                </span>
+
+                <div>
+                  <b>
+                    Integrity checked
+                  </b>
+
+                  <small>
+                    {
+                      selectedRecord.integrity_status
+                    }
+                  </small>
+                </div>
+              </div>
             </div>
 
             <div className="approved-details-grid">
               <div>
-                <small>Document owner</small>
+                <small>
+                  Document owner
+                </small>
 
                 <b>
-                  {selectedRecord.owner_username}
-                </b>
-              </div>
-
-              <div>
-                <small>Security Officer</small>
-
-                <b>
-                  {selectedRecord
-                    .security_officer_username ||
-                    '—'}
-                </b>
-              </div>
-
-              <div>
-                <small>Owner approved</small>
-
-                <b>
-                  {formatDate(
-                    selectedRecord
-                      .owner_reviewed_at,
-                  )}
+                  {
+                    selectedRecord.owner_username
+                  }
                 </b>
               </div>
 
               <div>
                 <small>
-                  Security approved
+                  Security Officer
                 </small>
 
                 <b>
-                  {formatDate(
-                    selectedRecord
-                      .security_reviewed_at,
-                  )}
+                  {selectedRecord.security_officer_username ||
+                    '—'}
                 </b>
               </div>
             </div>
@@ -521,7 +716,9 @@ function ApprovedOriginalLibrary() {
                 </small>
 
                 <code>
-                  {selectedRecord.original_sha256}
+                  {
+                    selectedRecord.original_sha256
+                  }
                 </code>
               </div>
 
@@ -538,22 +735,24 @@ function ApprovedOriginalLibrary() {
             </div>
 
             <div className="approved-hash-comparison">
-              <ShieldCheck size={16} />
+              <ShieldCheck
+                size={16}
+              />
 
               <p>
                 Stored hash:{' '}
                 <b>
                   {shortHash(
-                    selectedRecord
-                      .original_sha256,
+                    selectedRecord.original_sha256,
                   )}
                 </b>
+
                 <br />
+
                 Current hash:{' '}
                 <b>
                   {shortHash(
-                    selectedRecord
-                      .current_sha256,
+                    selectedRecord.current_sha256,
                   )}
                 </b>
               </p>
@@ -574,7 +773,9 @@ function ApprovedOriginalLibrary() {
                 )
               }
             >
-              <Download size={15} />
+              <Download
+                size={15}
+              />
 
               {downloadingId ===
               selectedRecord.request_id
