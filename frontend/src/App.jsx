@@ -9,6 +9,7 @@ import SecurityWorkspaceLayout from './layouts/SecurityWorkspaceLayout'
 import UserWorkspaceLayout from './layouts/UserWorkspaceLayout'
 
 import LoginPage from './pages/auth/LoginPage'
+import AdminPasswordRecovery from './pages/auth/AdminPasswordRecovery'
 
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminDepartmentManagement from './pages/admin/AdminDepartmentManagement'
@@ -59,7 +60,7 @@ function App() {
       <Route
         path="/forgot-password"
         element={
-          <Placeholder title="Administrator Password Recovery" />
+          <AdminPasswordRecovery />
         }
       />
 
