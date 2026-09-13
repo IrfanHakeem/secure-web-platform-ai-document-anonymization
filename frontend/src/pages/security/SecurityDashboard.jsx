@@ -17,45 +17,41 @@ import api from '../../api/client'
 import ProfileAvatar from '../../components/ProfileAvatar'
 import { useAuth } from '../../context/useAuth'
 
-function getGreeting() {
-  const hour = new Date().getHours()
+function getGreeting(date) {
+  const hour = date.getHours()
 
-  if (hour < 12) {
+  if (hour >= 5 && hour < 12) {
     return 'Good morning'
   }
 
-  if (hour < 18) {
+  if (hour >= 12 && hour < 17) {
     return 'Good afternoon'
   }
 
-  return 'Good evening'
+  if (hour >= 17 && hour < 21) {
+    return 'Good evening'
+  }
+
+  return 'Good night'
 }
 
 function countLast24Hours(records) {
   const cutoff =
-    Date.now() -
-    24 * 60 * 60 * 1000
+    Date.now() - 24 * 60 * 60 * 1000
 
-  return records.filter(
-    (record) => {
-      const timestamp =
-        new Date(
-          record.created_at,
-        ).getTime()
+  return records.filter((record) => {
+    const timestamp = new Date(
+      record.created_at,
+    ).getTime()
 
-      return (
-        Number.isFinite(
-          timestamp,
-        ) &&
-        timestamp >= cutoff
-      )
-    },
-  ).length
+    return (
+      Number.isFinite(timestamp) &&
+      timestamp >= cutoff
+    )
+  }).length
 }
 
-function getNetworkStatusDetails(
-  status,
-) {
+function getNetworkStatusDetails(status) {
   const statuses = {
     ACTIVE: {
       label: 'Active',
@@ -63,25 +59,21 @@ function getNetworkStatusDetails(
       description:
         'Network sensor data is being received normally.',
     },
-
     AWAITING_DATA: {
       label: 'Awaiting data',
       className: 'awaiting',
       description:
         'Network integration is configured but no sensor events have been received yet.',
     },
-
     STALE: {
       label: 'Stale',
       className: 'stale',
       description:
         'Network integration is configured but recent sensor data has not been received.',
     },
-
     NOT_CONFIGURED: {
       label: 'Not configured',
-      className:
-        'not-configured',
+      className: 'not-configured',
       description:
         'Network sensor integration has not been configured yet.',
     },
@@ -89,10 +81,8 @@ function getNetworkStatusDetails(
 
   return (
     statuses[status] ?? {
-      label:
-        status || 'Unknown',
-      className:
-        'not-configured',
+      label: status || 'Unknown',
+      className: 'not-configured',
       description:
         'Network monitoring status is unavailable.',
     }
@@ -101,18 +91,12 @@ function getNetworkStatusDetails(
 
 function formatDateTime(value) {
   if (!value) {
-    return (
-      'No network events received'
-    )
+    return 'No network events received'
   }
 
   const date = new Date(value)
 
-  if (
-    Number.isNaN(
-      date.getTime(),
-    )
-  ) {
+  if (Number.isNaN(date.getTime())) {
     return 'Unavailable'
   }
 
@@ -130,8 +114,10 @@ function formatDateTime(value) {
 
 function SecurityDashboard() {
   const navigate = useNavigate()
-  const { user, logout } =
-    useAuth()
+  const { user, logout } = useAuth()
+
+  const [currentTime, setCurrentTime] =
+    useState(() => new Date())
 
   const [summary, setSummary] =
     useState(null)
@@ -153,13 +139,25 @@ function SecurityDashboard() {
     useState('')
 
   useEffect(() => {
+    const timer = window.setInterval(
+      () => {
+        setCurrentTime(new Date())
+      },
+      60 * 1000,
+    )
+
+    return () => {
+      window.clearInterval(timer)
+    }
+  }, [])
+
+  useEffect(() => {
     let cancelled = false
 
     Promise.all([
       api.get(
         '/security-monitoring/dashboard-summary',
       ),
-
       api.get(
         '/security-monitoring/failed-logins',
         {
@@ -168,7 +166,6 @@ function SecurityDashboard() {
           },
         },
       ),
-
       api.get(
         '/security-monitoring/unauthorized-access',
         {
@@ -233,9 +230,69 @@ function SecurityDashboard() {
 
   const networkStatus =
     getNetworkStatusDetails(
-      summary
-        ?.network_monitoring_status,
+      summary?.network_monitoring_status,
     )
+
+  const stats = [
+    {
+      label: 'Pending reviews',
+      note: 'Original access',
+      value:
+        summary?.pending_original_reviews ??
+        0,
+      icon: FileSearch,
+      className: 'reviews',
+    },
+    {
+      label: 'Active security alerts',
+      note: 'Application alerts',
+      value:
+        summary?.application_alerts ?? 0,
+      icon: ShieldAlert,
+      className: 'alerts',
+    },
+    {
+      label: 'Failed logins',
+      note: 'Last 24 hours',
+      value: failedLoginCount,
+      icon: UserRound,
+      className: 'failed',
+    },
+    {
+      label: 'Unauthorized attempts',
+      note: 'Last 24 hours',
+      value: unauthorizedCount,
+      icon: ShieldCheck,
+      className: 'unauthorized',
+    },
+  ]
+
+  const actions = [
+    {
+      label: 'Original access review',
+      note:
+        'Review requests already approved by document owners.',
+      path: '/security/reviews',
+      icon: FileSearch,
+      className: 'reviews',
+    },
+    {
+      label: 'Security alerts',
+      note:
+        'Review active application and security alerts.',
+      path: '/security/alerts',
+      icon: ShieldAlert,
+      className: 'alerts',
+    },
+    {
+      label: 'Security logs',
+      note:
+        'Inspect application audit logs and network security events.',
+      path: '/security/logs',
+      icon: ScrollText,
+      className: 'logs',
+    },
+  ]
 
   const handleLogout = () => {
     logout()
@@ -261,14 +318,14 @@ function SecurityDashboard() {
               </p>
 
               <h1>
-                {getGreeting()},{' '}
+                {getGreeting(currentTime)},{' '}
                 {firstName}!
               </h1>
 
               <p>
-                Review access requests
-                and monitor security
-                activity across Secura.
+                Review access requests and
+                monitor security activity
+                across Secura.
               </p>
             </div>
           </div>
@@ -289,10 +346,7 @@ function SecurityDashboard() {
               />
 
               <span>
-                <b>
-                  {displayName}
-                </b>
-
+                <b>{displayName}</b>
                 <small>
                   Security Officer
                 </small>
@@ -302,9 +356,7 @@ function SecurityDashboard() {
             <button
               type="button"
               className="security-dashboard-logout"
-              onClick={
-                handleLogout
-              }
+              onClick={handleLogout}
             >
               Log out
               <LogOut size={14} />
@@ -330,10 +382,7 @@ function SecurityDashboard() {
 
         {error && (
           <div className="security-dashboard-error">
-            <ShieldAlert
-              size={16}
-            />
-
+            <ShieldAlert size={16} />
             {error}
           </div>
         )}
@@ -342,9 +391,7 @@ function SecurityDashboard() {
           <div
             className={`security-network-icon ${networkStatus.className}`}
           >
-            <ShieldCheck
-              size={23}
-            />
+            <ShieldCheck size={23} />
           </div>
 
           <div className="security-network-content">
@@ -390,105 +437,32 @@ function SecurityDashboard() {
         </section>
 
         <section className="security-dashboard-stats">
-          <article>
-            <span className="security-stat-icon reviews">
-              <FileSearch
-                size={19}
-              />
-            </span>
+          {stats.map((item) => {
+            const Icon = item.icon
 
-            <div>
-              <b>
-                {loading
-                  ? '—'
-                  : summary
-                      ?.pending_original_reviews ??
-                    0}
-              </b>
+            return (
+              <article key={item.label}>
+                <span
+                  className={`security-stat-icon ${item.className}`}
+                >
+                  <Icon size={19} />
+                </span>
 
-              <p>
-                Pending reviews
-              </p>
+                <div>
+                  <b>
+                    {loading
+                      ? '—'
+                      : item.value}
+                  </b>
 
-              <small>
-                Original access
-              </small>
-            </div>
-          </article>
-
-          <article>
-            <span className="security-stat-icon alerts">
-              <ShieldAlert
-                size={19}
-              />
-            </span>
-
-            <div>
-              <b>
-                {loading
-                  ? '—'
-                  : summary
-                      ?.application_alerts ??
-                    0}
-              </b>
-
-              <p>
-                Active security alerts
-              </p>
-
-              <small>
-                Application alerts
-              </small>
-            </div>
-          </article>
-
-          <article>
-            <span className="security-stat-icon failed">
-              <UserRound
-                size={19}
-              />
-            </span>
-
-            <div>
-              <b>
-                {loading
-                  ? '—'
-                  : failedLoginCount}
-              </b>
-
-              <p>
-                Failed logins
-              </p>
-
-              <small>
-                Last 24 hours
-              </small>
-            </div>
-          </article>
-
-          <article>
-            <span className="security-stat-icon unauthorized">
-              <ShieldCheck
-                size={19}
-              />
-            </span>
-
-            <div>
-              <b>
-                {loading
-                  ? '—'
-                  : unauthorizedCount}
-              </b>
-
-              <p>
-                Unauthorized attempts
-              </p>
-
-              <small>
-                Last 24 hours
-              </small>
-            </div>
-          </article>
+                  <p>{item.label}</p>
+                  <small>
+                    {item.note}
+                  </small>
+                </div>
+              </article>
+            )
+          })}
         </section>
 
         <section className="security-dashboard-main-grid">
@@ -504,104 +478,38 @@ function SecurityDashboard() {
                 </h2>
               </div>
 
-              <ShieldCheck
-                size={20}
-              />
+              <ShieldCheck size={20} />
             </div>
 
             <div className="security-dashboard-actions">
-              <button
-                type="button"
-                onClick={() =>
-                  navigate(
-                    '/security/reviews',
-                  )
-                }
-              >
-                <span className="security-action-icon reviews">
-                  <FileSearch
-                    size={20}
-                  />
-                </span>
+              {actions.map((item) => {
+                const Icon = item.icon
 
-                <span>
-                  <b>
-                    Original access review
-                  </b>
+                return (
+                  <button
+                    type="button"
+                    key={item.path}
+                    onClick={() =>
+                      navigate(item.path)
+                    }
+                  >
+                    <span
+                      className={`security-action-icon ${item.className}`}
+                    >
+                      <Icon size={20} />
+                    </span>
 
-                  <small>
-                    Review requests already
-                    approved by document
-                    owners.
-                  </small>
-                </span>
+                    <span>
+                      <b>{item.label}</b>
+                      <small>
+                        {item.note}
+                      </small>
+                    </span>
 
-                <ArrowRight
-                  size={17}
-                />
-              </button>
-
-              <button
-                type="button"
-                onClick={() =>
-                  navigate(
-                    '/security/alerts',
-                  )
-                }
-              >
-                <span className="security-action-icon alerts">
-                  <ShieldAlert
-                    size={20}
-                  />
-                </span>
-
-                <span>
-                  <b>
-                    Security alerts
-                  </b>
-
-                  <small>
-                    Review active
-                    application and
-                    security alerts.
-                  </small>
-                </span>
-
-                <ArrowRight
-                  size={17}
-                />
-              </button>
-
-              <button
-                type="button"
-                onClick={() =>
-                  navigate(
-                    '/security/logs',
-                  )
-                }
-              >
-                <span className="security-action-icon logs">
-                  <ScrollText
-                    size={20}
-                  />
-                </span>
-
-                <span>
-                  <b>
-                    Security logs
-                  </b>
-
-                  <small>
-                    Inspect application
-                    audit logs and network
-                    security events.
-                  </small>
-                </span>
-
-                <ArrowRight
-                  size={17}
-                />
-              </button>
+                    <ArrowRight size={17} />
+                  </button>
+                )
+              })}
             </div>
           </div>
 
@@ -611,9 +519,7 @@ function SecurityDashboard() {
             </p>
 
             <div className="security-dashboard-shield">
-              <ShieldCheck
-                size={26}
-              />
+              <ShieldCheck size={26} />
             </div>
 
             <h3>

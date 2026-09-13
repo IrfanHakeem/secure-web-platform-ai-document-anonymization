@@ -491,36 +491,6 @@ function AdminDashboard() {
                 />
               </button>
 
-              <button
-                type="button"
-                onClick={() =>
-                  navigate(
-                    '/admin/profile',
-                  )
-                }
-              >
-                <span className="role-dashboard__action-icon green">
-                  <UserRound
-                    size={20}
-                  />
-                </span>
-
-                <span>
-                  <b>
-                    Administrator profile
-                  </b>
-
-                  <small>
-                    Manage your profile and
-                    administrator account
-                    security.
-                  </small>
-                </span>
-
-                <ArrowRight
-                  size={17}
-                />
-              </button>
             </div>
           </div>
 

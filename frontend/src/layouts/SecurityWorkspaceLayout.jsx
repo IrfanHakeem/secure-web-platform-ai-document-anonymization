@@ -36,6 +36,29 @@ const navigation = [
 function SecurityWorkspaceLayout() {
   const location = useLocation()
 
+  const isProfilePage =
+    location.pathname === '/security/profile'
+
+  if (isProfilePage) {
+    return (
+      <div className="secura-profile-page-shell">
+        <main className="secura-profile-page-main">
+          <div className="secura-profile-page-back-row">
+            <Link
+              to="/security/dashboard"
+              className="secura-profile-back-link"
+            >
+              <ArrowLeft size={15} />
+              <span>Back to dashboard</span>
+            </Link>
+          </div>
+
+          <Outlet />
+        </main>
+      </div>
+    )
+  }
+
   return (
     <div className="secura-workspace-shell">
       <aside className="secura-sidebar">

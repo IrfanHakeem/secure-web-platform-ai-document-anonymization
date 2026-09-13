@@ -2,7 +2,6 @@ import {
   ArrowLeft,
   Building2,
   UserCog,
-  UserRound,
 } from 'lucide-react'
 import {
   Link,
@@ -26,15 +25,33 @@ const navigation = [
     path: '/admin/departments',
     icon: Building2,
   },
-  {
-    label: 'Profile',
-    path: '/admin/profile',
-    icon: UserRound,
-  },
 ]
 
 function AdminWorkspaceLayout() {
   const location = useLocation()
+
+  const isProfilePage =
+    location.pathname === '/admin/profile'
+
+  if (isProfilePage) {
+    return (
+      <div className="secura-profile-page-shell">
+        <main className="secura-profile-page-main">
+          <div className="secura-profile-page-back-row">
+            <Link
+              to="/admin/dashboard"
+              className="secura-profile-back-link"
+            >
+              <ArrowLeft size={15} />
+              <span>Back to dashboard</span>
+            </Link>
+          </div>
+
+          <Outlet />
+        </main>
+      </div>
+    )
+  }
 
   return (
     <div className="secura-workspace-shell">
@@ -60,7 +77,6 @@ function AdminWorkspaceLayout() {
         <nav className="secura-side-nav">
           {navigation.map((item) => {
             const Icon = item.icon
-
             const isActive =
               location.pathname === item.path
 
@@ -76,7 +92,6 @@ function AdminWorkspaceLayout() {
                   .join(' ')}
               >
                 <Icon size={17} />
-
                 <span>{item.label}</span>
               </Link>
             )

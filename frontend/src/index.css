@@ -19545,3 +19545,1622 @@ button.secura-workspace-card:hover
   }
 }
 
+/* =========================================================
+   FINAL ADMIN POLISH
+   Dashboard + User Management + Department Management
+   ========================================================= */
+
+@keyframes adminFinalRise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes adminFinalScale {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ---------- Admin Dashboard ---------- */
+
+.role-dashboard--admin .role-dashboard__content {
+  width: min(100%, 1360px);
+  max-width: 1360px;
+}
+
+.role-dashboard--admin .role-dashboard__topbar {
+  min-height: 154px;
+  padding: 23px 25px;
+}
+
+.role-dashboard--admin .role-dashboard__brand-area {
+  grid-template-columns:
+    118px minmax(0, 1fr);
+  gap: 23px;
+}
+
+.role-dashboard--admin .role-dashboard__welcome h1 {
+  font-size: clamp(1.95rem, 2vw, 2.3rem);
+}
+
+.role-dashboard--admin .role-dashboard__welcome > p:last-child {
+  max-width: 690px;
+  font-size: 0.88rem;
+}
+
+.role-dashboard--admin .role-dashboard__status-banner {
+  min-height: 104px;
+  padding: 18px 20px;
+}
+
+.role-dashboard--admin .role-dashboard__stats {
+  gap: 15px;
+}
+
+.role-dashboard--admin .role-dashboard__stats article {
+  height: 112px;
+  min-height: 112px;
+  padding: 18px;
+}
+
+.role-dashboard--admin .role-dashboard__stats p {
+  font-size: 0.78rem;
+}
+
+.role-dashboard--admin .role-dashboard__stats small {
+  font-size: 0.65rem;
+}
+
+.role-dashboard--admin .role-dashboard__main-grid {
+  grid-template-columns:
+    minmax(0, 1.9fr)
+    minmax(310px, 0.78fr);
+  gap: 16px;
+}
+
+.role-dashboard--admin .role-dashboard__tools,
+.role-dashboard--admin .role-dashboard__side-panel {
+  min-height: 350px;
+}
+
+.role-dashboard--admin .role-dashboard__actions {
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+  gap: 11px;
+}
+
+.role-dashboard--admin .role-dashboard__actions button {
+  height: 205px;
+  min-height: 205px;
+  grid-template-columns: 1fr;
+  grid-template-rows:
+    48px minmax(0, 1fr) auto;
+  align-content: start;
+  gap: 12px;
+  padding: 17px;
+}
+
+.role-dashboard--admin .role-dashboard__actions button > span:nth-child(2) {
+  align-self: start;
+}
+
+.role-dashboard--admin .role-dashboard__actions button > span:nth-child(2) b {
+  font-size: 0.82rem;
+}
+
+.role-dashboard--admin .role-dashboard__actions button > span:nth-child(2) small {
+  margin-top: 6px;
+  font-size: 0.7rem;
+  line-height: 1.55;
+}
+
+.role-dashboard--admin .role-dashboard__actions button > svg {
+  justify-self: end;
+}
+
+.role-dashboard--admin .role-dashboard__topbar,
+.role-dashboard--admin .role-dashboard__status-banner,
+.role-dashboard--admin .role-dashboard__tools,
+.role-dashboard--admin .role-dashboard__side-panel {
+  animation:
+    adminFinalRise
+    420ms
+    cubic-bezier(0.22, 1, 0.36, 1)
+    both;
+}
+
+.role-dashboard--admin .role-dashboard__status-banner {
+  animation-delay: 70ms;
+}
+
+.role-dashboard--admin .role-dashboard__tools {
+  animation-delay: 140ms;
+}
+
+.role-dashboard--admin .role-dashboard__side-panel {
+  animation-delay: 180ms;
+}
+
+/* ---------- Shared Admin Management Width ---------- */
+
+.admin-users-header,
+.admin-users-success,
+.admin-users-error,
+.admin-users-card,
+.admin-departments-header,
+.admin-department-stats,
+.admin-departments-success,
+.admin-departments-error,
+.admin-departments-card {
+  width: min(100%, 1360px);
+  max-width: 1360px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ---------- User Management ---------- */
+
+.admin-users-header {
+  min-height: 116px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 12px 2px 20px;
+  border-bottom: 1px solid rgba(101, 96, 201, 0.16);
+  animation:
+    adminFinalRise
+    380ms
+    cubic-bezier(0.22, 1, 0.36, 1)
+    both;
+}
+
+.admin-users-header h1 {
+  margin: 8px 0 7px;
+  font-size: clamp(2rem, 2.2vw, 2.4rem);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+}
+
+.admin-users-header > div > p:last-child {
+  max-width: 720px;
+  margin: 0;
+  color: var(--secura-muted);
+  font-size: 0.9rem;
+  line-height: 1.58;
+}
+
+.admin-create-user-button {
+  min-height: 42px;
+  margin-top: 5px;
+  border-radius: 11px;
+  padding: 9px 14px;
+  font-size: 0.76rem;
+  transition:
+    transform 170ms ease,
+    box-shadow 170ms ease;
+}
+
+.admin-create-user-button:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 13px 24px
+    rgba(82, 75, 174, 0.17);
+}
+
+.admin-users-success,
+.admin-users-error {
+  margin-top: 16px;
+  margin-bottom: 0;
+}
+
+.admin-users-card {
+  margin-top: 18px;
+  border-radius: 21px;
+  box-shadow:
+    0 16px 34px
+    rgba(43, 50, 82, 0.05);
+  overflow: hidden;
+  animation:
+    adminFinalRise
+    420ms 80ms
+    cubic-bezier(0.22, 1, 0.36, 1)
+    both;
+}
+
+.admin-users-toolbar {
+  min-height: 78px;
+  padding: 14px 18px;
+}
+
+.admin-users-search {
+  width: min(100%, 390px);
+  min-height: 44px;
+  border-radius: 12px;
+}
+
+.admin-users-search:focus-within {
+  border-color: rgba(101, 96, 201, 0.45);
+  box-shadow:
+    0 0 0 4px
+    rgba(101, 96, 201, 0.07);
+}
+
+.admin-users-filters {
+  gap: 5px;
+  padding: 5px;
+}
+
+.admin-users-filters button {
+  min-height: 34px;
+  border-radius: 9px;
+  padding: 7px 11px;
+  font-size: 0.69rem;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.admin-users-filters button:hover {
+  transform: translateY(-1px);
+}
+
+.admin-users-table-wrap {
+  padding: 18px 20px 22px;
+  overflow-x: hidden;
+}
+
+.admin-users-table {
+  width: 100%;
+  min-width: 0;
+  border-radius: 14px;
+}
+
+.admin-users-row {
+  grid-template-columns:
+    minmax(270px, 1.55fr)
+    minmax(135px, 0.7fr)
+    minmax(145px, 0.78fr)
+    minmax(105px, 0.58fr)
+    minmax(280px, 1.35fr);
+  gap: 13px;
+  min-height: 78px;
+  padding: 11px 15px;
+  transition:
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.admin-users-heading {
+  min-height: 46px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.admin-users-heading span {
+  font-size: 0.63rem;
+}
+
+.admin-users-row:not(.admin-users-heading):hover {
+  background: #faf9ff;
+  box-shadow:
+    inset 3px 0 0
+    rgba(101, 96, 201, 0.55);
+}
+
+.admin-user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+}
+
+.admin-user-identity b {
+  font-size: 0.77rem;
+}
+
+.admin-user-identity small {
+  font-size: 0.67rem;
+}
+
+.admin-user-identity em {
+  font-size: 0.62rem;
+}
+
+.admin-role-badge,
+.admin-account-status,
+.admin-protected-account {
+  min-height: 28px;
+  padding: 5px 9px;
+  font-size: 0.62rem;
+}
+
+.admin-department-value {
+  font-size: 0.7rem;
+}
+
+.admin-user-actions {
+  gap: 7px;
+  flex-wrap: nowrap;
+}
+
+.admin-user-actions button {
+  min-height: 35px;
+  border-radius: 9px;
+  padding: 7px 9px;
+  font-size: 0.66rem;
+  white-space: nowrap;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.admin-user-actions button:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 7px 15px
+    rgba(43, 50, 82, 0.05);
+}
+
+.admin-users-empty {
+  min-height: 330px;
+}
+
+/* ---------- Department Management ---------- */
+
+.admin-departments-header {
+  min-height: 116px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 12px 2px 20px;
+  border-bottom: 1px solid rgba(101, 96, 201, 0.16);
+  animation:
+    adminFinalRise
+    380ms
+    cubic-bezier(0.22, 1, 0.36, 1)
+    both;
+}
+
+.admin-departments-header h1 {
+  margin: 8px 0 7px;
+  font-size: clamp(2rem, 2.2vw, 2.4rem);
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+}
+
+.admin-departments-header > div > p:last-child {
+  max-width: 720px;
+  margin: 0;
+  color: var(--secura-muted);
+  font-size: 0.9rem;
+  line-height: 1.58;
+}
+
+.admin-create-department-button {
+  min-height: 42px;
+  margin-top: 5px;
+  border-radius: 11px;
+  padding: 9px 14px;
+  font-size: 0.76rem;
+  transition:
+    transform 170ms ease,
+    box-shadow 170ms ease;
+}
+
+.admin-create-department-button:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 13px 24px
+    rgba(82, 75, 174, 0.17);
+}
+
+.admin-department-stats {
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 15px;
+  margin-top: 18px;
+  margin-bottom: 18px;
+}
+
+.admin-department-stats article {
+  height: 112px;
+  min-height: 112px;
+  gap: 14px;
+  border-radius: 20px;
+  padding: 20px 22px;
+  animation:
+    adminFinalRise
+    390ms
+    cubic-bezier(0.22, 1, 0.36, 1)
+    both;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.admin-department-stats article:nth-child(2) {
+  animation-delay: 65ms;
+}
+
+.admin-department-stats article:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 18px 34px
+    rgba(43, 50, 82, 0.07);
+}
+
+.admin-department-stats article > span {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+}
+
+.admin-department-stats article b {
+  font-size: 1.8rem;
+}
+
+.admin-department-stats article p {
+  font-size: 0.76rem;
+}
+
+.admin-departments-card {
+  border-radius: 21px;
+  box-shadow:
+    0 16px 34px
+    rgba(43, 50, 82, 0.05);
+  overflow: hidden;
+  animation:
+    adminFinalRise
+    420ms 110ms
+    cubic-bezier(0.22, 1, 0.36, 1)
+    both;
+}
+
+.admin-departments-toolbar {
+  min-height: 76px;
+  padding: 14px 18px;
+}
+
+.admin-departments-search {
+  width: min(100%, 390px);
+  min-height: 44px;
+  border-radius: 12px;
+}
+
+.admin-departments-search:focus-within {
+  border-color: rgba(101, 96, 201, 0.45);
+  box-shadow:
+    0 0 0 4px
+    rgba(101, 96, 201, 0.07);
+}
+
+.admin-departments-table-wrap {
+  padding: 18px 20px 22px;
+  overflow-x: hidden;
+}
+
+.admin-departments-table {
+  width: 100%;
+  min-width: 0;
+  border-radius: 14px;
+}
+
+.admin-departments-row {
+  grid-template-columns:
+    minmax(300px, 1.7fr)
+    minmax(180px, 0.9fr)
+    minmax(130px, 0.62fr);
+  gap: 16px;
+  min-height: 76px;
+  padding: 11px 16px;
+  transition:
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.admin-departments-heading {
+  min-height: 46px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.admin-departments-heading span {
+  font-size: 0.63rem;
+}
+
+.admin-departments-row:not(.admin-departments-heading):hover {
+  background: #faf9ff;
+  box-shadow:
+    inset 3px 0 0
+    rgba(101, 96, 201, 0.55);
+}
+
+.admin-department-identity > span {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+}
+
+.admin-department-identity b {
+  font-size: 0.78rem;
+}
+
+.admin-department-identity small,
+.admin-department-users,
+.admin-departments-row code {
+  font-size: 0.69rem;
+}
+
+.admin-departments-empty {
+  min-height: 330px;
+}
+
+/* ---------- Modal Motion ---------- */
+
+.admin-modal-backdrop {
+  animation:
+    adminFinalRise
+    170ms ease both;
+}
+
+.admin-user-modal,
+.admin-small-modal,
+.admin-department-modal {
+  animation:
+    adminFinalScale
+    230ms
+    cubic-bezier(0.22, 1, 0.36, 1)
+    both;
+}
+
+.admin-create-grid input,
+.admin-create-grid select,
+.admin-small-modal input,
+.admin-small-modal select,
+.admin-department-modal input {
+  min-height: 43px;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.admin-create-grid input:focus,
+.admin-create-grid select:focus,
+.admin-small-modal input:focus,
+.admin-small-modal select:focus,
+.admin-department-modal input:focus {
+  border-color: rgba(101, 96, 201, 0.48);
+  box-shadow:
+    0 0 0 4px
+    rgba(101, 96, 201, 0.07);
+  outline: 0;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1180px) {
+  .role-dashboard--admin .role-dashboard__actions {
+    grid-template-columns: 1fr;
+  }
+
+  .role-dashboard--admin .role-dashboard__actions button {
+    height: auto;
+    min-height: 82px;
+    grid-template-columns:
+      46px minmax(0, 1fr) auto;
+    grid-template-rows: 1fr;
+    align-items: center;
+  }
+
+  .admin-users-table-wrap,
+  .admin-departments-table-wrap {
+    overflow-x: auto;
+  }
+
+  .admin-users-table {
+    min-width: 1020px;
+  }
+
+  .admin-departments-table {
+    min-width: 760px;
+  }
+}
+
+@media (max-width: 900px) {
+  .admin-users-header,
+  .admin-departments-header {
+    flex-direction: column;
+  }
+
+  .admin-users-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-users-search,
+  .admin-departments-search {
+    width: 100%;
+    max-width: none;
+  }
+
+  .admin-users-filters {
+    align-self: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .admin-department-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .admin-users-header h1,
+  .admin-departments-header h1 {
+    font-size: 1.85rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .role-dashboard--admin .role-dashboard__topbar,
+  .role-dashboard--admin .role-dashboard__status-banner,
+  .role-dashboard--admin .role-dashboard__tools,
+  .role-dashboard--admin .role-dashboard__side-panel,
+  .admin-users-header,
+  .admin-users-card,
+  .admin-departments-header,
+  .admin-department-stats article,
+  .admin-departments-card,
+  .admin-modal-backdrop,
+  .admin-user-modal,
+  .admin-small-modal,
+  .admin-department-modal {
+    animation: none !important;
+  }
+}
+
+/* =========================================================
+   Admin Account + Department Lifecycle
+   Deactivate/Reactivate User + Safe Department Delete
+   ========================================================= */
+
+.admin-status-action.deactivate {
+  border-color: #f0d2ce !important;
+  background: #fff7f5 !important;
+  color: #a45148 !important;
+}
+
+.admin-status-action.deactivate:hover {
+  border-color: #e5b9b3 !important;
+  background: #fff0ed !important;
+}
+
+.admin-status-action.reactivate {
+  border-color: #cce7d6 !important;
+  background: #f1faf5 !important;
+  color: #4d8061 !important;
+}
+
+.admin-status-action.reactivate:hover {
+  border-color: #b5dcc4 !important;
+  background: #eaf8f0 !important;
+}
+
+.admin-status-modal-icon,
+.admin-delete-department-icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 14px;
+  border-radius: 14px;
+}
+
+.admin-status-modal-icon.deactivate,
+.admin-delete-department-icon {
+  background: #fff0ec;
+  color: #a75a4e;
+}
+
+.admin-status-modal-icon.reactivate {
+  background: #eaf8f0;
+  color: #4f8765;
+}
+
+.admin-status-note,
+.admin-delete-department-note {
+  display: grid;
+  grid-template-columns:
+    auto minmax(0, 1fr);
+  align-items: start;
+  gap: 9px;
+  margin-top: 15px;
+  border: 1px solid #ececf2;
+  border-radius: 12px;
+  background: #fafafd;
+  padding: 11px 12px;
+  color: #70778b;
+}
+
+.admin-status-note svg {
+  color: var(--secura-primary);
+}
+
+.admin-delete-department-note {
+  border-color: #f0d8bf;
+  background: #fff9f2;
+  color: #8b6748;
+}
+
+.admin-status-note p,
+.admin-delete-department-note p {
+  margin: 0;
+  font-size: 0.71rem;
+  line-height: 1.55;
+}
+
+.admin-modal-danger {
+  min-height: 39px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid #b85d53;
+  border-radius: 10px;
+  background: #b85d53;
+  padding: 8px 13px;
+  color: #fff;
+  font-size: 0.73rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.admin-modal-danger:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: #a44f46;
+  background: #a44f46;
+  box-shadow:
+    0 8px 18px
+    rgba(164, 79, 70, 0.16);
+}
+
+.admin-modal-danger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-departments-row {
+  grid-template-columns:
+    minmax(280px, 1.55fr)
+    minmax(170px, 0.86fr)
+    minmax(120px, 0.58fr)
+    minmax(120px, 0.62fr) !important;
+}
+
+.admin-department-delete-button {
+  width: fit-content;
+  min-height: 35px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid #f0d2ce;
+  border-radius: 9px;
+  background: #fff7f5;
+  padding: 7px 10px;
+  color: #a45148;
+  font-size: 0.66rem;
+  font-weight: 780;
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.admin-department-delete-button:hover {
+  transform: translateY(-1px);
+  border-color: #e4b6b0;
+  background: #fff0ed;
+  box-shadow:
+    0 7px 15px
+    rgba(164, 79, 70, 0.07);
+}
+
+.admin-delete-department-count {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 13px;
+  border: 1px solid var(--secura-line);
+  border-radius: 11px;
+  background: #fbfbfd;
+  padding: 10px 12px;
+  color: #6c7385;
+  font-size: 0.72rem;
+}
+
+.admin-delete-department-count b {
+  color: #2f3548;
+  font-size: 0.86rem;
+}
+
+.admin-delete-blocked {
+  margin-top: 10px;
+  border: 1px solid #f0cbc7;
+  border-radius: 10px;
+  background: #fff6f4;
+  padding: 9px 10px;
+  color: #a3534a;
+  font-size: 0.69rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 1180px) {
+  .admin-departments-table {
+    min-width: 860px;
+  }
+
+  .admin-user-actions {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 720px) {
+  .admin-modal-danger {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   FINAL DASHBOARD ROLE UNIFICATION
+   Security-style header background + balanced User/Admin cards
+   ========================================================= */
+
+/* ---------- User/Admin dashboard shell = Security Officer shell ---------- */
+
+.role-dashboard--user,
+.role-dashboard--admin {
+  background:
+    linear-gradient(
+      180deg,
+      #f8f9fc 0%,
+      var(--secura-bg) 48%,
+      #f7f8fb 100%
+    ) !important;
+}
+
+/* Match the Security Officer lavender header card */
+.role-dashboard--user .role-dashboard__topbar,
+.role-dashboard--admin .role-dashboard__topbar {
+  position: relative;
+  overflow: hidden;
+  align-items: center;
+  min-height: 126px;
+  border: 1px solid
+    rgba(101, 96, 201, 0.08);
+  border-radius: 20px;
+  background:
+    linear-gradient(
+      105deg,
+      #f0eeff 0%,
+      #f5f3ff 55%,
+      #f9f8ff 100%
+    ) !important;
+  box-shadow:
+    0 12px 34px
+    rgba(43, 50, 82, 0.045);
+  padding: 24px 26px;
+}
+
+.role-dashboard--user .role-dashboard__topbar::before,
+.role-dashboard--admin .role-dashboard__topbar::before {
+  content: '';
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  top: -125px;
+  right: 190px;
+  border-radius: 50%;
+  background:
+    rgba(101, 96, 201, 0.045);
+  pointer-events: none;
+}
+
+.role-dashboard--user .role-dashboard__topbar::after,
+.role-dashboard--admin .role-dashboard__topbar::after {
+  content: '';
+  position: absolute;
+  width: 145px;
+  height: 145px;
+  right: -65px;
+  bottom: -86px;
+  border-radius: 50%;
+  background:
+    rgba(96, 134, 181, 0.045);
+  pointer-events: none;
+}
+
+.role-dashboard--user .role-dashboard__brand-area,
+.role-dashboard--user .role-dashboard__account,
+.role-dashboard--admin .role-dashboard__brand-area,
+.role-dashboard--admin .role-dashboard__account {
+  position: relative;
+  z-index: 1;
+}
+
+.role-dashboard--user .role-dashboard__brand > span,
+.role-dashboard--admin .role-dashboard__brand > span {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+}
+
+.role-dashboard--user .role-dashboard__brand,
+.role-dashboard--admin .role-dashboard__brand {
+  min-height: 44px;
+}
+
+.role-dashboard--user .role-dashboard__welcome h1,
+.role-dashboard--admin .role-dashboard__welcome h1 {
+  margin-top: 6px;
+  font-size: clamp(1.95rem, 2vw, 2.3rem);
+}
+
+/* ---------- User Dashboard: balanced equal sizing ---------- */
+
+.role-dashboard--user .role-dashboard__content {
+  width: min(100%, 1360px);
+  max-width: 1360px;
+}
+
+.role-dashboard--user .role-dashboard__status-banner {
+  min-height: 104px;
+  padding: 18px 20px;
+}
+
+.role-dashboard--user .role-dashboard__stats {
+  grid-auto-rows: 112px;
+  gap: 15px;
+}
+
+.role-dashboard--user .role-dashboard__stats article {
+  width: 100%;
+  height: 112px;
+  min-height: 112px;
+  padding: 18px;
+}
+
+.role-dashboard--user .role-dashboard__stats article > div {
+  min-width: 0;
+}
+
+.role-dashboard--user .role-dashboard__stats p {
+  font-size: 0.78rem;
+}
+
+.role-dashboard--user .role-dashboard__stats small {
+  font-size: 0.65rem;
+}
+
+.role-dashboard--user .role-dashboard__main-grid {
+  grid-template-columns:
+    minmax(0, 1.9fr)
+    minmax(315px, 0.78fr);
+  gap: 16px;
+  align-items: stretch;
+}
+
+.role-dashboard--user .role-dashboard__tools,
+.role-dashboard--user .role-dashboard__side-panel {
+  height: 100%;
+  min-height: 360px;
+}
+
+.role-dashboard--user .role-dashboard__tools {
+  display: flex;
+  flex-direction: column;
+}
+
+.role-dashboard--user .role-dashboard__actions {
+  flex: 1;
+  grid-template-rows:
+    repeat(3, minmax(0, 1fr));
+}
+
+.role-dashboard--user .role-dashboard__actions button {
+  min-height: 82px;
+  height: 100%;
+}
+
+.role-dashboard--user .role-dashboard__side-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.role-dashboard--user .role-dashboard__side-link:first-of-type {
+  margin-top: auto;
+}
+
+/* ---------- Admin Dashboard: two tools only, equal and clean ---------- */
+
+.role-dashboard--admin .role-dashboard__content {
+  width: min(100%, 1360px);
+  max-width: 1360px;
+}
+
+.role-dashboard--admin .role-dashboard__status-banner {
+  min-height: 104px;
+  padding: 18px 20px;
+}
+
+.role-dashboard--admin .role-dashboard__stats {
+  grid-auto-rows: 112px;
+  gap: 15px;
+}
+
+.role-dashboard--admin .role-dashboard__stats article {
+  width: 100%;
+  height: 112px;
+  min-height: 112px;
+  padding: 18px;
+}
+
+.role-dashboard--admin .role-dashboard__main-grid {
+  grid-template-columns:
+    minmax(0, 1.9fr)
+    minmax(315px, 0.78fr);
+  gap: 16px;
+  align-items: stretch;
+}
+
+.role-dashboard--admin .role-dashboard__tools,
+.role-dashboard--admin .role-dashboard__side-panel {
+  height: 100%;
+  min-height: 320px;
+}
+
+.role-dashboard--admin .role-dashboard__tools {
+  display: flex;
+  flex-direction: column;
+}
+
+.role-dashboard--admin .role-dashboard__actions {
+  flex: 1;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr)) !important;
+  grid-template-rows: 1fr;
+  gap: 12px;
+}
+
+.role-dashboard--admin .role-dashboard__actions button {
+  width: 100%;
+  height: 100%;
+  min-height: 205px;
+  grid-template-columns: 1fr;
+  grid-template-rows:
+    48px minmax(0, 1fr) auto;
+  align-content: start;
+  gap: 12px;
+  padding: 18px;
+}
+
+.role-dashboard--admin .role-dashboard__actions button > span:nth-child(2) {
+  align-self: start;
+}
+
+.role-dashboard--admin .role-dashboard__actions button > svg {
+  justify-self: end;
+}
+
+.role-dashboard--admin .role-dashboard__side-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.role-dashboard--admin .role-dashboard__side-row:first-of-type {
+  margin-top: auto;
+}
+
+/* Keep account/profile shortcut only in top-right dashboard account card. */
+.role-dashboard--admin .role-dashboard__account-button {
+  position: relative;
+}
+
+/* ---------- Smooth unified hover ---------- */
+
+.role-dashboard--user .role-dashboard__stats article,
+.role-dashboard--admin .role-dashboard__stats article,
+.role-dashboard--user .role-dashboard__actions button,
+.role-dashboard--admin .role-dashboard__actions button,
+.role-dashboard--user .role-dashboard__side-panel,
+.role-dashboard--admin .role-dashboard__side-panel {
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease;
+}
+
+.role-dashboard--user .role-dashboard__actions button:hover,
+.role-dashboard--admin .role-dashboard__actions button:hover {
+  transform: translateY(-2px);
+  border-color:
+    rgba(101, 96, 201, 0.22);
+  box-shadow:
+    0 12px 24px
+    rgba(43, 50, 82, 0.065);
+}
+
+@media (max-width: 1180px) {
+  .role-dashboard--user .role-dashboard__main-grid,
+  .role-dashboard--admin .role-dashboard__main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .role-dashboard--user .role-dashboard__tools,
+  .role-dashboard--user .role-dashboard__side-panel,
+  .role-dashboard--admin .role-dashboard__tools,
+  .role-dashboard--admin .role-dashboard__side-panel {
+    min-height: 0;
+    height: auto;
+  }
+
+  .role-dashboard--admin .role-dashboard__actions {
+    grid-template-columns: 1fr !important;
+  }
+
+  .role-dashboard--admin .role-dashboard__actions button {
+    height: auto;
+    min-height: 82px;
+    grid-template-columns:
+      46px minmax(0, 1fr) auto;
+    grid-template-rows: 1fr;
+    align-items: center;
+  }
+
+  .role-dashboard--user .role-dashboard__side-link:first-of-type,
+  .role-dashboard--admin .role-dashboard__side-row:first-of-type {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .role-dashboard--user .role-dashboard__topbar,
+  .role-dashboard--admin .role-dashboard__topbar {
+    align-items: flex-start;
+    padding: 20px 18px;
+  }
+
+  .role-dashboard--user .role-dashboard__topbar::before,
+  .role-dashboard--admin .role-dashboard__topbar::before {
+    right: -35px;
+  }
+
+  .role-dashboard--user .role-dashboard__stats,
+  .role-dashboard--admin .role-dashboard__stats {
+    grid-auto-rows: auto;
+  }
+
+  .role-dashboard--user .role-dashboard__stats article,
+  .role-dashboard--admin .role-dashboard__stats article {
+    height: auto;
+    min-height: 104px;
+  }
+}
+
+/* =========================================================
+   ADMIN PROFILE - FINAL BALANCED CARD SIZING
+   Keeps the same profile design, but aligns every card cleanly
+   ========================================================= */
+
+.role-profile-admin {
+  width: min(100%, 1360px);
+  max-width: 1360px;
+  padding-top: 12px;
+}
+
+/* Fixed left profile column so the right-side cards always align. */
+.role-profile-admin .security-profile-pro__layout {
+  grid-template-columns:
+    320px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.role-profile-admin .security-profile-pro__identity-card {
+  width: 100%;
+  min-height: 444px;
+  padding: 26px 21px 20px;
+}
+
+/* Slightly more compact avatar block without making it feel small. */
+.role-profile-admin .security-profile-pro__avatar-wrap,
+.role-profile-admin .security-profile-pro__avatar {
+  width: 104px;
+  height: 104px;
+}
+
+.role-profile-admin .security-profile-pro__avatar-wrap {
+  margin-bottom: 15px;
+}
+
+.role-profile-admin .security-profile-pro__identity-card h2 {
+  font-size: 1.15rem;
+}
+
+.role-profile-admin .security-profile-pro__photo-action {
+  margin-top: 16px;
+}
+
+.role-profile-admin .security-profile-pro__security-note {
+  margin-top: 17px;
+  padding: 12px;
+}
+
+/* Main column spacing */
+.role-profile-admin .security-profile-pro__main {
+  gap: 16px;
+}
+
+/* Account Details + System Information cards use the same visual width. */
+.role-profile-admin .security-profile-pro__card {
+  width: 100%;
+  border-radius: 20px;
+  padding: 20px 22px;
+}
+
+.role-profile-admin .security-profile-pro__section-heading {
+  min-height: 76px;
+  padding-bottom: 15px;
+}
+
+.role-profile-admin .security-profile-pro__section-heading h2 {
+  font-size: 1.2rem;
+}
+
+.role-profile-admin
+  .security-profile-pro__section-heading
+  > div
+  > p:last-child {
+  max-width: 680px;
+  font-size: 0.76rem;
+}
+
+/* Personal information card */
+.role-profile-admin .security-profile-pro__editable-grid {
+  gap: 12px;
+  padding-top: 16px;
+}
+
+.role-profile-admin .security-profile-pro__input {
+  min-height: 44px;
+}
+
+.role-profile-admin .security-profile-pro__actions {
+  margin-top: 16px;
+  padding-top: 15px;
+}
+
+/* System information: reduce unused vertical height and keep 4 cards equal. */
+.role-profile-admin .security-profile-pro__facts {
+  gap: 10px;
+  padding-top: 16px;
+}
+
+.role-profile-admin .security-profile-pro__facts article {
+  height: 72px;
+  min-height: 72px;
+  padding: 10px 12px;
+}
+
+.role-profile-admin .security-profile-pro__facts article > span {
+  width: 38px;
+  height: 38px;
+}
+
+.role-profile-admin .security-profile-pro__managed-note {
+  margin-top: 14px;
+  padding: 12px 13px;
+}
+
+/* Critical alignment fix:
+   OTP Security card starts exactly under the right profile column. */
+.role-profile-admin .role-profile-password-wrap {
+  width: calc(100% - 338px);
+  margin: 16px 0 0 auto;
+}
+
+.role-profile-admin
+  .role-profile-password-wrap
+  .admin-security-card {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  border-radius: 20px;
+  padding: 20px 22px;
+}
+
+/* Make the OTP section visually consistent with the cards above. */
+.role-profile-admin .admin-security-card h2 {
+  margin-top: 6px;
+  font-size: 1.08rem;
+  font-weight: 600;
+}
+
+.role-profile-admin .admin-security-description {
+  margin-top: 9px;
+  font-size: 0.7rem;
+  line-height: 1.55;
+}
+
+.role-profile-admin .admin-security-email-box {
+  margin-top: 15px;
+  border-radius: 13px;
+  padding: 12px 13px;
+}
+
+.role-profile-admin .admin-security-email-box small {
+  font-size: 0.62rem;
+}
+
+.role-profile-admin .admin-security-email-box b {
+  margin-top: 5px;
+  font-size: 0.72rem;
+}
+
+.role-profile-admin .admin-security-request-actions {
+  margin-top: 14px;
+}
+
+.role-profile-admin .admin-security-primary {
+  min-height: 38px;
+  padding: 8px 13px;
+  font-size: 0.72rem;
+}
+
+/* Preserve good proportions on medium screens. */
+@media (max-width: 1080px) {
+  .role-profile-admin .security-profile-pro__layout {
+    grid-template-columns: 285px minmax(0, 1fr);
+  }
+
+  .role-profile-admin .role-profile-password-wrap {
+    width: calc(100% - 303px);
+  }
+}
+
+@media (max-width: 900px) {
+  .role-profile-admin .security-profile-pro__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .role-profile-admin .security-profile-pro__identity-card {
+    min-height: 0;
+    position: static;
+  }
+
+  .role-profile-admin .role-profile-password-wrap {
+    width: 100%;
+    margin-top: 16px;
+  }
+}
+
+@media (max-width: 700px) {
+  .role-profile-admin .security-profile-pro__card,
+  .role-profile-admin
+    .role-profile-password-wrap
+    .admin-security-card {
+    padding: 18px 16px;
+  }
+}
+
+/* =========================================================
+   PROFILE PAGES WITHOUT WORKSPACE SIDEBAR
+   Admin + Security Officer
+   ========================================================= */
+
+.secura-profile-page-shell {
+  min-height: 100vh;
+  background:
+    linear-gradient(
+      180deg,
+      #f8f9fc 0%,
+      var(--secura-bg) 48%,
+      #f7f8fb 100%
+    );
+  padding: 22px 26px 34px;
+}
+
+.secura-profile-page-main {
+  width: min(100%, 1360px);
+  max-width: 1360px;
+  margin: 0 auto;
+}
+
+/* Re-center Admin and Security Officer profile pages when sidebar is absent. */
+.secura-profile-page-main .security-profile-pro {
+  width: 100%;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Keep the header aligned with the profile cards below. */
+.secura-profile-page-main .security-profile-pro__header {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Admin: right-column OTP width should now align to the 320px identity column
+   from the full-width centered profile layout. */
+.secura-profile-page-main
+  .role-profile-admin
+  .role-profile-password-wrap {
+  width: calc(100% - 338px);
+  margin-left: auto;
+  margin-right: 0;
+}
+
+/* Security Officer profile uses the same balanced two-column proportions. */
+.secura-profile-page-main
+  .security-profile-pro:not(.role-profile-admin) {
+  width: 100%;
+}
+
+.secura-profile-page-main
+  .security-profile-pro:not(.role-profile-admin)
+  .security-profile-pro__layout {
+  grid-template-columns:
+    320px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.secura-profile-page-main
+  .security-profile-pro:not(.role-profile-admin)
+  .security-profile-pro__identity-card {
+  width: 100%;
+}
+
+/* Slightly refine top spacing now there is no workspace navigation above. */
+.secura-profile-page-main .security-profile-pro__header {
+  padding-top: 4px;
+  margin-bottom: 18px;
+}
+
+@media (max-width: 1080px) {
+  .secura-profile-page-main
+    .security-profile-pro:not(.role-profile-admin)
+    .security-profile-pro__layout {
+    grid-template-columns:
+      285px minmax(0, 1fr);
+  }
+
+  .secura-profile-page-main
+    .role-profile-admin
+    .role-profile-password-wrap {
+    width: calc(100% - 303px);
+  }
+}
+
+@media (max-width: 900px) {
+  .secura-profile-page-shell {
+    padding: 18px 16px 28px;
+  }
+
+  .secura-profile-page-main
+    .security-profile-pro:not(.role-profile-admin)
+    .security-profile-pro__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .secura-profile-page-main
+    .role-profile-admin
+    .role-profile-password-wrap {
+    width: 100%;
+  }
+}
+
+@media (max-width: 700px) {
+  .secura-profile-page-shell {
+    padding: 14px 12px 24px;
+  }
+}
+
+/* =========================================================
+   PROFILE PAGE BACK TO DASHBOARD
+   Admin + Security Officer
+   ========================================================= */
+
+.secura-profile-page-back-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 0 0 12px;
+}
+
+.secura-profile-back-link {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #e1e3ec;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.94);
+  padding: 8px 12px;
+  color: #687084;
+  font-size: 0.74rem;
+  font-weight: 780;
+  text-decoration: none;
+  box-shadow:
+    0 7px 16px
+    rgba(43, 50, 82, 0.035);
+  transition:
+    transform 170ms ease,
+    border-color 170ms ease,
+    color 170ms ease,
+    box-shadow 170ms ease,
+    background 170ms ease;
+}
+
+.secura-profile-back-link:hover {
+  transform: translateY(-1px);
+  border-color:
+    rgba(101, 96, 201, 0.28);
+  background: #fff;
+  color: var(--secura-primary);
+  box-shadow:
+    0 10px 20px
+    rgba(43, 50, 82, 0.06);
+}
+
+.secura-profile-back-link:active {
+  transform: translateY(0);
+}
+
+/* Back row now owns the top spacing, so keep profile header tight. */
+.secura-profile-page-main .security-profile-pro__header {
+  padding-top: 0;
+}
+
+@media (max-width: 700px) {
+  .secura-profile-page-back-row {
+    margin-bottom: 10px;
+  }
+
+  .secura-profile-back-link {
+    min-height: 36px;
+    padding: 7px 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .secura-profile-back-link {
+    transition: none !important;
+  }
+}
+

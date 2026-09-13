@@ -1,9 +1,11 @@
 import {
+  AlertTriangle,
   Building2,
   Check,
   Plus,
   Search,
   ShieldCheck,
+  Trash2,
   UsersRound,
   X,
 } from 'lucide-react'
@@ -16,7 +18,8 @@ import {
 import api from '../../api/client'
 
 function getApiError(error, fallback) {
-  const detail = error?.response?.data?.detail
+  const detail =
+    error?.response?.data?.detail
 
   if (typeof detail === 'string') {
     return detail
@@ -26,10 +29,13 @@ function getApiError(error, fallback) {
 }
 
 function AdminDepartmentManagement() {
-  const [departments, setDepartments] =
-    useState([])
+  const [
+    departments,
+    setDepartments,
+  ] = useState([])
 
-  const [users, setUsers] = useState([])
+  const [users, setUsers] =
+    useState([])
 
   const [loading, setLoading] =
     useState(true)
@@ -46,11 +52,26 @@ function AdminDepartmentManagement() {
   const [createOpen, setCreateOpen] =
     useState(false)
 
-  const [departmentName, setDepartmentName] =
-    useState('')
+  const [
+    departmentName,
+    setDepartmentName,
+  ] = useState('')
 
   const [creating, setCreating] =
     useState(false)
+
+  const [
+    deleteDepartment,
+    setDeleteDepartment,
+  ] = useState(null)
+
+  const [deleting, setDeleting] =
+    useState(false)
+
+  const [
+    deleteError,
+    setDeleteError,
+  ] = useState('')
 
   useEffect(() => {
     let cancelled = false
@@ -72,7 +93,9 @@ function AdminDepartmentManagement() {
             departmentsResponse.data,
           )
 
-          setUsers(usersResponse.data)
+          setUsers(
+            usersResponse.data,
+          )
         },
       )
       .catch((loadError) => {
@@ -96,44 +119,61 @@ function AdminDepartmentManagement() {
     }
   }, [])
 
-  const departmentRows = useMemo(() => {
-    return departments.map((department) => {
-      const assignedUsers =
-        users.filter(
-          (user) =>
-            user.role === 'User' &&
-            user.department_id ===
-              department.id,
-        )
+  const departmentRows =
+    useMemo(() => {
+      return departments.map(
+        (department) => {
+          const assignedUsers =
+            users.filter(
+              (user) =>
+                user.role ===
+                  'User' &&
+                user.department_id ===
+                  department.id,
+            )
 
-      return {
-        ...department,
-        userCount:
-          assignedUsers.length,
-      }
-    })
-  }, [departments, users])
+          return {
+            ...department,
+            userCount:
+              assignedUsers.length,
+          }
+        },
+      )
+    }, [
+      departments,
+      users,
+    ])
 
-  const visibleDepartments = useMemo(() => {
-    const normalizedQuery = query
-      .trim()
-      .toLowerCase()
-
-    if (!normalizedQuery) {
-      return departmentRows
-    }
-
-    return departmentRows.filter(
-      (department) =>
-        department.name
+  const visibleDepartments =
+    useMemo(() => {
+      const normalizedQuery =
+        query
+          .trim()
           .toLowerCase()
-          .includes(normalizedQuery),
-    )
-  }, [departmentRows, query])
+
+      if (!normalizedQuery) {
+        return departmentRows
+      }
+
+      return departmentRows.filter(
+        (department) =>
+          department.name
+            .toLowerCase()
+            .includes(
+              normalizedQuery,
+            ),
+      )
+    }, [
+      departmentRows,
+      query,
+    ])
 
   const totalAssignedUsers =
     departmentRows.reduce(
-      (total, department) =>
+      (
+        total,
+        department,
+      ) =>
         total +
         department.userCount,
       0,
@@ -158,17 +198,20 @@ function AdminDepartmentManagement() {
       setMessage('')
 
       try {
-        const response = await api.post(
-          '/admin/departments',
-          {
-            name,
-          },
-        )
+        const response =
+          await api.post(
+            '/admin/departments',
+            {
+              name,
+            },
+          )
 
-        setDepartments((current) => [
-          ...current,
-          response.data,
-        ])
+        setDepartments(
+          (current) => [
+            ...current,
+            response.data,
+          ],
+        )
 
         setDepartmentName('')
         setCreateOpen(false)
@@ -188,6 +231,69 @@ function AdminDepartmentManagement() {
       }
     }
 
+  const openDeleteModal =
+    (department) => {
+      setDeleteDepartment(
+        department,
+      )
+      setDeleteError('')
+      setError('')
+      setMessage('')
+    }
+
+  const handleDeleteDepartment =
+    async () => {
+      if (!deleteDepartment) {
+        return
+      }
+
+      if (
+        deleteDepartment.userCount >
+        0
+      ) {
+        setDeleteError(
+          'Move all assigned users to another department before deleting this department.',
+        )
+        return
+      }
+
+      setDeleting(true)
+      setDeleteError('')
+
+      try {
+        await api.delete(
+          `/admin/departments/${deleteDepartment.id}`,
+        )
+
+        const deletedName =
+          deleteDepartment.name
+
+        setDepartments(
+          (current) =>
+            current.filter(
+              (department) =>
+                department.id !==
+                deleteDepartment.id,
+            ),
+        )
+
+        setDeleteDepartment(null)
+
+        setMessage(
+          `${deletedName} department deleted successfully.`,
+        )
+      } catch (deleteRequestError) {
+        setDeleteError(
+          getApiError(
+            deleteRequestError,
+            'Unable to delete the department.',
+          ),
+        )
+      } finally {
+        setDeleting(false)
+      }
+    }
+
   return (
     <>
       <header className="admin-departments-header">
@@ -201,8 +307,9 @@ function AdminDepartmentManagement() {
           </h1>
 
           <p>
-            Manage departments used to
-            organize Secura User accounts.
+            Manage departments used
+            to organize Secura User
+            accounts.
           </p>
         </div>
 
@@ -224,7 +331,9 @@ function AdminDepartmentManagement() {
       <section className="admin-department-stats">
         <article>
           <span>
-            <Building2 size={19} />
+            <Building2
+              size={19}
+            />
           </span>
 
           <div>
@@ -242,7 +351,9 @@ function AdminDepartmentManagement() {
 
         <article>
           <span className="users">
-            <UsersRound size={19} />
+            <UsersRound
+              size={19}
+            />
           </span>
 
           <div>
@@ -263,7 +374,9 @@ function AdminDepartmentManagement() {
         <div className="admin-departments-success">
           <Check size={16} />
 
-          <span>{message}</span>
+          <span>
+            {message}
+          </span>
 
           <button
             type="button"
@@ -278,9 +391,13 @@ function AdminDepartmentManagement() {
 
       {error && (
         <div className="admin-departments-error">
-          <ShieldCheck size={16} />
+          <ShieldCheck
+            size={16}
+          />
 
-          <span>{error}</span>
+          <span>
+            {error}
+          </span>
 
           <button
             type="button"
@@ -301,9 +418,12 @@ function AdminDepartmentManagement() {
             <input
               value={query}
               placeholder="Search department"
-              onChange={(event) =>
+              onChange={(
+                event,
+              ) =>
                 setQuery(
-                  event.target.value,
+                  event.target
+                    .value,
                 )
               }
             />
@@ -331,7 +451,9 @@ function AdminDepartmentManagement() {
           0 ? (
           <div className="admin-departments-empty">
             <span>
-              <Building2 size={22} />
+              <Building2
+                size={22}
+              />
             </span>
 
             <b>
@@ -350,7 +472,9 @@ function AdminDepartmentManagement() {
           <div className="admin-departments-table-wrap">
             <div className="admin-departments-table">
               <div className="admin-departments-row admin-departments-heading">
-                <span>Department</span>
+                <span>
+                  Department
+                </span>
 
                 <span>
                   Assigned users
@@ -359,13 +483,19 @@ function AdminDepartmentManagement() {
                 <span>
                   Department ID
                 </span>
+
+                <span>
+                  Action
+                </span>
               </div>
 
               {visibleDepartments.map(
                 (department) => (
                   <div
                     className="admin-departments-row"
-                    key={department.id}
+                    key={
+                      department.id
+                    }
                   >
                     <div className="admin-department-identity">
                       <span>
@@ -406,6 +536,21 @@ function AdminDepartmentManagement() {
                     <code>
                       #{department.id}
                     </code>
+
+                    <button
+                      type="button"
+                      className="admin-department-delete-button"
+                      onClick={() =>
+                        openDeleteModal(
+                          department,
+                        )
+                      }
+                    >
+                      <Trash2
+                        size={13}
+                      />
+                      Delete
+                    </button>
                   </div>
                 ),
               )}
@@ -427,7 +572,9 @@ function AdminDepartmentManagement() {
             onSubmit={
               handleCreateDepartment
             }
-            onClick={(event) =>
+            onClick={(
+              event,
+            ) =>
               event.stopPropagation()
             }
           >
@@ -435,7 +582,9 @@ function AdminDepartmentManagement() {
               type="button"
               className="admin-modal-close"
               onClick={() =>
-                setCreateOpen(false)
+                setCreateOpen(
+                  false,
+                )
               }
             >
               <X size={18} />
@@ -450,8 +599,9 @@ function AdminDepartmentManagement() {
             </h2>
 
             <p className="admin-department-modal-subtitle">
-              Add a department that can
-              be assigned to User accounts.
+              Add a department that
+              can be assigned to User
+              accounts.
             </p>
 
             <label>
@@ -459,13 +609,18 @@ function AdminDepartmentManagement() {
 
               <input
                 type="text"
-                value={departmentName}
+                value={
+                  departmentName
+                }
                 autoFocus
                 maxLength={100}
                 placeholder="e.g. Human Resources"
-                onChange={(event) =>
+                onChange={(
+                  event,
+                ) =>
                   setDepartmentName(
-                    event.target.value,
+                    event.target
+                      .value,
                   )
                 }
               />
@@ -477,10 +632,10 @@ function AdminDepartmentManagement() {
               />
 
               <p>
-                Departments are used for
-                controlled document sharing
-                between users in the same
-                department.
+                Departments are used
+                for controlled document
+                sharing between users in
+                the same department.
               </p>
             </div>
 
@@ -489,7 +644,9 @@ function AdminDepartmentManagement() {
                 type="button"
                 className="admin-modal-cancel"
                 onClick={() =>
-                  setCreateOpen(false)
+                  setCreateOpen(
+                    false,
+                  )
                 }
               >
                 Cancel
@@ -500,7 +657,8 @@ function AdminDepartmentManagement() {
                 className="admin-modal-primary"
                 disabled={
                   creating ||
-                  !departmentName.trim()
+                  !departmentName
+                    .trim()
                 }
               >
                 {creating
@@ -509,6 +667,132 @@ function AdminDepartmentManagement() {
               </button>
             </div>
           </form>
+        </div>
+      )}
+
+      {deleteDepartment && (
+        <div
+          className="admin-modal-backdrop"
+          onClick={() =>
+            !deleting &&
+            setDeleteDepartment(
+              null,
+            )
+          }
+        >
+          <section
+            className="admin-small-modal admin-delete-department-modal"
+            onClick={(
+              event,
+            ) =>
+              event.stopPropagation()
+            }
+          >
+            <button
+              type="button"
+              className="admin-modal-close"
+              onClick={() =>
+                setDeleteDepartment(
+                  null,
+                )
+              }
+            >
+              <X size={18} />
+            </button>
+
+            <span className="admin-delete-department-icon">
+              <Trash2
+                size={20}
+              />
+            </span>
+
+            <p className="secura-eyebrow">
+              DEPARTMENT LIFECYCLE
+            </p>
+
+            <h2>
+              Delete department?
+            </h2>
+
+            <p>
+              {
+                deleteDepartment.name
+              }
+            </p>
+
+            <div className="admin-delete-department-note">
+              <AlertTriangle
+                size={16}
+              />
+
+              <p>
+                Permanent deletion is
+                allowed only when no
+                users are assigned and
+                no active document
+                shares reference this
+                department.
+              </p>
+            </div>
+
+            <div className="admin-delete-department-count">
+              <span>
+                Assigned users
+              </span>
+
+              <b>
+                {
+                  deleteDepartment.userCount
+                }
+              </b>
+            </div>
+
+            {deleteDepartment.userCount >
+              0 && (
+              <div className="admin-delete-blocked">
+                Move all assigned
+                users to another
+                department first.
+              </div>
+            )}
+
+            {deleteError && (
+              <div className="admin-delete-blocked">
+                {deleteError}
+              </div>
+            )}
+
+            <div className="admin-modal-actions">
+              <button
+                type="button"
+                className="admin-modal-cancel"
+                onClick={() =>
+                  setDeleteDepartment(
+                    null,
+                  )
+                }
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                className="admin-modal-danger"
+                disabled={
+                  deleting ||
+                  deleteDepartment.userCount >
+                    0
+                }
+                onClick={
+                  handleDeleteDepartment
+                }
+              >
+                {deleting
+                  ? 'Deleting...'
+                  : 'Delete department'}
+              </button>
+            </div>
+          </section>
         </div>
       )}
     </>
