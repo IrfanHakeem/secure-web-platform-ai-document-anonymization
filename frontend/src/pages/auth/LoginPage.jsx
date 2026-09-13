@@ -1,6 +1,14 @@
 import { useState } from 'react'
-import { Eye, EyeOff, LockKeyhole, Mail, ShieldCheck } from 'lucide-react'
-import { Link, useNavigate } from 'react-router-dom'
+import {
+  Eye,
+  EyeOff,
+  LoaderCircle,
+  ShieldCheck,
+} from 'lucide-react'
+import {
+  Link,
+  useNavigate,
+} from 'react-router-dom'
 
 import { useAuth } from '../../context/useAuth'
 import { ROLES } from '../../utils/roles'
@@ -31,24 +39,41 @@ function LoginPage() {
     event.preventDefault()
     setError('')
 
-    const cleanEmail = email.trim().toLowerCase()
+    const cleanEmail =
+      email.trim().toLowerCase()
 
     if (!cleanEmail || !password) {
-      setError('Please enter your email and password.')
+      setError(
+        'Please enter your email and password.',
+      )
+
       return
     }
 
     try {
       setSubmitting(true)
 
-      const authenticatedUser = await login(cleanEmail, password)
+      const authenticatedUser =
+        await login(
+          cleanEmail,
+          password,
+        )
 
-      navigate(getDashboardPath(authenticatedUser.role), {
-        replace: true,
-      })
+      navigate(
+        getDashboardPath(
+          authenticatedUser.role,
+        ),
+        {
+          replace: true,
+        },
+      )
     } catch (err) {
-      if (err.response?.status === 401) {
-        setError('Invalid email or password.')
+      if (
+        err.response?.status === 401
+      ) {
+        setError(
+          'Invalid email or password.',
+        )
       } else {
         setError(
           'Unable to sign in right now. Please check the server connection and try again.',
@@ -60,171 +85,294 @@ function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen bg-[#f7f6fb]">
-      <section className="hidden w-1/2 flex-col justify-between bg-gradient-to-br from-[#4f46e5] via-[#6656d9] to-[#8b75d7] p-12 text-white lg:flex">
-        <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/15 backdrop-blur">
-            <ShieldCheck size={26} />
-          </div>
+    <main className="min-h-screen bg-[#f6f6ff]">
+      <div className="grid min-h-screen grid-cols-1 lg:grid-cols-2">
+        <section className="secura-login-hero relative hidden min-h-screen overflow-hidden bg-[#11083f] text-white lg:flex">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#10073d] via-[#1b0d61] to-[#24205c]" />
 
-          <div>
-            <p className="text-xl font-semibold">Secura</p>
-            <p className="text-xs font-medium uppercase tracking-[0.22em] text-white/65">
-              Secure Workspace
-            </p>
-          </div>
-        </div>
+          <div className="secura-login-shape-a absolute left-[54%] top-[5%] h-14 w-14 rounded-xl bg-fuchsia-600/90 shadow-lg shadow-fuchsia-950/20" />
 
-        <div className="max-w-xl">
-          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-white/60">
-            Secure Document Intelligence
-          </p>
+          <div className="secura-login-shape-b absolute left-[40%] top-[9%] h-12 w-12 rounded-full bg-violet-500/90 shadow-lg shadow-violet-950/20" />
 
-          <h1 className="text-5xl font-semibold leading-tight">
-            Protect sensitive information before it leaves your workspace.
-          </h1>
+          <div className="secura-login-shape-c secura-login-hex absolute bottom-[11%] left-[11%] h-[70px] w-[70px] bg-orange-500" />
 
-          <p className="mt-6 max-w-lg text-base leading-7 text-white/75">
-            Automated AI document anonymization with controlled original-file
-            access, audit logging, and security monitoring.
-          </p>
-        </div>
+          <div className="secura-login-shape-d absolute bottom-[22%] left-[18%] h-8 w-8 rounded-md bg-cyan-400/90" />
 
-        <p className="text-sm text-white/55">
-          Secure Web Platform for Automated AI Document Anonymization
-        </p>
-      </section>
+          <div className="secura-login-shape-a absolute bottom-[27%] right-[17%] h-5 w-5 rounded-full bg-violet-400/70" />
 
-      <section className="flex w-full items-center justify-center px-6 py-12 lg:w-1/2">
-        <div className="w-full max-w-md">
-          <div className="mb-10 lg:hidden">
+          <div className="secura-login-shape-b absolute bottom-[30%] right-[12%] h-3 w-3 rounded-full bg-violet-300/60" />
+
+          <svg
+            className="secura-login-wave absolute inset-0 h-full w-full"
+            viewBox="0 0 900 900"
+            preserveAspectRatio="none"
+            fill="none"
+            aria-hidden="true"
+          >
+            <defs>
+              <linearGradient
+                id="waveOne"
+                x1="0"
+                y1="0"
+                x2="1"
+                y2="0"
+              >
+                <stop
+                  offset="0%"
+                  stopColor="#f07c5e"
+                />
+
+                <stop
+                  offset="55%"
+                  stopColor="#6e52ee"
+                />
+
+                <stop
+                  offset="100%"
+                  stopColor="#2fc5ff"
+                />
+              </linearGradient>
+
+              <linearGradient
+                id="waveTwo"
+                x1="0"
+                y1="0"
+                x2="1"
+                y2="0"
+              >
+                <stop
+                  offset="0%"
+                  stopColor="#7444df"
+                />
+
+                <stop
+                  offset="100%"
+                  stopColor="#b84fc4"
+                />
+              </linearGradient>
+            </defs>
+
+            <path
+              d="M-20 318 C105 248 220 470 366 394 S627 145 920 311"
+              stroke="url(#waveOne)"
+              strokeWidth="4"
+              opacity="0.78"
+            />
+
+            <path
+              d="M-25 424 C135 343 266 522 430 467 S695 203 925 362"
+              stroke="#5764d8"
+              strokeWidth="4"
+              opacity="0.78"
+            />
+
+            <path
+              d="M-30 548 C150 492 278 638 450 574 S704 302 930 496"
+              stroke="url(#waveTwo)"
+              strokeWidth="3"
+              opacity="0.57"
+            />
+          </svg>
+
+          <div className="relative z-10 flex w-full flex-col px-12 py-12 xl:px-16">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-600 text-white">
-                <ShieldCheck size={24} />
+              <div className="grid h-10 w-10 place-items-center rounded-xl bg-white/10 backdrop-blur-sm">
+                <ShieldCheck size={21} />
               </div>
 
               <div>
-                <p className="text-xl font-semibold text-slate-900">Secura</p>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-600">
+                <p className="text-sm font-semibold">
+                  Secura
+                </p>
+
+                <p className="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-white/55">
                   Secure Workspace
                 </p>
               </div>
             </div>
+
+            <div className="secura-login-copy my-auto max-w-[560px]">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-violet-300">
+                Secure Web Platform for Automated AI Document Anonymization
+              </p>
+
+              <h1 className="mt-5 text-[44px] font-bold leading-[1.08] tracking-[-0.04em] text-white xl:text-[52px]">
+                Protect Sensitive
+                <br />
+                Data, Effortlessly.
+              </h1>
+
+              <p className="mt-5 max-w-[430px] text-sm leading-7 text-violet-100/70">
+                Automated AI document anonymization with controlled original-file access,
+                audit logging, and security monitoring — all in one secure portal.
+              </p>
+            </div>
+
+            <p className="text-[10px] text-white/40">
+              Protected access for authorized Secura users.
+            </p>
           </div>
+        </section>
 
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-violet-600">
-            Secure Workspace
-          </p>
+        <section className="flex min-h-screen items-center justify-center px-6 py-12 sm:px-10 lg:px-14 xl:px-20">
+          <div className="secura-login-form w-full max-w-[430px]">
+            <div className="mb-10 lg:hidden">
+              <div className="flex items-center gap-3">
+                <div className="grid h-10 w-10 place-items-center rounded-xl bg-[#6560c9] text-white">
+                  <ShieldCheck size={21} />
+                </div>
 
-          <h2 className="mt-3 text-4xl font-semibold tracking-tight text-slate-900">
-            Welcome back
-          </h2>
+                <div>
+                  <p className="text-base font-semibold text-[#22283b]">
+                    Secura
+                  </p>
 
-          <p className="mt-3 text-sm leading-6 text-slate-500">
-            Sign in using your registered email address to continue to Secura.
-          </p>
+                  <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#6560c9]">
+                    Secure Workspace
+                  </p>
+                </div>
+              </div>
+            </div>
 
-          <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
-            <div>
-              <label
-                className="mb-2 block text-sm font-semibold text-slate-700"
-                htmlFor="email"
-              >
-                Email address
-              </label>
+            <h2 className="text-[28px] font-semibold tracking-[-0.04em] text-[#17172f]">
+              Sign In
+            </h2>
 
-              <div className="relative">
-                <Mail
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-                  size={19}
-                />
+            <p className="mt-2 text-sm text-[#7d8494]">
+              Welcome back! Enter your credentials to continue.
+            </p>
+
+            <form
+              className="mt-9 space-y-5"
+              onSubmit={handleSubmit}
+            >
+              <div>
+                <label
+                  className="mb-2 block text-sm font-medium text-[#23233e]"
+                  htmlFor="email"
+                >
+                  Email
+                </label>
 
                 <input
                   id="email"
                   type="email"
                   autoComplete="email"
                   value={email}
-                  onChange={(event) => setEmail(event.target.value)}
+                  onChange={(event) =>
+                    setEmail(
+                      event.target.value,
+                    )
+                  }
                   placeholder="name@example.com"
-                  className="h-13 w-full rounded-xl border border-slate-200 bg-white py-3 pl-12 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
+                  className="secura-login-field h-12 w-full rounded-xl border border-[#ddddea] bg-white px-4 text-sm text-[#22283b] outline-none placeholder:text-[#a4a7b3] focus:border-[#7b70e2] focus:ring-4 focus:ring-[#6560c9]/10"
                 />
               </div>
-            </div>
 
-            <div>
-              <div className="mb-2 flex items-center justify-between">
-                <label
-                  className="text-sm font-semibold text-slate-700"
-                  htmlFor="password"
-                >
-                  Password
-                </label>
+              <div>
+                <div className="mb-2 flex items-center justify-between gap-4">
+                  <label
+                    className="text-sm font-medium text-[#23233e]"
+                    htmlFor="password"
+                  >
+                    Password
+                  </label>
 
-                <Link
-                  to="/forgot-password"
-                  className="text-xs font-semibold text-violet-600 transition hover:text-violet-800"
-                >
-                  Administrator forgot password?
-                </Link>
+                  <Link
+                    to="/forgot-password"
+                    className="text-xs font-semibold text-[#704dea] transition hover:text-[#514caf]"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
+
+                <div className="relative">
+                  <input
+                    id="password"
+                    type={
+                      showPassword
+                        ? 'text'
+                        : 'password'
+                    }
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(event) =>
+                      setPassword(
+                        event.target.value,
+                      )
+                    }
+                    placeholder="Enter your password"
+                    className="secura-login-field h-12 w-full rounded-xl border border-[#ddddea] bg-white px-4 pr-12 text-sm text-[#22283b] outline-none placeholder:text-[#a4a7b3] focus:border-[#7b70e2] focus:ring-4 focus:ring-[#6560c9]/10"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setShowPassword(
+                        (current) =>
+                          !current,
+                      )
+                    }
+                    className="secura-login-eye absolute right-4 top-1/2 grid -translate-y-1/2 place-items-center text-[#9094a2] hover:text-[#514caf]"
+                    aria-label={
+                      showPassword
+                        ? 'Hide password'
+                        : 'Show password'
+                    }
+                  >
+                    {showPassword ? (
+                      <EyeOff size={17} />
+                    ) : (
+                      <Eye size={17} />
+                    )}
+                  </button>
+                </div>
               </div>
 
-              <div className="relative">
-                <LockKeyhole
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-                  size={19}
-                />
-
-                <input
-                  id="password"
-                  type={showPassword ? 'text' : 'password'}
-                  autoComplete="current-password"
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  placeholder="Enter your password"
-                  className="h-13 w-full rounded-xl border border-slate-200 bg-white py-3 pl-12 pr-12 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
-                />
-
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((current) => !current)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-slate-700"
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+              {error && (
+                <div
+                  role="alert"
+                  className="secura-login-alert rounded-xl border border-[#f1d4d0] bg-[#fff6f4] px-4 py-3 text-sm text-[#9f4e46]"
                 >
-                  {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
-                </button>
-              </div>
-            </div>
+                  {error}
+                </div>
+              )}
 
-            {error && (
-              <div
-                role="alert"
-                className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+              <button
+                type="submit"
+                disabled={submitting}
+                className="secura-login-submit flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#6b5bd6] px-5 text-sm font-semibold text-white focus:outline-none focus:ring-4 focus:ring-[#6560c9]/20 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {error}
-              </div>
-            )}
+                {submitting && (
+                  <LoaderCircle
+                    size={16}
+                    className="animate-spin"
+                  />
+                )}
 
-            <button
-              type="submit"
-              disabled={submitting}
-              className="flex w-full items-center justify-center rounded-xl bg-violet-600 px-5 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-700 focus:outline-none focus:ring-4 focus:ring-violet-200 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {submitting ? 'Signing in...' : 'Sign in'}
-            </button>
-          </form>
+                {submitting
+                  ? 'Signing in...'
+                  : 'Sign In'}
+              </button>
+            </form>
 
-          <div className="mt-8 flex items-center gap-3 text-xs text-slate-400">
-            <div className="h-px flex-1 bg-slate-200" />
-            <span>Protected access</span>
-            <div className="h-px flex-1 bg-slate-200" />
+            <div className="mt-8 flex items-center gap-3 text-[10px] text-[#a0a4b0]">
+              <div className="h-px flex-1 bg-[#e9eaf0]" />
+
+              <span>
+                Protected access
+              </span>
+
+              <div className="h-px flex-1 bg-[#e9eaf0]" />
+            </div>
+
+            <p className="mt-5 text-center text-[10px] leading-5 text-[#9da1ad]">
+              Access is restricted to authorized Secura users. Authentication
+              activity may be recorded for security auditing.
+            </p>
           </div>
-
-          <p className="mt-6 text-center text-xs leading-5 text-slate-400">
-            Access is restricted to authorized Secura users. Authentication
-            activity may be recorded for security auditing.
-          </p>
-        </div>
-      </section>
+        </section>
+      </div>
     </main>
   )
 }

@@ -46,6 +46,56 @@ def get_client_ip(
     return request.client.host
 
 
+def get_owned_anonymized_document(
+    document_id: int,
+    request: Request,
+    current_user: User,
+    db: Session,
+) -> Document:
+    document = db.get(
+        Document,
+        document_id
+    )
+
+    if document is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Document not found"
+        )
+
+    if document.owner_id != current_user.id:
+        record_audit_event(
+            action="UNAUTHORIZED_ACCESS",
+            user_id=current_user.id,
+            resource_type="document",
+            resource_id=document.id,
+            details=(
+                "Unauthorized anonymized "
+                "document access-management attempt"
+            ),
+            ip_address=get_client_ip(request),
+        )
+
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "Only the document owner can "
+                "manage access to this document"
+            )
+        )
+
+    if document.anonymized_file_path is None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=(
+                "Anonymized file is not "
+                "available yet"
+            )
+        )
+
+    return document
+
+
 @router.get(
     "/my-anonymized",
     response_model=list[
@@ -178,6 +228,66 @@ def get_shared_with_me(
     ]
 
 
+@router.get(
+    "/{document_id}/shares"
+)
+def get_document_shares(
+    document_id: int,
+    request: Request,
+    current_user: User = Depends(
+        get_current_user
+    ),
+    db: Session = Depends(get_db)
+):
+    document = get_owned_anonymized_document(
+        document_id=document_id,
+        request=request,
+        current_user=current_user,
+        db=db,
+    )
+
+    statement = (
+        select(
+            DocumentShare,
+            Department.name,
+        )
+        .join(
+            Department,
+            DocumentShare.department_id
+            == Department.id
+        )
+        .where(
+            DocumentShare.document_id
+            == document.id
+        )
+        .order_by(
+            Department.name.asc()
+        )
+    )
+
+    rows = db.execute(
+        statement
+    ).all()
+
+    return [
+        {
+            "document_id":
+                document.id,
+
+            "department_id":
+                document_share.department_id,
+
+            "department_name":
+                department_name,
+
+            "shared":
+                True,
+        }
+        for document_share, department_name
+        in rows
+    ]
+
+
 @router.post(
     "/{document_id}/share",
     response_model=ShareDocumentResponse,
@@ -192,46 +302,12 @@ def share_anonymized_document(
     ),
     db: Session = Depends(get_db)
 ):
-    document = db.get(
-        Document,
-        document_id
+    document = get_owned_anonymized_document(
+        document_id=document_id,
+        request=request,
+        current_user=current_user,
+        db=db,
     )
-
-    if document is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Document not found"
-        )
-
-    if document.owner_id != current_user.id:
-        record_audit_event(
-            action="UNAUTHORIZED_ACCESS",
-            user_id=current_user.id,
-            resource_type="document",
-            resource_id=document.id,
-            details=(
-                "Unauthorized anonymized "
-                "document sharing attempt"
-            ),
-            ip_address=get_client_ip(request),
-        )
-
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail=(
-                "Only the document owner "
-                "can share this document"
-            )
-        )
-
-    if document.anonymized_file_path is None:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail=(
-                "Anonymized file is not "
-                "available yet"
-            )
-        )
 
     department = db.get(
         Department,
@@ -301,6 +377,102 @@ def share_anonymized_document(
     }
 
 
+@router.delete(
+    "/{document_id}/share/{department_id}",
+    response_model=ShareDocumentResponse,
+)
+def revoke_anonymized_document_share(
+    document_id: int,
+    department_id: int,
+    request: Request,
+    current_user: User = Depends(
+        get_current_user
+    ),
+    db: Session = Depends(get_db)
+):
+    document = get_owned_anonymized_document(
+        document_id=document_id,
+        request=request,
+        current_user=current_user,
+        db=db,
+    )
+
+    department = db.get(
+        Department,
+        department_id
+    )
+
+    if department is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Department not found"
+        )
+
+    existing_share = db.scalar(
+        select(DocumentShare).where(
+            DocumentShare.document_id
+            == document.id,
+
+            DocumentShare.department_id
+            == department.id
+        )
+    )
+
+    if existing_share is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=(
+                "Document is not shared "
+                "with this department"
+            )
+        )
+
+    db.delete(existing_share)
+    db.flush()
+
+    remaining_share = db.scalar(
+        select(DocumentShare).where(
+            DocumentShare.document_id
+            == document.id
+        )
+    )
+
+    document.is_private = (
+        remaining_share is None
+    )
+
+    db.commit()
+
+    record_audit_event(
+        action=(
+            "ANONYMIZED_DOCUMENT_SHARE_REVOKED"
+        ),
+        user_id=current_user.id,
+        resource_type="document",
+        resource_id=document.id,
+        details=(
+            f"Anonymized document sharing "
+            f"revoked for department "
+            f"{department.name}"
+        ),
+        ip_address=get_client_ip(request),
+    )
+
+    return {
+        "document_id":
+            document.id,
+
+        "department_id":
+            department.id,
+
+        "department_name":
+            department.name,
+
+        "shared":
+            False,
+    }
+
+
 @router.get(
     "/{document_id}/download-anonymized"
 )
@@ -326,7 +498,9 @@ def download_anonymized_document(
     if document.anonymized_file_path is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Anonymized file is not available"
+            detail=(
+                "Anonymized file is not available"
+            )
         )
 
     is_owner = (

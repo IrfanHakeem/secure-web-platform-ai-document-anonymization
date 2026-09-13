@@ -28,47 +28,85 @@ function getInitials(name) {
     .toUpperCase()
 }
 
-function getGreeting() {
-  const hour = new Date().getHours()
+function getGreetingInfo(date) {
+  const hour = date.getHours()
 
-  if (hour < 12) {
-    return 'Good morning'
+  if (hour >= 5 && hour < 12) {
+    return {
+      text: 'Good morning',
+      period: 'morning',
+    }
   }
 
-  if (hour < 18) {
-    return 'Good afternoon'
+  if (hour >= 12 && hour < 17) {
+    return {
+      text: 'Good afternoon',
+      period: 'afternoon',
+    }
   }
 
-  return 'Good evening'
+  if (hour >= 17 && hour < 21) {
+    return {
+      text: 'Good evening',
+      period: 'evening',
+    }
+  }
+
+  return {
+    text: 'Good night',
+    period: 'night',
+  }
 }
 
 function UserDashboard() {
   const navigate = useNavigate()
   const { user, logout } = useAuth()
 
-  const [requestCounts, setRequestCounts] = useState({
-    myRequests: null,
-    ownerApprovals: null,
-  })
+  const [currentTime, setCurrentTime] =
+    useState(() => new Date())
+
+  const [requestCounts, setRequestCounts] =
+    useState({
+      myRequests: null,
+      ownerApprovals: null,
+    })
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setCurrentTime(new Date())
+    }, 60 * 1000)
+
+    return () => {
+      window.clearInterval(timer)
+    }
+  }, [])
 
   useEffect(() => {
     let cancelled = false
 
     const loadCounts = async () => {
       try {
-        const [myRequestsResponse, ownerPendingResponse] =
-          await Promise.all([
-            api.get('/original-file-requests/my-requests'),
-            api.get('/original-file-requests/owner/pending'),
-          ])
+        const [
+          myRequestsResponse,
+          ownerPendingResponse,
+        ] = await Promise.all([
+          api.get(
+            '/original-file-requests/my-requests',
+          ),
+          api.get(
+            '/original-file-requests/owner/pending',
+          ),
+        ])
 
         if (cancelled) {
           return
         }
 
         setRequestCounts({
-          myRequests: myRequestsResponse.data.length,
-          ownerApprovals: ownerPendingResponse.data.length,
+          myRequests:
+            myRequestsResponse.data.length,
+          ownerApprovals:
+            ownerPendingResponse.data.length,
         })
       } catch {
         if (cancelled) {
@@ -94,7 +132,11 @@ function UserDashboard() {
     user?.username ||
     'User'
 
-  const firstName = displayName.split(' ')[0]
+  const firstName =
+    displayName.split(' ')[0]
+
+  const greeting =
+    getGreetingInfo(currentTime)
 
   const handleLogout = () => {
     logout()
@@ -110,7 +152,10 @@ function UserDashboard() {
         <header className="secura-topbar">
           <div className="secura-topbar-title">
             <div className="secura-topbar-brand">
-              <span className="secura-brand-mark">S</span>
+              <span className="secura-brand-mark">
+                S
+              </span>
+
               <span>Secura</span>
             </div>
 
@@ -119,12 +164,22 @@ function UserDashboard() {
                 SECURE WORKSPACE
               </p>
 
-              <h1>
-                {getGreeting()}, {firstName}!
+              <h1
+                className={`secura-dashboard-greeting secura-dashboard-greeting-${greeting.period}`}
+                aria-live="polite"
+              >
+                <span
+                  key={greeting.text}
+                  className="secura-dashboard-greeting-text"
+                >
+                  {greeting.text},
+                </span>{' '}
+                {firstName}!
               </h1>
 
               <p className="secura-subtitle">
-                Here is an overview of your secure document workspace.
+                Here is an overview of your secure
+                document workspace.
               </p>
             </div>
           </div>
@@ -133,7 +188,9 @@ function UserDashboard() {
             <button
               type="button"
               className="secura-user-menu"
-              onClick={() => navigate('/user/profile')}
+              onClick={() =>
+                navigate('/user/profile')
+              }
             >
               <span className="secura-avatar">
                 {getInitials(displayName)}
@@ -141,7 +198,10 @@ function UserDashboard() {
 
               <span>
                 <b>{displayName}</b>
-                <small>{user?.role || 'User'}</small>
+
+                <small>
+                  {user?.role || 'User'}
+                </small>
               </span>
 
               <span className="secura-chevron">
@@ -155,6 +215,7 @@ function UserDashboard() {
               onClick={handleLogout}
             >
               Log out
+
               <LogOut size={14} />
             </button>
           </div>
@@ -170,8 +231,8 @@ function UserDashboard() {
           </h2>
 
           <p>
-            Choose a workspace to continue managing your protected
-            documents.
+            Choose a workspace to continue
+            managing your protected documents.
           </p>
         </section>
 
@@ -179,17 +240,22 @@ function UserDashboard() {
           <button
             type="button"
             className="secura-workspace-card"
-            onClick={() => navigate('/user/anonymize')}
+            onClick={() =>
+              navigate('/user/anonymize')
+            }
           >
             <span className="secura-workspace-icon">
               <Sparkles size={20} />
             </span>
 
             <span className="secura-workspace-copy">
-              <b>Anonymize document</b>
+              <b>
+                Anonymize document
+              </b>
 
               <small>
-                Upload a document and protect sensitive information.
+                Upload a document and protect
+                sensitive information.
               </small>
             </span>
 
@@ -202,17 +268,22 @@ function UserDashboard() {
           <button
             type="button"
             className="secura-workspace-card secura-accent-blue"
-            onClick={() => navigate('/user/library')}
+            onClick={() =>
+              navigate('/user/library')
+            }
           >
             <span className="secura-workspace-icon">
               <Library size={20} />
             </span>
 
             <span className="secura-workspace-copy">
-              <b>Anonymized file library</b>
+              <b>
+                Anonymized file library
+              </b>
 
               <small>
-                View your anonymized files and files shared with your
+                View your anonymized files and
+                files shared with your
                 department.
               </small>
             </span>
@@ -226,18 +297,25 @@ function UserDashboard() {
           <button
             type="button"
             className="secura-workspace-card secura-accent-mint"
-            onClick={() => navigate('/user/approved-originals')}
+            onClick={() =>
+              navigate(
+                '/user/approved-originals',
+              )
+            }
           >
             <span className="secura-workspace-icon">
               <FolderCheck size={20} />
             </span>
 
             <span className="secura-workspace-copy">
-              <b>Approval file library</b>
+              <b>
+                Approval file library
+              </b>
 
               <small>
-                View approved original files, verify their integrity,
-                and securely download them.
+                View approved original files,
+                verify their integrity, and
+                securely download them.
               </small>
             </span>
 
@@ -251,17 +329,24 @@ function UserDashboard() {
             <button
               type="button"
               className="secura-original-heading"
-              onClick={() => navigate('/user/original-access')}
+              onClick={() =>
+                navigate(
+                  '/user/original-access',
+                )
+              }
             >
               <span className="secura-workspace-icon">
                 <Clock3 size={20} />
               </span>
 
               <span className="secura-workspace-copy">
-                <b>Original access</b>
+                <b>
+                  Original access
+                </b>
 
                 <small>
-                  Request or review access to original documents.
+                  Request or review access to
+                  original documents.
                 </small>
               </span>
 
@@ -274,37 +359,55 @@ function UserDashboard() {
             <div className="secura-original-actions">
               <button
                 type="button"
-                onClick={() => navigate('/user/my-requests')}
+                onClick={() =>
+                  navigate(
+                    '/user/my-requests',
+                  )
+                }
               >
                 <span className="secura-action-label">
                   <FileText size={14} />
+
                   My requests
                 </span>
 
                 <span className="secura-action-right">
                   <span className="secura-pill-count">
-                    {requestCounts.myRequests ?? '—'}
+                    {requestCounts.myRequests ??
+                      '—'}
                   </span>
 
-                  <ArrowRight size={13} />
+                  <ArrowRight
+                    size={13}
+                  />
                 </span>
               </button>
 
               <button
                 type="button"
-                onClick={() => navigate('/user/owner-approvals')}
+                onClick={() =>
+                  navigate(
+                    '/user/owner-approvals',
+                  )
+                }
               >
                 <span className="secura-action-label">
-                  <FileCheck2 size={14} />
+                  <FileCheck2
+                    size={14}
+                  />
+
                   Owner approval
                 </span>
 
                 <span className="secura-action-right">
                   <span className="secura-pill-count">
-                    {requestCounts.ownerApprovals ?? '—'}
+                    {requestCounts.ownerApprovals ??
+                      '—'}
                   </span>
 
-                  <ArrowRight size={13} />
+                  <ArrowRight
+                    size={13}
+                  />
                 </span>
               </button>
             </div>
