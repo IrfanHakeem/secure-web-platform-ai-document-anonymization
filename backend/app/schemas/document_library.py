@@ -11,6 +11,8 @@ class AnonymizedDocumentResponse(BaseModel):
     owner_id: int
     owner_username: str
     is_private: bool
+    is_archived: bool = False
+    archived_at: datetime | None = None
     created_at: datetime
 
 
