@@ -1,0 +1,28 @@
+SECURA PII PILOT EVALUATION
+================================
+Dataset: Secura_Evaluation_Dataset.xlsx
+Test records: 30
+Expected PII occurrences: 66
+Matching rule: exact entity span + entity type
+
+Per-type detection metrics:
+- NAME: Precision=100.00% | Recall=93.75% | F1=96.77% | TP=15 FP=0 FN=1
+- EMAIL: Precision=100.00% | Recall=100.00% | F1=100.00% | TP=19 FP=0 FN=0
+- PHONE: Precision=100.00% | Recall=94.12% | F1=96.97% | TP=16 FP=0 FN=1
+- MALAYSIAN_IC: Precision=93.33% | Recall=100.00% | F1=96.55% | TP=14 FP=1 FN=0
+
+Overall (micro-averaged):
+- Precision: 98.46%
+- Recall: 96.97%
+- F1-score: 97.71%
+
+End-to-end anonymization coverage:
+- Expected PII removed: 64/66
+- Coverage: 96.97%
+
+Important:
+- This is a pilot evaluation for progress presentation.
+- For the final FYP, expand the dataset and independently review labels.
+- Precision = proportion of detected entities that are correct.
+- Recall = proportion of ground-truth PII entities that are found.
+- F1-score = harmonic balance between Precision and Recall.
