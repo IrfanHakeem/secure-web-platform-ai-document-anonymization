@@ -42,4 +42,6 @@ htmlcov/
 
 backend/storage/
 
-backend/dev_seed_users.py
+backend/dev_seed_users.pycerts/
+/certs/
+/certs/
