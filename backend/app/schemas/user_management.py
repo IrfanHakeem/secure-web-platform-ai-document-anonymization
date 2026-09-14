@@ -34,3 +34,7 @@ class AdminCreateUserRequest(BaseModel):
 
 class UserDepartmentUpdate(BaseModel):
     department_id: int
+
+
+class UserStatusUpdate(BaseModel):
+    is_active: bool

@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from pathlib import Path
 
 from fastapi import (
@@ -19,6 +20,7 @@ from app.core.dependencies import (
 from app.models.department import Department
 from app.models.document import Document
 from app.models.document_share import DocumentShare
+from app.models.original_file_request import OriginalFileRequest
 from app.models.user import User
 from app.schemas.document_library import (
     AnonymizedDocumentResponse,
@@ -46,6 +48,65 @@ def get_client_ip(
     return request.client.host
 
 
+def get_owned_anonymized_document(
+    document_id: int,
+    request: Request,
+    current_user: User,
+    db: Session,
+) -> Document:
+    document = db.get(
+        Document,
+        document_id
+    )
+
+    if document is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Document not found"
+        )
+
+    if document.owner_id != current_user.id:
+        record_audit_event(
+            action="UNAUTHORIZED_ACCESS",
+            user_id=current_user.id,
+            resource_type="document",
+            resource_id=document.id,
+            details=(
+                "Unauthorized anonymized "
+                "document access-management attempt"
+            ),
+            ip_address=get_client_ip(request),
+        )
+
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "Only the document owner can "
+                "manage access to this document"
+            )
+        )
+
+    if document.is_archived:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=(
+                "Document has been removed "
+                "from the active library"
+            )
+        )
+
+    if document.anonymized_file_path is None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=(
+                "Anonymized file is not "
+                "available yet"
+            )
+        )
+
+    return document
+
+
 @router.get(
     "/my-anonymized",
     response_model=list[
@@ -66,6 +127,9 @@ def get_my_anonymized_files(
 
             Document.anonymized_file_path
             .is_not(None),
+
+            Document.is_archived
+            .is_(False),
         )
         .order_by(
             Document.created_at.desc()
@@ -94,6 +158,78 @@ def get_my_anonymized_files(
 
             "is_private":
                 document.is_private,
+
+            "is_archived":
+                document.is_archived,
+
+            "archived_at":
+                document.archived_at,
+
+            "created_at":
+                document.created_at,
+        }
+        for document in documents
+    ]
+
+
+@router.get(
+    "/archived",
+    response_model=list[
+        AnonymizedDocumentResponse
+    ]
+)
+def get_archived_anonymized_files(
+    current_user: User = Depends(
+        get_current_user
+    ),
+    db: Session = Depends(get_db)
+):
+    documents = db.scalars(
+        select(Document)
+        .where(
+            Document.owner_id
+            == current_user.id,
+
+            Document.anonymized_file_path
+            .is_not(None),
+
+            Document.is_archived
+            .is_(True),
+        )
+        .order_by(
+            Document.archived_at.desc(),
+            Document.created_at.desc(),
+        )
+    ).all()
+
+    return [
+        {
+            "id":
+                document.id,
+
+            "original_filename":
+                document.original_filename,
+
+            "file_type":
+                document.file_type,
+
+            "file_size":
+                document.file_size,
+
+            "owner_id":
+                current_user.id,
+
+            "owner_username":
+                current_user.username,
+
+            "is_private":
+                True,
+
+            "is_archived":
+                True,
+
+            "archived_at":
+                document.archived_at,
 
             "created_at":
                 document.created_at,
@@ -138,6 +274,9 @@ def get_shared_with_me(
 
             Document.anonymized_file_path
             .is_not(None),
+
+            Document.is_archived
+            .is_(False),
         )
         .order_by(
             Document.created_at.desc()
@@ -171,10 +310,76 @@ def get_shared_with_me(
             "is_private":
                 document.is_private,
 
+            "is_archived":
+                document.is_archived,
+
+            "archived_at":
+                document.archived_at,
+
             "created_at":
                 document.created_at,
         }
         for document, owner_username in rows
+    ]
+
+
+@router.get(
+    "/{document_id}/shares"
+)
+def get_document_shares(
+    document_id: int,
+    request: Request,
+    current_user: User = Depends(
+        get_current_user
+    ),
+    db: Session = Depends(get_db)
+):
+    document = get_owned_anonymized_document(
+        document_id=document_id,
+        request=request,
+        current_user=current_user,
+        db=db,
+    )
+
+    statement = (
+        select(
+            DocumentShare,
+            Department.name,
+        )
+        .join(
+            Department,
+            DocumentShare.department_id
+            == Department.id
+        )
+        .where(
+            DocumentShare.document_id
+            == document.id
+        )
+        .order_by(
+            Department.name.asc()
+        )
+    )
+
+    rows = db.execute(
+        statement
+    ).all()
+
+    return [
+        {
+            "document_id":
+                document.id,
+
+            "department_id":
+                document_share.department_id,
+
+            "department_name":
+                department_name,
+
+            "shared":
+                True,
+        }
+        for document_share, department_name
+        in rows
     ]
 
 
@@ -192,46 +397,12 @@ def share_anonymized_document(
     ),
     db: Session = Depends(get_db)
 ):
-    document = db.get(
-        Document,
-        document_id
+    document = get_owned_anonymized_document(
+        document_id=document_id,
+        request=request,
+        current_user=current_user,
+        db=db,
     )
-
-    if document is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Document not found"
-        )
-
-    if document.owner_id != current_user.id:
-        record_audit_event(
-            action="UNAUTHORIZED_ACCESS",
-            user_id=current_user.id,
-            resource_type="document",
-            resource_id=document.id,
-            details=(
-                "Unauthorized anonymized "
-                "document sharing attempt"
-            ),
-            ip_address=get_client_ip(request),
-        )
-
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail=(
-                "Only the document owner "
-                "can share this document"
-            )
-        )
-
-    if document.anonymized_file_path is None:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail=(
-                "Anonymized file is not "
-                "available yet"
-            )
-        )
 
     department = db.get(
         Department,
@@ -301,6 +472,300 @@ def share_anonymized_document(
     }
 
 
+@router.delete(
+    "/{document_id}/share/{department_id}",
+    response_model=ShareDocumentResponse,
+)
+def revoke_anonymized_document_share(
+    document_id: int,
+    department_id: int,
+    request: Request,
+    current_user: User = Depends(
+        get_current_user
+    ),
+    db: Session = Depends(get_db)
+):
+    document = get_owned_anonymized_document(
+        document_id=document_id,
+        request=request,
+        current_user=current_user,
+        db=db,
+    )
+
+    department = db.get(
+        Department,
+        department_id
+    )
+
+    if department is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Department not found"
+        )
+
+    existing_share = db.scalar(
+        select(DocumentShare).where(
+            DocumentShare.document_id
+            == document.id,
+
+            DocumentShare.department_id
+            == department.id
+        )
+    )
+
+    if existing_share is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=(
+                "Document is not shared "
+                "with this department"
+            )
+        )
+
+    db.delete(existing_share)
+    db.flush()
+
+    remaining_share = db.scalar(
+        select(DocumentShare).where(
+            DocumentShare.document_id
+            == document.id
+        )
+    )
+
+    document.is_private = (
+        remaining_share is None
+    )
+
+    db.commit()
+
+    record_audit_event(
+        action=(
+            "ANONYMIZED_DOCUMENT_SHARE_REVOKED"
+        ),
+        user_id=current_user.id,
+        resource_type="document",
+        resource_id=document.id,
+        details=(
+            f"Anonymized document sharing "
+            f"revoked for department "
+            f"{department.name}"
+        ),
+        ip_address=get_client_ip(request),
+    )
+
+    return {
+        "document_id":
+            document.id,
+
+        "department_id":
+            department.id,
+
+        "department_name":
+            department.name,
+
+        "shared":
+            False,
+    }
+
+
+@router.patch(
+    "/{document_id}/archive"
+)
+def archive_anonymized_document(
+    document_id: int,
+    request: Request,
+    current_user: User = Depends(
+        get_current_user
+    ),
+    db: Session = Depends(get_db)
+):
+    document = get_owned_anonymized_document(
+        document_id=document_id,
+        request=request,
+        current_user=current_user,
+        db=db,
+    )
+
+    active_request = db.scalar(
+        select(OriginalFileRequest).where(
+            OriginalFileRequest.document_id
+            == document.id,
+
+            OriginalFileRequest.status.in_(
+                {
+                    "PENDING_OWNER",
+                    "PENDING_SECURITY",
+                }
+            ),
+        )
+    )
+
+    if active_request is not None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=(
+                "Resolve pending original-access "
+                "requests before removing this "
+                "document from the library"
+            )
+        )
+
+    existing_shares = db.scalars(
+        select(DocumentShare).where(
+            DocumentShare.document_id
+            == document.id
+        )
+    ).all()
+
+    revoked_share_count = len(
+        existing_shares
+    )
+
+    for document_share in existing_shares:
+        db.delete(document_share)
+
+    document.is_private = True
+    document.is_archived = True
+    document.archived_at = (
+        datetime.now(
+            timezone.utc
+        )
+        .replace(tzinfo=None)
+    )
+
+    db.commit()
+    db.refresh(document)
+
+    record_audit_event(
+        action=(
+            "ANONYMIZED_DOCUMENT_ARCHIVED"
+        ),
+        user_id=current_user.id,
+        resource_type="document",
+        resource_id=document.id,
+        details=(
+            "Anonymized document removed "
+            "from active library; "
+            f"{revoked_share_count} department "
+            "share(s) revoked"
+        ),
+        ip_address=get_client_ip(request),
+    )
+
+    return {
+        "document_id": document.id,
+        "archived": True,
+        "archived_at": (
+            document.archived_at
+        ),
+        "revoked_share_count": (
+            revoked_share_count
+        ),
+    }
+
+
+@router.patch(
+    "/{document_id}/restore"
+)
+def restore_anonymized_document(
+    document_id: int,
+    request: Request,
+    current_user: User = Depends(
+        get_current_user
+    ),
+    db: Session = Depends(get_db)
+):
+    document = db.get(
+        Document,
+        document_id
+    )
+
+    if document is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Document not found"
+        )
+
+    if document.owner_id != current_user.id:
+        record_audit_event(
+            action="UNAUTHORIZED_ACCESS",
+            user_id=current_user.id,
+            resource_type="document",
+            resource_id=document.id,
+            details=(
+                "Unauthorized archived "
+                "document restore attempt"
+            ),
+            ip_address=get_client_ip(request),
+        )
+
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "Only the document owner can "
+                "restore this document"
+            )
+        )
+
+    if not document.is_archived:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=(
+                "Document is already in the "
+                "active library"
+            )
+        )
+
+    if document.anonymized_file_path is None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=(
+                "Anonymized file is not "
+                "available for restore"
+            )
+        )
+
+    # Restores are private by default. Previous department
+    # shares were intentionally revoked during archive and
+    # are not silently recreated.
+    remaining_shares = db.scalars(
+        select(DocumentShare).where(
+            DocumentShare.document_id
+            == document.id
+        )
+    ).all()
+
+    for document_share in remaining_shares:
+        db.delete(document_share)
+
+    document.is_private = True
+    document.is_archived = False
+    document.archived_at = None
+
+    db.commit()
+    db.refresh(document)
+
+    record_audit_event(
+        action=(
+            "ANONYMIZED_DOCUMENT_RESTORED"
+        ),
+        user_id=current_user.id,
+        resource_type="document",
+        resource_id=document.id,
+        details=(
+            "Anonymized document restored "
+            "to active library as private"
+        ),
+        ip_address=get_client_ip(request),
+    )
+
+    return {
+        "document_id": document.id,
+        "restored": True,
+        "is_private": True,
+    }
+
+
 @router.get(
     "/{document_id}/download-anonymized"
 )
@@ -323,10 +788,21 @@ def download_anonymized_document(
             detail="Document not found"
         )
 
+    if document.is_archived:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=(
+                "Document is no longer available "
+                "in the active library"
+            )
+        )
+
     if document.anonymized_file_path is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Anonymized file is not available"
+            detail=(
+                "Anonymized file is not available"
+            )
         )
 
     is_owner = (

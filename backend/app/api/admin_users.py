@@ -21,13 +21,14 @@ from app.schemas.user_management import (
     AdminUserResponse,
     PasswordResetRequest,
     UserDepartmentUpdate,
+    UserStatusUpdate,
 )
 from app.services.audit_service import record_audit_event
 
 
 router = APIRouter(
     prefix="/admin/users",
-    tags=["Admin User Management"]
+    tags=["Admin User Management"],
 )
 
 
@@ -39,7 +40,6 @@ EMAIL_PATTERN = re.compile(
 def get_client_ip(
     request: Request
 ) -> str | None:
-
     if request.client is None:
         return None
 
@@ -50,57 +50,70 @@ def build_user_response(
     user: User,
     role_name: str
 ) -> dict:
-
     department_name = None
 
     if user.department is not None:
         department_name = user.department.name
 
     return {
-        "id":
-            user.id,
-
-        "username":
-            user.username,
-
-        "full_name":
-            user.full_name,
-
-        "email":
-            user.email,
-
-        "role":
-            role_name,
-
-        "department_id":
-            user.department_id,
-
-        "department_name":
-            department_name,
-
-        "is_active":
-            user.is_active,
+        "id": user.id,
+        "username": user.username,
+        "full_name": user.full_name,
+        "email": user.email,
+        "role": role_name,
+        "department_id": user.department_id,
+        "department_name": department_name,
+        "is_active": user.is_active,
     }
+
+
+def get_target_user_and_role(
+    user_id: int,
+    db: Session,
+) -> tuple[User, Role]:
+    target_user = db.get(
+        User,
+        user_id,
+    )
+
+    if target_user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found",
+        )
+
+    target_role = db.get(
+        Role,
+        target_user.role_id,
+    )
+
+    if target_role is None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="User role is unavailable",
+        )
+
+    return target_user, target_role
 
 
 @router.get(
     "",
-    response_model=list[AdminUserResponse]
+    response_model=list[AdminUserResponse],
 )
 def list_users(
     current_user: User = Depends(
         require_role("Administrator")
     ),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     statement = (
         select(
             User,
-            Role.name
+            Role.name,
         )
         .join(
             Role,
-            User.role_id == Role.id
+            User.role_id == Role.id,
         )
         .order_by(
             User.id
@@ -114,7 +127,7 @@ def list_users(
     return [
         build_user_response(
             user,
-            role_name
+            role_name,
         )
         for user, role_name in rows
     ]
@@ -123,7 +136,7 @@ def list_users(
 @router.post(
     "",
     response_model=AdminUserResponse,
-    status_code=status.HTTP_201_CREATED
+    status_code=status.HTTP_201_CREATED,
 )
 def create_user(
     user_data: AdminCreateUserRequest,
@@ -131,7 +144,7 @@ def create_user(
     current_user: User = Depends(
         require_role("Administrator")
     ),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     full_name = (
         user_data.full_name.strip()
@@ -148,19 +161,19 @@ def create_user(
     if not full_name:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Full name cannot be empty"
+            detail="Full name cannot be empty",
         )
 
     if not username:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Username cannot be empty"
+            detail="Username cannot be empty",
         )
 
     if not email:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email cannot be empty"
+            detail="Email cannot be empty",
         )
 
     if EMAIL_PATTERN.fullmatch(
@@ -168,13 +181,13 @@ def create_user(
     ) is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid email format"
+            detail="Invalid email format",
         )
 
     if not user_data.password:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Password cannot be empty"
+            detail="Password cannot be empty",
         )
 
     if len(
@@ -182,7 +195,7 @@ def create_user(
     ) > 72:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Password is too long for bcrypt"
+            detail="Password is too long for bcrypt",
         )
 
     existing_username = db.scalar(
@@ -195,7 +208,7 @@ def create_user(
     if existing_username is not None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="Username already exists"
+            detail="Username already exists",
         )
 
     existing_email = db.scalar(
@@ -208,7 +221,7 @@ def create_user(
     if existing_email is not None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="Email already exists"
+            detail="Email already exists",
         )
 
     role = db.scalar(
@@ -220,31 +233,30 @@ def create_user(
     if role is None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid role"
+            detail="Invalid role",
         )
 
     department_id = None
 
     if user_data.role == "User":
-
         if user_data.department_id is None:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=(
                     "Department is required "
                     "for User accounts"
-                )
+                ),
             )
 
         department = db.get(
             Department,
-            user_data.department_id
+            user_data.department_id,
         )
 
         if department is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Department not found"
+                detail="Department not found",
             )
 
         department_id = (
@@ -290,13 +302,13 @@ def create_user(
 
     return build_user_response(
         new_user,
-        role.name
+        role.name,
     )
 
 
 @router.patch(
     "/{user_id}/department",
-    response_model=AdminUserResponse
+    response_model=AdminUserResponse,
 )
 def update_user_department(
     user_id: int,
@@ -305,45 +317,33 @@ def update_user_department(
     current_user: User = Depends(
         require_role("Administrator")
     ),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
-    target_user = db.get(
-        User,
-        user_id
-    )
-
-    if target_user is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found"
+    target_user, role = (
+        get_target_user_and_role(
+            user_id,
+            db,
         )
-
-    role = db.get(
-        Role,
-        target_user.role_id
     )
 
-    if (
-        role is None
-        or role.name != "User"
-    ):
+    if role.name != "User":
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=(
                 "Only User accounts can "
                 "be assigned to departments"
-            )
+            ),
         )
 
     department = db.get(
         Department,
-        department_data.department_id
+        department_data.department_id,
     )
 
     if department is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Department not found"
+            detail="Department not found",
         )
 
     target_user.department_id = (
@@ -374,7 +374,85 @@ def update_user_department(
 
     return build_user_response(
         target_user,
-        role.name
+        role.name,
+    )
+
+
+@router.patch(
+    "/{user_id}/status",
+    response_model=AdminUserResponse,
+)
+def update_user_status(
+    user_id: int,
+    status_data: UserStatusUpdate,
+    request: Request,
+    current_user: User = Depends(
+        require_role("Administrator")
+    ),
+    db: Session = Depends(get_db),
+):
+    target_user, target_role = (
+        get_target_user_and_role(
+            user_id,
+            db,
+        )
+    )
+
+    if target_role.name == "Administrator":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "Administrator accounts cannot "
+                "be deactivated or reactivated "
+                "through User Management"
+            ),
+        )
+
+    if (
+        target_user.is_active
+        == status_data.is_active
+    ):
+        return build_user_response(
+            target_user,
+            target_role.name,
+        )
+
+    target_user.is_active = (
+        status_data.is_active
+    )
+
+    db.commit()
+    db.refresh(target_user)
+
+    action = (
+        "USER_REACTIVATED"
+        if target_user.is_active
+        else "USER_DEACTIVATED"
+    )
+
+    state_label = (
+        "reactivated"
+        if target_user.is_active
+        else "deactivated"
+    )
+
+    record_audit_event(
+        action=action,
+        user_id=current_user.id,
+        resource_type="user",
+        resource_id=target_user.id,
+        details=(
+            f"Account {state_label}: "
+            f"{target_user.username}"
+        ),
+        ip_address=get_client_ip(
+            request
+        ),
+    )
+
+    return build_user_response(
+        target_user,
+        target_role.name,
     )
 
 
@@ -388,27 +466,17 @@ def reset_user_password(
     current_user: User = Depends(
         require_role("Administrator")
     ),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
-    target_user = db.get(
-        User,
-        user_id
-    )
-
-    if target_user is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found"
+    target_user, target_role = (
+        get_target_user_and_role(
+            user_id,
+            db,
         )
-
-    target_role = db.get(
-        Role,
-        target_user.role_id
     )
 
     if (
-        target_role is not None
-        and target_role.name
+        target_role.name
         == "Administrator"
     ):
         raise HTTPException(
@@ -417,7 +485,7 @@ def reset_user_password(
                 "Administrator password "
                 "cannot be reset through "
                 "User Management"
-            )
+            ),
         )
 
     new_password = (
@@ -429,7 +497,7 @@ def reset_user_password(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=(
                 "New password cannot be empty"
-            )
+            ),
         )
 
     if len(
@@ -439,7 +507,7 @@ def reset_user_password(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=(
                 "Password is too long for bcrypt"
-            )
+            ),
         )
 
     target_user.password_hash = (

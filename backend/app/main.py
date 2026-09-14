@@ -1,4 +1,5 @@
 ﻿from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.admin_departments import (
     router as admin_departments_router,
@@ -46,7 +47,21 @@ app = FastAPI(
         "Secure Web Platform for Automated "
         "AI Document Anonymization"
     ),
-    version="1.0.0"
+    version="1.0.0",
+)
+
+
+# Development frontend origins.
+# Do not use "*" because Secura uses authenticated API requests.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -110,12 +125,12 @@ def root():
             "Secure Web Platform for Automated "
             "AI Document Anonymization"
         ),
-        "status": "running"
+        "status": "running",
     }
 
 
 @app.get("/health")
 def health_check():
     return {
-        "status": "healthy"
+        "status": "healthy",
     }

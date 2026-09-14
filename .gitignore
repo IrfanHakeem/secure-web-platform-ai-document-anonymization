@@ -41,3 +41,5 @@ htmlcov/
 *.log
 
 backend/storage/
+
+backend/dev_seed_users.py
