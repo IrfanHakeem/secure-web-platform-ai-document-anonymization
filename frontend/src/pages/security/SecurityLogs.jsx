@@ -1,8 +1,8 @@
 import {
   Download,
   FileText,
+  Filter,
   Network,
-  Search,
   ShieldAlert,
   X,
 } from 'lucide-react'
@@ -13,6 +13,7 @@ import {
 } from 'react'
 
 import api from '../../api/client'
+import './SecurityLogs.css'
 
 function getApiError(error, fallback) {
   const detail =
@@ -25,7 +26,7 @@ function getApiError(error, fallback) {
   return fallback
 }
 
-function formatTime(value) {
+function formatPacketTime(value) {
   if (!value) {
     return '—'
   }
@@ -36,13 +37,23 @@ function formatTime(value) {
     return '—'
   }
 
-  return new Intl.DateTimeFormat(
-    'en-MY',
-    {
-      hour: '2-digit',
-      minute: '2-digit',
-    },
-  ).format(date)
+  const hh = String(
+    date.getHours(),
+  ).padStart(2, '0')
+
+  const mm = String(
+    date.getMinutes(),
+  ).padStart(2, '0')
+
+  const ss = String(
+    date.getSeconds(),
+  ).padStart(2, '0')
+
+  const ms = String(
+    date.getMilliseconds(),
+  ).padStart(3, '0')
+
+  return `${hh}:${mm}:${ss}.${ms}`
 }
 
 function formatDateTime(value) {
@@ -64,6 +75,7 @@ function formatDateTime(value) {
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
+      second: '2-digit',
     },
   ).format(date)
 }
@@ -73,7 +85,7 @@ function formatAction(action) {
     return 'Unknown'
   }
 
-  return action
+  return String(action)
     .replaceAll('_', ' ')
     .toLowerCase()
     .replace(
@@ -88,9 +100,10 @@ function formatResource(log) {
     return '—'
   }
 
-  const type = formatAction(
-    log.resource_type,
-  )
+  const type =
+    formatAction(
+      log.resource_type,
+    )
 
   if (
     log.resource_id === null ||
@@ -100,6 +113,17 @@ function formatResource(log) {
   }
 
   return `${type} #${log.resource_id}`
+}
+
+function getApplicationResourceLabel(log) {
+  if (
+    log.action === 'LOGIN_FAILED' ||
+    log.action === 'LOGIN_SUCCESS'
+  ) {
+    return 'Authentication'
+  }
+
+  return formatResource(log)
 }
 
 function classifyApplicationLog(log) {
@@ -127,28 +151,39 @@ function classifyApplicationLog(log) {
     : 'SUCCESS'
 }
 
-function getApplicationResourceLabel(log) {
-  if (log.action === 'LOGIN_FAILED') {
-    return 'Authentication'
-  }
-
-  if (log.action === 'LOGIN_SUCCESS') {
-    return 'Authentication'
-  }
-
-  return formatResource(log)
+function getApplicationTone(log) {
+  return classifyApplicationLog(log) ===
+    'DENIED'
+    ? 'danger'
+    : 'success'
 }
 
-function getSeverityClass(severity) {
-  return String(
-    severity || 'UNKNOWN',
-  )
-    .toLowerCase()
-    .replaceAll('_', '-')
+function getNetworkTone(event) {
+  const severity =
+    String(
+      event.severity || '',
+    ).toUpperCase()
+
+  if (
+    severity === 'CRITICAL' ||
+    severity === 'HIGH'
+  ) {
+    return 'danger'
+  }
+
+  if (severity === 'MEDIUM') {
+    return 'warning'
+  }
+
+  if (severity === 'LOW') {
+    return 'success'
+  }
+
+  return 'info'
 }
 
 function getNetworkStatus(status) {
-  const map = {
+  const statusMap = {
     ACTIVE: {
       label: 'Active',
       className: 'active',
@@ -169,7 +204,7 @@ function getNetworkStatus(status) {
   }
 
   return (
-    map[status] ?? {
+    statusMap[status] ?? {
       label:
         status || 'Unknown',
       className:
@@ -239,7 +274,7 @@ function downloadCsv(
 
 function SecurityLogs() {
   const [tab, setTab] =
-    useState('application')
+    useState('network')
 
   const [
     applicationLogs,
@@ -321,10 +356,18 @@ function SecurityLogs() {
           }
 
           const logs =
-            logsResponse.data
+            Array.isArray(
+              logsResponse.data,
+            )
+              ? logsResponse.data
+              : []
 
           const events =
-            eventsResponse.data
+            Array.isArray(
+              eventsResponse.data,
+            )
+              ? eventsResponse.data
+              : []
 
           setApplicationLogs(logs)
           setNetworkEvents(events)
@@ -362,65 +405,33 @@ function SecurityLogs() {
     }
   }, [])
 
-  const applicationStats =
+  const networkProtocols =
     useMemo(() => {
-      const denied =
-        applicationLogs.filter(
-          (log) =>
-            classifyApplicationLog(
-              log,
-            ) === 'DENIED',
-        ).length
+      const protocols =
+        networkEvents
+          .map(
+            (event) =>
+              String(
+                event.protocol || '',
+              )
+                .trim()
+                .toUpperCase(),
+          )
+          .filter(Boolean)
 
-      return {
-        total:
-          applicationLogs.length,
-
-        denied,
-
-        successful:
-          applicationLogs.length -
-          denied,
-      }
-    }, [applicationLogs])
-
-  const networkStats =
-    useMemo(() => {
-      const counts = {
-        total:
-          networkEvents.length,
-        highCritical: 0,
-        medium: 0,
-        low: 0,
-      }
-
-      networkEvents.forEach(
-        (event) => {
-          const severity =
-            String(
-              event.severity || '',
-            ).toUpperCase()
-
-          if (
-            severity ===
-              'CRITICAL' ||
-            severity === 'HIGH'
-          ) {
-            counts.highCritical += 1
-          } else if (
-            severity === 'MEDIUM'
-          ) {
-            counts.medium += 1
-          } else if (
-            severity === 'LOW'
-          ) {
-            counts.low += 1
-          }
-        },
-      )
-
-      return counts
+      return [
+        'ALL',
+        ...Array.from(
+          new Set(protocols),
+        ),
+      ]
     }, [networkEvents])
+
+  const applicationFilters = [
+    'ALL',
+    'SUCCESS',
+    'DENIED',
+  ]
 
   const visibleApplicationLogs =
     useMemo(() => {
@@ -439,8 +450,7 @@ function SecurityLogs() {
           const matchesFilter =
             filter === 'ALL'
               ? true
-              : result ===
-                filter
+              : result === filter
 
           const matchesQuery =
             !normalized ||
@@ -482,27 +492,17 @@ function SecurityLogs() {
 
       return networkEvents.filter(
         (event) => {
-          const severity =
+          const protocol =
             String(
-              event.severity || '',
-            ).toUpperCase()
+              event.protocol || '',
+            )
+              .trim()
+              .toUpperCase()
 
-          let matchesFilter = true
-
-          if (filter !== 'ALL') {
-            if (
-              filter ===
-              'HIGH_CRITICAL'
-            ) {
-              matchesFilter =
-                severity ===
-                  'CRITICAL' ||
-                severity === 'HIGH'
-            } else {
-              matchesFilter =
-                severity === filter
-            }
-          }
+          const matchesFilter =
+            filter === 'ALL'
+              ? true
+              : protocol === filter
 
           const matchesQuery =
             !normalized ||
@@ -572,47 +572,25 @@ function SecurityLogs() {
       ],
     )
 
-  const lastUpdated =
-    useMemo(() => {
-      const timestamps =
-        tab === 'application'
-          ? applicationLogs.map(
-              (log) =>
-                log.created_at,
-            )
-          : networkEvents.map(
-              (event) =>
-                event.event_timestamp,
-            )
+  const selectedEntry =
+    tab === 'network'
+      ? selectedNetworkEvent
+      : selectedApplicationLog
 
-      const latest =
-        timestamps
-          .map(
-            (value) =>
-              new Date(
-                value,
-              ).getTime(),
-          )
-          .filter(
-            Number.isFinite,
-          )
-          .sort(
-            (a, b) =>
-              b - a,
-          )[0]
+  const currentRows =
+    tab === 'network'
+      ? visibleNetworkEvents
+      : visibleApplicationLogs
 
-      if (!latest) {
-        return 'No events'
-      }
+  const totalRows =
+    tab === 'network'
+      ? networkEvents.length
+      : applicationLogs.length
 
-      return formatTime(
-        new Date(latest),
-      )
-    }, [
-      applicationLogs,
-      networkEvents,
-      tab,
-    ])
+  const currentFilters =
+    tab === 'network'
+      ? networkProtocols
+      : applicationFilters
 
   const monitoring =
     getNetworkStatus(
@@ -704,932 +682,806 @@ function SecurityLogs() {
       )
     }
 
-  const applicationFilters = [
-    {
-      value: 'ALL',
-      label: 'All',
-    },
-    {
-      value: 'SUCCESS',
-      label: 'Success',
-    },
-    {
-      value: 'DENIED',
-      label: 'Denied',
-    },
-  ]
+  const selectedTone =
+    !selectedEntry
+      ? 'info'
+      : tab === 'network'
+        ? getNetworkTone(
+            selectedEntry,
+          )
+        : getApplicationTone(
+            selectedEntry,
+          )
 
-  const networkFilters = [
-    {
-      value: 'ALL',
-      label: 'All',
-    },
-    {
-      value:
-        'HIGH_CRITICAL',
-      label: 'High / Critical',
-    },
-    {
-      value: 'MEDIUM',
-      label: 'Medium',
-    },
-    {
-      value: 'LOW',
-      label: 'Low',
-    },
-  ]
+  const selectedLabel =
+    !selectedEntry
+      ? 'NO SELECTION'
+      : tab === 'network'
+        ? String(
+            selectedEntry.severity ||
+              'UNKNOWN',
+          ).toUpperCase()
+        : classifyApplicationLog(
+            selectedEntry,
+          )
+
+  const detailRows =
+    useMemo(() => {
+      if (!selectedEntry) {
+        return []
+      }
+
+      if (tab === 'network') {
+        return [
+          {
+            label: 'Record',
+            value:
+              `#${selectedEntry.id}`,
+          },
+          {
+            label: 'Timestamp',
+            value:
+              formatDateTime(
+                selectedEntry.event_timestamp,
+              ),
+          },
+          {
+            label: 'Sensor',
+            value:
+              selectedEntry.sensor_name ||
+              '—',
+          },
+          {
+            label: 'Protocol',
+            value:
+              selectedEntry.protocol ||
+              '—',
+          },
+          {
+            label: 'Source',
+            value:
+              `${selectedEntry.source_ip || '—'}${
+                selectedEntry.source_port
+                  ? `:${selectedEntry.source_port}`
+                  : ''
+              }`,
+          },
+          {
+            label: 'Destination',
+            value:
+              `${selectedEntry.destination_ip || '—'}${
+                selectedEntry.destination_port
+                  ? `:${selectedEntry.destination_port}`
+                  : ''
+              }`,
+          },
+          {
+            label: 'Severity',
+            value:
+              selectedEntry.severity ||
+              '—',
+          },
+          {
+            label: 'Event Type',
+            value:
+              selectedEntry.event_type ||
+              '—',
+          },
+          {
+            label: 'Signature',
+            value:
+              selectedEntry.signature ||
+              'Not available',
+          },
+          {
+            label: 'Category',
+            value:
+              selectedEntry.category ||
+              'Not available',
+          },
+          {
+            label: 'Received At',
+            value:
+              formatDateTime(
+                selectedEntry.received_at,
+              ),
+          },
+          {
+            label: 'Details',
+            value:
+              selectedEntry.details ||
+              'No additional event details recorded.',
+          },
+        ]
+      }
+
+      return [
+        {
+          label: 'Record',
+          value:
+            `#${selectedEntry.id}`,
+        },
+        {
+          label: 'Timestamp',
+          value:
+            formatDateTime(
+              selectedEntry.created_at,
+            ),
+        },
+        {
+          label: 'User',
+          value:
+            selectedEntry.username ||
+            'System / Unknown',
+        },
+        {
+          label: 'Source IP',
+          value:
+            selectedEntry.ip_address ||
+            '—',
+        },
+        {
+          label: 'Event',
+          value:
+            selectedEntry.action ||
+            'Unknown',
+        },
+        {
+          label: 'Resource',
+          value:
+            getApplicationResourceLabel(
+              selectedEntry,
+            ),
+        },
+        {
+          label: 'Result',
+          value:
+            classifyApplicationLog(
+              selectedEntry,
+            ),
+        },
+        {
+          label: 'Details',
+          value:
+            selectedEntry.details ||
+            'No additional details recorded.',
+        },
+      ]
+    }, [
+      selectedEntry,
+      tab,
+    ])
 
   return (
-    <section className="security-logs-pro page-enter">
-      <header className="security-logs-pro__header">
-        <div>
-          <p className="secura-eyebrow">
-            SECURITY OFFICER WORKSPACE
-          </p>
+    <section className="security-ws page-enter">
+      <div className="security-ws__window">
+        <header className="security-ws__topbar">
+          <div>
+            <h1>
+              Security Logs
+            </h1>
 
-          <h1>
-            Security Logs
-          </h1>
+            <p>
+              {tab === 'network'
+                ? 'Packet-level network event capture · Secura IDS · Suricata'
+                : 'Application audit capture · Secura access controls · Audit trail'}
+            </p>
+          </div>
 
-          <p>
-            Review application audit
-            activity and network security
-            events across the secure
-            workspace.
-          </p>
-        </div>
+          <div className="security-ws__top-actions">
+            <div className="security-ws__view-switch">
+              <button
+                type="button"
+                className={
+                  tab === 'application'
+                    ? 'is-active'
+                    : ''
+                }
+                onClick={() =>
+                  changeTab(
+                    'application',
+                  )
+                }
+              >
+                <FileText size={12} />
+                Application Logs
+              </button>
 
-        <div className="security-logs-pro__header-actions">
-          <span>
-            Last updated{' '}
-            {lastUpdated}
-          </span>
+              <button
+                type="button"
+                className={
+                  tab === 'network'
+                    ? 'is-active'
+                    : ''
+                }
+                onClick={() =>
+                  changeTab(
+                    'network',
+                  )
+                }
+              >
+                <Network size={12} />
+                Network Events
+              </button>
+            </div>
 
-          <button
-            type="button"
-            onClick={
-              exportCurrentView
-            }
-            disabled={
-              loading ||
-              (tab ===
-                'application'
-                ? visibleApplicationLogs
-                    .length === 0
-                : visibleNetworkEvents
-                    .length === 0)
-            }
+            <button
+              type="button"
+              className="security-ws__export"
+              onClick={
+                exportCurrentView
+              }
+              disabled={
+                loading ||
+                currentRows.length === 0
+              }
+            >
+              <Download size={12} />
+              Export
+            </button>
+          </div>
+        </header>
+
+        {error && (
+          <div
+            className="security-ws__error"
+            role="alert"
           >
-            <Download
-              size={14}
+            <ShieldAlert
+              size={15}
             />
 
-            Export CSV
-          </button>
-        </div>
-      </header>
+            <span>{error}</span>
 
-      {error && (
-        <div
-          className="security-logs-pro__error"
-          role="alert"
-        >
-          <ShieldAlert
-            size={16}
-          />
+            <button
+              type="button"
+              aria-label="Dismiss error"
+              onClick={() =>
+                setError('')
+              }
+            >
+              <X size={13} />
+            </button>
+          </div>
+        )}
 
-          <span>{error}</span>
+        <div className="security-ws__toolbar">
+          <label className="security-ws__filter-box">
+            <Filter size={12} />
 
-          <button
-            type="button"
-            aria-label="Dismiss error"
-            onClick={() =>
-              setError('')
-            }
-          >
-            <X size={14} />
-          </button>
-        </div>
-      )}
+            <input
+              value={query}
+              placeholder={
+                tab === 'network'
+                  ? 'Apply a display filter … e.g. source IP, destination IP, protocol, signature'
+                  : 'Apply a display filter … e.g. user, action, resource, IP address'
+              }
+              onChange={(
+                event,
+              ) =>
+                setQuery(
+                  event.target.value,
+                )
+              }
+            />
 
-      <nav className="security-logs-pro__tabs">
-        <button
-          type="button"
-          className={
-            tab ===
-            'application'
-              ? 'is-active'
-              : ''
-          }
-          onClick={() =>
-            changeTab(
-              'application',
-            )
-          }
-        >
-          <FileText
-            size={15}
-          />
+            {query && (
+              <button
+                type="button"
+                aria-label="Clear filter"
+                onClick={() =>
+                  setQuery('')
+                }
+              >
+                <X size={11} />
+              </button>
+            )}
+          </label>
 
-          Application Logs
-        </button>
-
-        <button
-          type="button"
-          className={
-            tab === 'network'
-              ? 'is-active'
-              : ''
-          }
-          onClick={() =>
-            changeTab('network')
-          }
-        >
-          <Network
-            size={15}
-          />
-
-          Network Events
-        </button>
-      </nav>
-
-      {tab === 'application' ? (
-        <>
-          <div className="security-logs-pro__summary security-logs-pro__summary--three">
-            <article>
-              <span>
-                Total Events
-              </span>
-
-              <strong>
-                {loading
-                  ? '—'
-                  : applicationStats.total}
-              </strong>
-            </article>
-
-            <article>
-              <span>
-                Denied / Failed
-              </span>
-
-              <strong className="is-dark">
-                {loading
-                  ? '—'
-                  : applicationStats.denied}
-              </strong>
-            </article>
-
-            <article>
-              <span>
-                Successful
-              </span>
-
-              <strong>
-                {loading
-                  ? '—'
-                  : applicationStats.successful}
-              </strong>
-            </article>
+          <div className="security-ws__protocols">
+            {currentFilters.map(
+              (item) => (
+                <button
+                  type="button"
+                  key={item}
+                  className={
+                    filter === item
+                      ? 'is-active'
+                      : ''
+                  }
+                  onClick={() =>
+                    setFilter(item)
+                  }
+                >
+                  {item}
+                </button>
+              ),
+            )}
           </div>
 
-          <div className="security-logs-pro__workspace">
-            <div className="security-logs-pro__list-panel">
-              <div className="security-logs-pro__toolbar">
-                <label className="security-logs-pro__search">
-                  <Search
-                    size={15}
-                  />
+          <span className="security-ws__displayed">
+            {currentRows.length}
+            {' '}
+            of
+            {' '}
+            {totalRows}
+            {' '}
+            {tab === 'network'
+              ? 'events'
+              : 'logs'}
+            {' '}
+            displayed
+          </span>
+        </div>
 
-                  <input
-                    value={query}
-                    placeholder="Search user, action, resource, or details"
-                    onChange={(
-                      event,
-                    ) =>
-                      setQuery(
-                        event
-                          .target
-                          .value,
-                      )
-                    }
-                  />
-                </label>
+        {tab === 'network' && (
+          <div className="security-ws__sensorbar">
+            <span
+              className={`security-ws__sensor-dot ${monitoring.className}`}
+            />
 
-                <div className="security-logs-pro__filters">
-                  {applicationFilters.map(
-                    (item) => (
-                      <button
-                        type="button"
-                        key={
-                          item.value
-                        }
-                        className={
-                          filter ===
-                          item.value
-                            ? 'is-active'
-                            : ''
-                        }
-                        onClick={() =>
-                          setFilter(
-                            item.value,
-                          )
-                        }
-                      >
-                        {
-                          item.label
-                        }
-                      </button>
-                    ),
-                  )}
-                </div>
-              </div>
+            <span>
+              Network sensor
+            </span>
 
-              <div className="security-logs-pro__table-wrap">
-                <table className="security-logs-pro__table security-logs-pro__table--application">
-                  <thead>
-                    <tr>
-                      <th>Time</th>
-                      <th>User</th>
-                      <th>
-                        Action / Event
-                      </th>
-                      <th>
-                        Resource
-                      </th>
-                      <th>
-                        Result
-                      </th>
-                    </tr>
-                  </thead>
+            <b>
+              {loading
+                ? 'Checking...'
+                : monitoring.label}
+            </b>
 
-                  <tbody>
-                    {loading ? (
-                      <tr>
-                        <td colSpan="5">
-                          <div className="security-logs-pro__empty">
-                            Loading application logs...
-                          </div>
-                        </td>
-                      </tr>
-                    ) : visibleApplicationLogs.length >
-                      0 ? (
-                      visibleApplicationLogs.map(
-                        (log) => {
-                          const result =
-                            classifyApplicationLog(
-                              log,
-                            )
+            {networkStatus?.last_event_at && (
+              <>
+                <i />
 
-                          const selected =
-                            selectedApplicationLog
-                              ?.id ===
-                            log.id
-
-                          return (
-                            <tr
-                              key={
-                                log.id
-                              }
-                              className={
-                                selected
-                                  ? 'is-active'
-                                  : ''
-                              }
-                              onClick={() =>
-                                setSelectedApplicationId(
-                                  log.id,
-                                )
-                              }
-                            >
-                              <td>
-                                {formatTime(
-                                  log.created_at,
-                                )}
-                              </td>
-
-                              <td>
-                                {log.username ||
-                                  'System / Unknown'}
-                              </td>
-
-                              <td>
-                                <b>
-                                  {log.action}
-                                </b>
-                              </td>
-
-                              <td>
-                                {getApplicationResourceLabel(
-                                  log,
-                                )}
-                              </td>
-
-                              <td>
-                                <span
-                                  className={`security-logs-pro__result ${result.toLowerCase()}`}
-                                >
-                                  {
-                                    result
-                                  }
-                                </span>
-                              </td>
-                            </tr>
-                          )
-                        },
-                      )
-                    ) : (
-                      <tr>
-                        <td colSpan="5">
-                          <div className="security-logs-pro__empty">
-                            No application logs match the current search or filter.
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <aside className="security-logs-pro__details">
-              {selectedApplicationLog ? (
-                <>
-                  <div className="security-logs-pro__details-heading">
-                    <div>
-                      <p className="secura-eyebrow">
-                        LOG DETAILS
-                      </p>
-
-                      <h2>
-                        Log Details
-                      </h2>
-                    </div>
-
-                    <span
-                      className={`security-logs-pro__result ${classifyApplicationLog(
-                        selectedApplicationLog,
-                      ).toLowerCase()}`}
-                    >
-                      {classifyApplicationLog(
-                        selectedApplicationLog,
-                      )}
-                    </span>
-                  </div>
-
-                  <dl className="security-logs-pro__detail-list">
-                    <div>
-                      <dt>
-                        Event
-                      </dt>
-
-                      <dd>
-                        {
-                          selectedApplicationLog.action
-                        }
-                      </dd>
-                    </div>
-
-                    <div>
-                      <dt>
-                        User
-                      </dt>
-
-                      <dd>
-                        {selectedApplicationLog
-                          .username ||
-                          'System / Unknown'}
-                      </dd>
-                    </div>
-
-                    <div>
-                      <dt>
-                        Resource
-                      </dt>
-
-                      <dd>
-                        {getApplicationResourceLabel(
-                          selectedApplicationLog,
-                        )}
-                      </dd>
-                    </div>
-
-                    <div>
-                      <dt>
-                        Result
-                      </dt>
-
-                      <dd>
-                        {classifyApplicationLog(
-                          selectedApplicationLog,
-                        )}
-                      </dd>
-                    </div>
-
-                    <div>
-                      <dt>
-                        Timestamp
-                      </dt>
-
-                      <dd>
-                        {formatDateTime(
-                          selectedApplicationLog
-                            .created_at,
-                        )}
-                      </dd>
-                    </div>
-
-                    <div>
-                      <dt>
-                        IP Address
-                      </dt>
-
-                      <dd>
-                        {selectedApplicationLog
-                          .ip_address ||
-                          '—'}
-                      </dd>
-                    </div>
-
-                    <div>
-                      <dt>
-                        Details
-                      </dt>
-
-                      <dd>
-                        {selectedApplicationLog
-                          .details ||
-                          'No additional details recorded.'}
-                      </dd>
-                    </div>
-                  </dl>
-                </>
-              ) : (
-                <div className="security-logs-pro__empty security-logs-pro__empty--details">
-                  Select an application log to review its details.
-                </div>
-              )}
-            </aside>
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="security-logs-pro__network-status">
-            <div>
-              <span
-                className={`security-logs-pro__network-dot ${monitoring.className}`}
-              />
-
-              <div>
-                <small>
-                  NETWORK MONITORING
-                </small>
+                <span>
+                  Last event
+                </span>
 
                 <b>
-                  {loading
-                    ? 'Checking...'
-                    : monitoring.label}
-                </b>
-              </div>
-            </div>
-
-            <div>
-              <small>
-                Last network event
-              </small>
-
-              <b>
-                {loading
-                  ? '—'
-                  : formatDateTime(
-                      networkStatus
-                        ?.last_event_at,
-                    )}
-              </b>
-            </div>
-          </div>
-
-          <div className="security-logs-pro__summary security-logs-pro__summary--four">
-            <article>
-              <span>
-                Network Events
-              </span>
-
-              <strong>
-                {loading
-                  ? '—'
-                  : networkStats.total}
-              </strong>
-            </article>
-
-            <article>
-              <span>
-                High / Critical
-              </span>
-
-              <strong className="is-dark">
-                {loading
-                  ? '—'
-                  : networkStats.highCritical}
-              </strong>
-            </article>
-
-            <article>
-              <span>Medium</span>
-
-              <strong>
-                {loading
-                  ? '—'
-                  : networkStats.medium}
-              </strong>
-            </article>
-
-            <article>
-              <span>Low</span>
-
-              <strong>
-                {loading
-                  ? '—'
-                  : networkStats.low}
-              </strong>
-            </article>
-          </div>
-
-          <div className="security-logs-pro__workspace">
-            <div className="security-logs-pro__list-panel">
-              <div className="security-logs-pro__toolbar">
-                <label className="security-logs-pro__search">
-                  <Search
-                    size={15}
-                  />
-
-                  <input
-                    value={query}
-                    placeholder="Search event, sensor, IP address, signature, or category"
-                    onChange={(
-                      event,
-                    ) =>
-                      setQuery(
-                        event
-                          .target
-                          .value,
-                      )
-                    }
-                  />
-                </label>
-
-                <div className="security-logs-pro__filters">
-                  {networkFilters.map(
-                    (item) => (
-                      <button
-                        type="button"
-                        key={
-                          item.value
-                        }
-                        className={
-                          filter ===
-                          item.value
-                            ? 'is-active'
-                            : ''
-                        }
-                        onClick={() =>
-                          setFilter(
-                            item.value,
-                          )
-                        }
-                      >
-                        {
-                          item.label
-                        }
-                      </button>
-                    ),
+                  {formatDateTime(
+                    networkStatus.last_event_at,
                   )}
-                </div>
-              </div>
+                </b>
+              </>
+            )}
+          </div>
+        )}
 
-              <div className="security-logs-pro__table-wrap">
-                <table className="security-logs-pro__table security-logs-pro__table--network">
-                  <thead>
+        <div className="security-ws__body">
+          <div className="security-ws__table-wrap">
+            {tab === 'network' ? (
+              <table className="security-ws__table security-ws__table--network">
+                <colgroup>
+                  <col className="col-no" />
+                  <col className="col-time" />
+                  <col className="col-source" />
+                  <col className="col-destination" />
+                  <col className="col-protocol" />
+                  <col className="col-severity" />
+                  <col className="col-event" />
+                  <col className="col-info" />
+                </colgroup>
+
+                <thead>
+                  <tr>
+                    <th>No.</th>
+                    <th>Time</th>
+                    <th>Source</th>
+                    <th>Destination</th>
+                    <th>Protocol</th>
+                    <th>Severity</th>
+                    <th>Event</th>
+                    <th>Info</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {loading ? (
                     <tr>
-                      <th>Time</th>
-                      <th>
-                        Severity
-                      </th>
-                      <th>
-                        Sensor
-                      </th>
-                      <th>
-                        Event
-                      </th>
-                      <th>
-                        Source
-                      </th>
-                      <th>
-                        Destination
-                      </th>
+                      <td colSpan="8">
+                        <div className="security-ws__empty">
+                          Loading network events...
+                        </div>
+                      </td>
                     </tr>
-                  </thead>
+                  ) : visibleNetworkEvents.length >
+                    0 ? (
+                    visibleNetworkEvents.map(
+                      (event, index) => {
+                        const selected =
+                          selectedNetworkEvent
+                            ?.id ===
+                          event.id
 
-                  <tbody>
-                    {loading ? (
-                      <tr>
-                        <td colSpan="6">
-                          <div className="security-logs-pro__empty">
-                            Loading network events...
-                          </div>
-                        </td>
-                      </tr>
-                    ) : visibleNetworkEvents.length >
-                      0 ? (
-                      visibleNetworkEvents.map(
-                        (event) => {
-                          const selected =
-                            selectedNetworkEvent
-                              ?.id ===
-                            event.id
-
-                          return (
-                            <tr
-                              key={
-                                event.id
-                              }
-                              className={
-                                selected
-                                  ? 'is-active'
-                                  : ''
-                              }
-                              onClick={() =>
-                                setSelectedNetworkId(
-                                  event.id,
-                                )
-                              }
-                            >
-                              <td>
-                                {formatTime(
-                                  event.event_timestamp,
-                                )}
-                              </td>
-
-                              <td>
-                                <span
-                                  className={`security-logs-pro__severity ${getSeverityClass(
-                                    event.severity,
-                                  )}`}
-                                >
-                                  {
-                                    event.severity
-                                  }
-                                </span>
-                              </td>
-
-                              <td>
-                                {
-                                  event.sensor_name
-                                }
-                              </td>
-
-                              <td>
-                                <b>
-                                  {
-                                    event.event_type
-                                  }
-                                </b>
-                              </td>
-
-                              <td>
-                                {event.source_ip ||
-                                  '—'}
-                                {event.source_port
-                                  ? `:${event.source_port}`
-                                  : ''}
-                              </td>
-
-                              <td>
-                                {event.destination_ip ||
-                                  '—'}
-                                {event.destination_port
-                                  ? `:${event.destination_port}`
-                                  : ''}
-                              </td>
-                            </tr>
+                        const tone =
+                          getNetworkTone(
+                            event,
                           )
-                        },
-                      )
-                    ) : (
-                      <tr>
-                        <td colSpan="6">
-                          <div className="security-logs-pro__empty">
-                            {networkStatus?.status ===
-                            'NOT_CONFIGURED'
-                              ? 'Network sensor integration is not configured yet.'
-                              : 'No network events match the current search or filter.'}
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
 
-            <aside className="security-logs-pro__details">
-              {selectedNetworkEvent ? (
-                <>
-                  <div className="security-logs-pro__details-heading">
-                    <div>
-                      <p className="secura-eyebrow">
-                        NETWORK EVENT DETAILS
-                      </p>
+                        const source =
+                          `${event.source_ip || '—'}${
+                            event.source_port
+                              ? `:${event.source_port}`
+                              : ''
+                          }`
 
-                      <h2>
-                        Network Event
-                        Details
-                      </h2>
-                    </div>
+                        const destination =
+                          `${event.destination_ip || '—'}${
+                            event.destination_port
+                              ? `:${event.destination_port}`
+                              : ''
+                          }`
 
-                    <span
-                      className={`security-logs-pro__severity ${getSeverityClass(
-                        selectedNetworkEvent.severity,
-                      )}`}
-                    >
-                      {
-                        selectedNetworkEvent.severity
-                      }
+                        const info =
+                          [
+                            event.signature,
+                            event.category,
+                            event.details,
+                          ]
+                            .filter(Boolean)
+                            .join(' · ') ||
+                          'No additional event details recorded.'
+
+                        return (
+                          <tr
+                            key={event.id}
+                            style={{
+                              animationDelay:
+                                `${Math.min(
+                                  index * 18,
+                                  180,
+                                )}ms`,
+                            }}
+                            className={[
+                              `tone-${tone}`,
+                              selected
+                                ? 'is-selected'
+                                : '',
+                            ]
+                              .filter(Boolean)
+                              .join(' ')}
+                            onClick={() =>
+                              setSelectedNetworkId(
+                                event.id,
+                              )
+                            }
+                          >
+                            <td className="is-number">
+                              {event.id}
+                            </td>
+
+                            <td>
+                              {formatPacketTime(
+                                event.event_timestamp,
+                              )}
+                            </td>
+
+                            <td>
+                              {source}
+                            </td>
+
+                            <td>
+                              {destination}
+                            </td>
+
+                            <td className="is-strong">
+                              {String(
+                                event.protocol ||
+                                  '—',
+                              ).toUpperCase()}
+                            </td>
+
+                            <td className="is-strong">
+                              {String(
+                                event.severity ||
+                                  'UNKNOWN',
+                              ).toUpperCase()}
+                            </td>
+
+                            <td className="is-strong">
+                              {event.event_type ||
+                                'Unknown'}
+                            </td>
+
+                            <td className="is-info">
+                              {info}
+                            </td>
+                          </tr>
+                        )
+                      },
+                    )
+                  ) : (
+                    <tr>
+                      <td colSpan="8">
+                        <div className="security-ws__empty">
+                          {networkStatus?.status ===
+                          'NOT_CONFIGURED'
+                            ? 'Network sensor integration is not configured yet.'
+                            : 'No network events match the current display filter.'}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            ) : (
+              <table className="security-ws__table security-ws__table--application">
+                <colgroup>
+                  <col className="col-no" />
+                  <col className="col-time" />
+                  <col className="col-user" />
+                  <col className="col-ip" />
+                  <col className="col-event" />
+                  <col className="col-resource" />
+                  <col className="col-result" />
+                  <col className="col-info" />
+                </colgroup>
+
+                <thead>
+                  <tr>
+                    <th>No.</th>
+                    <th>Time</th>
+                    <th>User</th>
+                    <th>Source IP</th>
+                    <th>Event</th>
+                    <th>Resource</th>
+                    <th>Result</th>
+                    <th>Info</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {loading ? (
+                    <tr>
+                      <td colSpan="8">
+                        <div className="security-ws__empty">
+                          Loading application logs...
+                        </div>
+                      </td>
+                    </tr>
+                  ) : visibleApplicationLogs.length >
+                    0 ? (
+                    visibleApplicationLogs.map(
+                      (log, index) => {
+                        const selected =
+                          selectedApplicationLog
+                            ?.id ===
+                          log.id
+
+                        const result =
+                          classifyApplicationLog(
+                            log,
+                          )
+
+                        const tone =
+                          getApplicationTone(
+                            log,
+                          )
+
+                        return (
+                          <tr
+                            key={log.id}
+                            style={{
+                              animationDelay:
+                                `${Math.min(
+                                  index * 18,
+                                  180,
+                                )}ms`,
+                            }}
+                            className={[
+                              `tone-${tone}`,
+                              selected
+                                ? 'is-selected'
+                                : '',
+                            ]
+                              .filter(Boolean)
+                              .join(' ')}
+                            onClick={() =>
+                              setSelectedApplicationId(
+                                log.id,
+                              )
+                            }
+                          >
+                            <td className="is-number">
+                              {log.id}
+                            </td>
+
+                            <td>
+                              {formatPacketTime(
+                                log.created_at,
+                              )}
+                            </td>
+
+                            <td>
+                              {log.username ||
+                                'System / Unknown'}
+                            </td>
+
+                            <td>
+                              {log.ip_address ||
+                                '—'}
+                            </td>
+
+                            <td className="is-strong">
+                              {log.action ||
+                                'Unknown'}
+                            </td>
+
+                            <td>
+                              {getApplicationResourceLabel(
+                                log,
+                              )}
+                            </td>
+
+                            <td className="is-strong">
+                              {result}
+                            </td>
+
+                            <td className="is-info">
+                              {log.details ||
+                                'No additional details recorded.'}
+                            </td>
+                          </tr>
+                        )
+                      },
+                    )
+                  ) : (
+                    <tr>
+                      <td colSpan="8">
+                        <div className="security-ws__empty">
+                          No application logs match the current display filter.
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            )}
+          </div>
+
+          <div className="security-ws__details">
+            {selectedEntry ? (
+              <>
+                <div className="security-ws__details-head">
+                  <div>
+                    <b>
+                      {tab === 'network'
+                        ? 'Event'
+                        : 'Log'}
+                      {' '}
+                      #{selectedEntry.id}
+                      {' '}
+                      — Detail
+                    </b>
+
+                    <span>
+                      {tab === 'network'
+                        ? `${formatPacketTime(
+                            selectedEntry.event_timestamp,
+                          )} · ${selectedEntry.source_ip || '—'} → ${selectedEntry.destination_ip || '—'}`
+                        : `${formatPacketTime(
+                            selectedEntry.created_at,
+                          )} · ${selectedEntry.username || 'System / Unknown'}`}
                     </span>
                   </div>
 
-                  <dl className="security-logs-pro__detail-list">
-                    <div>
-                      <dt>
-                        Severity
-                      </dt>
-
-                      <dd>
-                        {
-                          selectedNetworkEvent.severity
-                        }
-                      </dd>
-                    </div>
-
-                    <div>
-                      <dt>
-                        Event Type
-                      </dt>
-
-                      <dd>
-                        {
-                          selectedNetworkEvent.event_type
-                        }
-                      </dd>
-                    </div>
-
-                    <div>
-                      <dt>
-                        Sensor
-                      </dt>
-
-                      <dd>
-                        {
-                          selectedNetworkEvent.sensor_name
-                        }
-                      </dd>
-                    </div>
-
-                    <div>
-                      <dt>
-                        Source IP
-                      </dt>
-
-                      <dd>
-                        {selectedNetworkEvent
-                          .source_ip ||
-                          '—'}
-                      </dd>
-                    </div>
-
-                    <div>
-                      <dt>
-                        Source Port
-                      </dt>
-
-                      <dd>
-                        {selectedNetworkEvent
-                          .source_port ??
-                          '—'}
-                      </dd>
-                    </div>
-
-                    <div>
-                      <dt>
-                        Destination IP
-                      </dt>
-
-                      <dd>
-                        {selectedNetworkEvent
-                          .destination_ip ||
-                          '—'}
-                      </dd>
-                    </div>
-
-                    <div>
-                      <dt>
-                        Destination Port
-                      </dt>
-
-                      <dd>
-                        {selectedNetworkEvent
-                          .destination_port ??
-                          '—'}
-                      </dd>
-                    </div>
-
-                    <div>
-                      <dt>
-                        Protocol
-                      </dt>
-
-                      <dd>
-                        {selectedNetworkEvent
-                          .protocol ||
-                          '—'}
-                      </dd>
-                    </div>
-
-                    <div>
-                      <dt>
-                        Signature
-                      </dt>
-
-                      <dd>
-                        {selectedNetworkEvent
-                          .signature ||
-                          'Not available'}
-                      </dd>
-                    </div>
-
-                    <div>
-                      <dt>
-                        Category
-                      </dt>
-
-                      <dd>
-                        {selectedNetworkEvent
-                          .category ||
-                          'Not available'}
-                      </dd>
-                    </div>
-
-                    <div>
-                      <dt>
-                        Event Timestamp
-                      </dt>
-
-                      <dd>
-                        {formatDateTime(
-                          selectedNetworkEvent
-                            .event_timestamp,
-                        )}
-                      </dd>
-                    </div>
-
-                    <div>
-                      <dt>
-                        Received At
-                      </dt>
-
-                      <dd>
-                        {formatDateTime(
-                          selectedNetworkEvent
-                            .received_at,
-                        )}
-                      </dd>
-                    </div>
-
-                    <div>
-                      <dt>
-                        Details
-                      </dt>
-
-                      <dd>
-                        {selectedNetworkEvent
-                          .details ||
-                          'No additional event details recorded.'}
-                      </dd>
-                    </div>
-                  </dl>
-                </>
-              ) : (
-                <div className="security-logs-pro__empty security-logs-pro__empty--details">
-                  {networkStatus?.status ===
-                  'NOT_CONFIGURED'
-                    ? 'Network monitoring is not configured yet.'
-                    : 'Select a network event to review its details.'}
+                  <span
+                    className={`security-ws__badge tone-${selectedTone}`}
+                  >
+                    {selectedLabel}
+                  </span>
                 </div>
-              )}
-            </aside>
+
+                <div className="security-ws__details-grid">
+                  <div className="security-ws__tree">
+                    {detailRows.map(
+                      (row) => (
+                        <div
+                          className="security-ws__tree-row"
+                          key={row.label}
+                        >
+                          <span>
+                            {row.label}:
+                          </span>
+
+                          <b>
+                            {row.value}
+                          </b>
+                        </div>
+                      ),
+                    )}
+                  </div>
+
+                  <div className="security-ws__raw">
+                    <div>
+                      RAW EVENT
+                    </div>
+
+                    <pre>
+                      {JSON.stringify(
+                        selectedEntry,
+                        null,
+                        2,
+                      )}
+                    </pre>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="security-ws__details-empty">
+                Select a row to inspect
+                the event details.
+              </div>
+            )}
           </div>
-        </>
-      )}
+        </div>
+
+        <footer className="security-ws__statusbar">
+          <div>
+            <span>
+              {tab === 'network'
+                ? 'Events'
+                : 'Logs'}
+              :
+              {' '}
+              {totalRows}
+            </span>
+
+            <span>
+              Displayed:
+              {' '}
+              {currentRows.length}
+            </span>
+
+            {selectedEntry && (
+              <span>
+                Selected:
+                {' '}
+                #{selectedEntry.id}
+              </span>
+            )}
+          </div>
+
+          <div className="security-ws__legend">
+            {tab === 'network' ? (
+              <>
+                <span>
+                  <i className="tone-danger" />
+                  High / Critical
+                </span>
+
+                <span>
+                  <i className="tone-warning" />
+                  Medium
+                </span>
+
+                <span>
+                  <i className="tone-success" />
+                  Low
+                </span>
+
+                <span>
+                  <i className="tone-info" />
+                  Other
+                </span>
+              </>
+            ) : (
+              <>
+                <span>
+                  <i className="tone-danger" />
+                  Denied / Failed
+                </span>
+
+                <span>
+                  <i className="tone-success" />
+                  Success
+                </span>
+              </>
+            )}
+          </div>
+        </footer>
+      </div>
     </section>
   )
 }
