@@ -1,5 +1,4 @@
 import {
-  ArrowLeft,
   CheckCircle2,
   Eye,
   EyeOff,
@@ -482,34 +481,9 @@ function AdminPasswordRecovery() {
       await requestOtp()
     }
 
-  const returnToEmail = () => {
-    setStep('email')
-    setOtp(
-      Array(6).fill(''),
-    )
-    setResetToken('')
-    setError('')
-    setMessage('')
-    setCountdown(0)
-  }
-
   return (
     <main className="admin-recovery-page">
       <section className="admin-recovery-card">
-        <button
-          type="button"
-          className="admin-recovery-back"
-          onClick={() =>
-            navigate('/login')
-          }
-        >
-          <ArrowLeft
-            size={15}
-          />
-
-          Back to login
-        </button>
-
         <div className="admin-recovery-brand">
           <span>S</span>
 
@@ -711,16 +685,6 @@ function AdminPasswordRecovery() {
 
               <div className="admin-recovery-button-row">
                 <button
-                  type="button"
-                  className="admin-recovery-secondary"
-                  onClick={
-                    returnToEmail
-                  }
-                >
-                  Cancel
-                </button>
-
-                <button
                   type="submit"
                   className="admin-recovery-primary inline"
                   disabled={loading}
@@ -889,16 +853,6 @@ function AdminPasswordRecovery() {
               </div>
 
               <div className="admin-recovery-button-row">
-                <button
-                  type="button"
-                  className="admin-recovery-secondary"
-                  onClick={
-                    returnToEmail
-                  }
-                >
-                  Cancel
-                </button>
-
                 <button
                   type="submit"
                   className="admin-recovery-primary inline"
