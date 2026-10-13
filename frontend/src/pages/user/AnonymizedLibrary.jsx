@@ -900,7 +900,7 @@ function AnonymizedLibrary() {
     }
 
   return (
-    <>
+    <div className="secura-bold-library">
       <header className="library-page-header">
         <p className="secura-eyebrow">
           SECURE WORKSPACE
@@ -1244,6 +1244,38 @@ function AnonymizedLibrary() {
                               file.file_size,
                             )}
                           </small>
+
+                          {isOwn &&
+                            !isArchived &&
+                            rowMenuFileId ===
+                              file.id && (
+                            <div
+                              id={`library-row-action-${file.id}`}
+                              className="library-row-inline-actions"
+                            >
+                              <button
+                                type="button"
+                                className="library-row-inline-archive"
+                                onClick={() =>
+                                  openArchiveModal(file)
+                                }
+                              >
+                                <Archive size={13} />
+                                <span>Remove from library</span>
+                              </button>
+
+                              <button
+                                type="button"
+                                className="library-row-inline-dismiss"
+                                aria-label="Close document actions"
+                                onClick={() =>
+                                  setRowMenuFileId(null)
+                                }
+                              >
+                                <X size={13} />
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </div>
 
@@ -1348,6 +1380,8 @@ function AnonymizedLibrary() {
                               type="button"
                               className="library-row-menu-trigger"
                               aria-label={`More actions for ${file.original_filename}`}
+                              aria-expanded={rowMenuFileId === file.id}
+                              aria-controls={`library-row-action-${file.id}`}
                               onClick={() =>
                                 setRowMenuFileId(
                                   (current) =>
@@ -1362,27 +1396,6 @@ function AnonymizedLibrary() {
                               />
                             </button>
 
-                            {rowMenuFileId ===
-                              file.id && (
-                              <div className="library-row-menu">
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    openArchiveModal(
-                                      file,
-                                    )
-                                  }
-                                >
-                                  <Archive
-                                    size={14}
-                                  />
-
-                                  <span>
-                                    Remove from library
-                                  </span>
-                                </button>
-                              </div>
-                            )}
                           </div>
                         )}
 
@@ -1937,7 +1950,7 @@ function AnonymizedLibrary() {
           </section>
         </div>
       )}
-    </>
+    </div>
   )
 }
 

@@ -283,7 +283,7 @@ function OriginalAccess() {
     }
 
   return (
-    <>
+    <div className="secura-bold-original-access">
       <header className="access-page-header">
         <p className="secura-eyebrow">
           SECURE WORKSPACE
@@ -820,7 +820,7 @@ function OriginalAccess() {
           </section>
         </div>
       )}
-    </>
+    </div>
   )
 }
 

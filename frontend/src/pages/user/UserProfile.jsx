@@ -389,7 +389,7 @@ function UserProfile() {
 
   if (loading) {
     return (
-      <div className="security-profile-pro-loading">
+      <div className="bold-profile-loading">
         <div />
         <div />
         <div />
@@ -398,108 +398,163 @@ function UserProfile() {
   }
 
   return (
-    <section className="security-profile-pro role-profile-user page-enter">
-      <header className="security-profile-pro__header">
-        <div>
-          <p className="secura-eyebrow">
-            SECURE WORKSPACE ACCOUNT
-          </p>
+    <section className="bold-profile-page page-enter">
+      <div className="bold-profile-page__grid" />
+      <div className="bold-profile-page__orb bold-profile-page__orb--one" />
+      <div className="bold-profile-page__orb bold-profile-page__orb--two" />
 
-          <h1>Profile</h1>
+      <div className="bold-profile-page__content">
+        <header className="bold-profile-header">
+          <div>
+            <p className="secura-bold-kicker">
+              SECURE WORKSPACE ACCOUNT
+            </p>
 
-          <p>
-            Manage your personal
-            information and Secura
-            document-workspace profile.
-          </p>
-        </div>
+            <h1>Profile</h1>
 
-        <div className="security-profile-pro__header-actions">
-          <button
-            type="button"
-            className="role-profile-back"
-            onClick={() =>
-              navigate(
-                '/user/dashboard',
-              )
-            }
+            <p>
+              Manage your personal information
+              and Secura workspace identity.
+            </p>
+          </div>
+
+          <div className="bold-profile-header__actions">
+            <button
+              type="button"
+              className="bold-profile-back"
+              onClick={() =>
+                navigate(
+                  '/user/dashboard',
+                )
+              }
+            >
+              <ArrowLeft size={14} />
+              Back to dashboard
+            </button>
+
+            {profile && (
+              <span
+                className={[
+                  'bold-profile-status',
+                  profile.is_active
+                    ? 'is-active'
+                    : 'is-inactive',
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
+              >
+                <i />
+                {profile.is_active
+                  ? 'Account active'
+                  : 'Account inactive'}
+              </span>
+            )}
+          </div>
+        </header>
+
+        {message && (
+          <div className="bold-profile-feedback success">
+            <Check size={16} />
+            <span>{message}</span>
+
+            <button
+              type="button"
+              aria-label="Dismiss message"
+              onClick={() =>
+                setMessage('')
+              }
+            >
+              <X size={14} />
+            </button>
+          </div>
+        )}
+
+        {error && (
+          <div
+            className="bold-profile-feedback error"
+            role="alert"
           >
-            <ArrowLeft size={14} />
-            Back to dashboard
-          </button>
+            <ShieldCheck size={16} />
+            <span>{error}</span>
 
-          {profile && (
-            <span className="security-profile-pro__active-badge">
-              <span />
-              {profile.is_active
-                ? 'Account active'
-                : 'Account inactive'}
-            </span>
-          )}
-        </div>
-      </header>
+            <button
+              type="button"
+              aria-label="Dismiss error"
+              onClick={() =>
+                setError('')
+              }
+            >
+              <X size={14} />
+            </button>
+          </div>
+        )}
 
-      {message && (
-        <div className="security-profile-pro__success">
-          <Check size={16} />
-          <span>{message}</span>
+        {profile && (
+          <div className="bold-profile-layout">
+            <aside className="bold-profile-identity">
+              <div className="bold-profile-identity__mesh" />
 
-          <button
-            type="button"
-            aria-label="Dismiss message"
-            onClick={() =>
-              setMessage('')
-            }
-          >
-            <X size={14} />
-          </button>
-        </div>
-      )}
-
-      {error && (
-        <div
-          className="security-profile-pro__error"
-          role="alert"
-        >
-          <ShieldCheck size={16} />
-          <span>{error}</span>
-
-          <button
-            type="button"
-            aria-label="Dismiss error"
-            onClick={() =>
-              setError('')
-            }
-          >
-            <X size={14} />
-          </button>
-        </div>
-      )}
-
-      {profile && (
-        <div className="security-profile-pro__layout">
-          <aside className="security-profile-pro__identity-card">
-            <div className="security-profile-pro__avatar-wrap">
-              <div className="security-profile-pro__avatar">
-                {photoUrl ? (
-                  <img
-                    src={photoUrl}
-                    alt="User profile"
-                  />
-                ) : (
-                  <span>
-                    {getInitials(
-                      profile.full_name ||
-                        profile.username,
+              <div className="bold-profile-avatar-wrap">
+                <div className="bold-profile-avatar-ring">
+                  <div className="bold-profile-avatar">
+                    {photoUrl ? (
+                      <img
+                        src={photoUrl}
+                        alt="User profile"
+                      />
+                    ) : (
+                      <span>
+                        {getInitials(
+                          profile.full_name ||
+                            profile.username,
+                        )}
+                      </span>
                     )}
-                  </span>
-                )}
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  className="bold-profile-camera"
+                  aria-label="Change profile photo"
+                  disabled={
+                    uploadingPhoto
+                  }
+                  onClick={() =>
+                    photoInputRef
+                      .current
+                      ?.click()
+                  }
+                >
+                  <Camera size={15} />
+                </button>
+              </div>
+
+              <input
+                ref={photoInputRef}
+                type="file"
+                className="security-profile-photo-input"
+                accept=".jpg,.jpeg,.png,.webp"
+                onChange={
+                  handlePhotoChange
+                }
+              />
+
+              <h2>
+                {profile.full_name ||
+                  profile.username}
+              </h2>
+
+              <p>{profile.email}</p>
+
+              <div className="bold-profile-role">
+                <UserRound size={13} />
+                {profile.role}
               </div>
 
               <button
                 type="button"
-                className="security-profile-pro__camera"
-                aria-label="Change profile photo"
+                className="bold-profile-photo-action"
                 disabled={
                   uploadingPhoto
                 }
@@ -509,329 +564,237 @@ function UserProfile() {
                     ?.click()
                 }
               >
-                <Camera size={16} />
+                <Camera size={14} />
+
+                {uploadingPhoto
+                  ? 'Uploading...'
+                  : 'Change profile photo'}
               </button>
-            </div>
 
-            <input
-              ref={photoInputRef}
-              type="file"
-              className="security-profile-photo-input"
-              accept=".jpg,.jpeg,.png,.webp"
-              onChange={
-                handlePhotoChange
-              }
-            />
+              <small className="bold-profile-photo-help">
+                JPG, JPEG, PNG or WEBP.
+                Maximum 5 MB.
+              </small>
 
-            <h2>
-              {profile.full_name ||
-                profile.username}
-            </h2>
-
-            <p>{profile.email}</p>
-
-            <div className="security-profile-pro__role-pill">
-              <UserRound size={14} />
-              {profile.role}
-            </div>
-
-            <button
-              type="button"
-              className="security-profile-pro__photo-action"
-              disabled={
-                uploadingPhoto
-              }
-              onClick={() =>
-                photoInputRef
-                  .current
-                  ?.click()
-              }
-            >
-              <Camera size={14} />
-
-              {uploadingPhoto
-                ? 'Uploading...'
-                : 'Change profile photo'}
-            </button>
-
-            <p className="security-profile-pro__photo-help">
-              JPG, JPEG, PNG or WEBP.
-              Maximum 5 MB.
-            </p>
-
-            <div className="security-profile-pro__security-note">
-              <span>
-                <ShieldCheck
-                  size={18}
-                />
-              </span>
-
-              <div>
-                <b>
-                  Secure workspace access active
-                </b>
-
-                <small>
-                  This account can
-                  anonymize documents and
-                  use the approved
-                  original-access workflow.
-                </small>
-              </div>
-            </div>
-          </aside>
-
-          <div className="security-profile-pro__main">
-            <form
-              className="security-profile-pro__card"
-              onSubmit={handleSave}
-            >
-              <div className="security-profile-pro__section-heading">
-                <div>
-                  <p className="secura-eyebrow">
-                    PERSONAL INFORMATION
-                  </p>
-
-                  <h2>
-                    Account details
-                  </h2>
-
-                  <p>
-                    Full name and email can
-                    be updated from your
-                    profile.
-                  </p>
-                </div>
-
+              <div className="bold-profile-access-note">
                 <span>
-                  <UserRound
-                    size={19}
-                  />
+                  <ShieldCheck size={18} />
                 </span>
-              </div>
-
-              <div className="security-profile-pro__editable-grid">
-                <label>
-                  <span>
-                    Full name
-                  </span>
-
-                  <div className="security-profile-pro__input">
-                    <UserRound
-                      size={15}
-                    />
-
-                    <input
-                      type="text"
-                      maxLength={150}
-                      value={
-                        form.full_name
-                      }
-                      onChange={(
-                        event,
-                      ) =>
-                        setForm(
-                          (
-                            current,
-                          ) => ({
-                            ...current,
-                            full_name:
-                              event
-                                .target
-                                .value,
-                          }),
-                        )
-                      }
-                    />
-                  </div>
-                </label>
-
-                <label>
-                  <span>
-                    Email address
-                  </span>
-
-                  <div className="security-profile-pro__input">
-                    <Mail
-                      size={15}
-                    />
-
-                    <input
-                      type="email"
-                      value={
-                        form.email
-                      }
-                      onChange={(
-                        event,
-                      ) =>
-                        setForm(
-                          (
-                            current,
-                          ) => ({
-                            ...current,
-                            email:
-                              event
-                                .target
-                                .value,
-                          }),
-                        )
-                      }
-                    />
-                  </div>
-                </label>
-              </div>
-
-              <div className="security-profile-pro__actions">
-                <button
-                  type="button"
-                  className="security-profile-pro__reset"
-                  onClick={
-                    resetChanges
-                  }
-                >
-                  Reset changes
-                </button>
-
-                <button
-                  type="submit"
-                  className="security-profile-pro__save"
-                  disabled={saving}
-                >
-                  <Save size={14} />
-
-                  {saving
-                    ? 'Saving...'
-                    : 'Save changes'}
-                </button>
-              </div>
-            </form>
-
-            <section className="security-profile-pro__card">
-              <div className="security-profile-pro__section-heading">
-                <div>
-                  <p className="secura-eyebrow">
-                    SYSTEM INFORMATION
-                  </p>
-
-                  <h2>
-                    Workspace account
-                  </h2>
-
-                  <p>
-                    These values are
-                    controlled by Secura
-                    and cannot be edited
-                    here.
-                  </p>
-                </div>
-
-                <span>
-                  <LockKeyhole
-                    size={19}
-                  />
-                </span>
-              </div>
-
-              <div className="security-profile-pro__facts">
-                <article>
-                  <span>
-                    <UserRound
-                      size={16}
-                    />
-                  </span>
-
-                  <div>
-                    <small>
-                      Username
-                    </small>
-
-                    <b>
-                      {profile.username}
-                    </b>
-                  </div>
-                </article>
-
-                <article>
-                  <span>
-                    <ShieldCheck
-                      size={16}
-                    />
-                  </span>
-
-                  <div>
-                    <small>
-                      Role
-                    </small>
-
-                    <b>
-                      {profile.role}
-                    </b>
-                  </div>
-                </article>
-
-                <article>
-                  <span>
-                    <Building2
-                      size={16}
-                    />
-                  </span>
-
-                  <div>
-                    <small>
-                      Department
-                    </small>
-
-                    <b>
-                      {profile.department_name ||
-                        'Not assigned'}
-                    </b>
-                  </div>
-                </article>
-
-                <article>
-                  <span>
-                    <Check size={16} />
-                  </span>
-
-                  <div>
-                    <small>
-                      Account status
-                    </small>
-
-                    <b>
-                      {profile.is_active
-                        ? 'Active'
-                        : 'Inactive'}
-                    </b>
-                  </div>
-                </article>
-              </div>
-
-              <div className="security-profile-pro__managed-note">
-                <ShieldCheck
-                  size={18}
-                />
 
                 <div>
-                  <b>
-                    Protected Secura account
-                  </b>
-
-                  <p>
-                    Username, role,
-                    department and account
-                    status are managed by
-                    an Administrator.
-                    Password resets are
-                    also handled by an
-                    Administrator.
-                  </p>
+                  <b>Workspace access active</b>
+                  <small>
+                    Anonymization and approved
+                    original-access workflows
+                    are available for this account.
+                  </small>
                 </div>
               </div>
-            </section>
+            </aside>
+
+            <div className="bold-profile-main">
+              <form
+                className="bold-profile-card"
+                onSubmit={handleSave}
+              >
+                <div className="bold-profile-card__head">
+                  <div>
+                    <p className="secura-bold-kicker">
+                      PERSONAL INFORMATION
+                    </p>
+
+                    <h2>Account details</h2>
+
+                    <p>
+                      Update the information
+                      associated with your account.
+                    </p>
+                  </div>
+
+                  <span>
+                    <UserRound size={18} />
+                  </span>
+                </div>
+
+                <div className="bold-profile-edit-grid">
+                  <label>
+                    <span>Full name</span>
+
+                    <div className="bold-profile-input">
+                      <UserRound size={15} />
+
+                      <input
+                        type="text"
+                        maxLength={150}
+                        value={
+                          form.full_name
+                        }
+                        onChange={(
+                          event,
+                        ) =>
+                          setForm(
+                            (
+                              current,
+                            ) => ({
+                              ...current,
+                              full_name:
+                                event
+                                  .target
+                                  .value,
+                            }),
+                          )
+                        }
+                      />
+                    </div>
+                  </label>
+
+                  <label>
+                    <span>Email address</span>
+
+                    <div className="bold-profile-input">
+                      <Mail size={15} />
+
+                      <input
+                        type="email"
+                        value={
+                          form.email
+                        }
+                        onChange={(
+                          event,
+                        ) =>
+                          setForm(
+                            (
+                              current,
+                            ) => ({
+                              ...current,
+                              email:
+                                event
+                                  .target
+                                  .value,
+                            }),
+                          )
+                        }
+                      />
+                    </div>
+                  </label>
+                </div>
+
+                <div className="bold-profile-card__actions">
+                  <button
+                    type="button"
+                    className="bold-profile-reset"
+                    onClick={
+                      resetChanges
+                    }
+                  >
+                    Reset changes
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="bold-profile-save"
+                    disabled={saving}
+                  >
+                    <Save size={14} />
+
+                    {saving
+                      ? 'Saving...'
+                      : 'Save changes'}
+                  </button>
+                </div>
+              </form>
+
+              <section className="bold-profile-card">
+                <div className="bold-profile-card__head">
+                  <div>
+                    <p className="secura-bold-kicker">
+                      SYSTEM INFORMATION
+                    </p>
+
+                    <h2>Workspace account</h2>
+
+                    <p>
+                      These values are managed by
+                      Secura and are read-only here.
+                    </p>
+                  </div>
+
+                  <span>
+                    <LockKeyhole size={18} />
+                  </span>
+                </div>
+
+                <div className="bold-profile-facts">
+                  <article>
+                    <span>
+                      <UserRound size={16} />
+                    </span>
+
+                    <div>
+                      <small>Username</small>
+                      <b>{profile.username}</b>
+                    </div>
+                  </article>
+
+                  <article>
+                    <span>
+                      <ShieldCheck size={16} />
+                    </span>
+
+                    <div>
+                      <small>Role</small>
+                      <b>{profile.role}</b>
+                    </div>
+                  </article>
+
+                  <article>
+                    <span>
+                      <Building2 size={16} />
+                    </span>
+
+                    <div>
+                      <small>Department</small>
+                      <b>
+                        {profile.department_name ||
+                          'Not assigned'}
+                      </b>
+                    </div>
+                  </article>
+
+                  <article>
+                    <span>
+                      <Check size={16} />
+                    </span>
+
+                    <div>
+                      <small>Account status</small>
+                      <b>
+                        {profile.is_active
+                          ? 'Active'
+                          : 'Inactive'}
+                      </b>
+                    </div>
+                  </article>
+                </div>
+
+                <div className="bold-profile-managed-note">
+                  <ShieldCheck size={18} />
+
+                  <div>
+                    <b>Protected Secura account</b>
+                    <p>
+                      Username, role, department and
+                      account status are managed by an
+                      Administrator. Password resets are
+                      also handled by an Administrator.
+                    </p>
+                  </div>
+                </div>
+              </section>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </section>
   )
 }

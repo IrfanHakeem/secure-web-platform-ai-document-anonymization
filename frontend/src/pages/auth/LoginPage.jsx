@@ -31,8 +31,10 @@ function LoginPage() {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
+  const [showPassword, setShowPassword] =
+    useState(false)
+  const [submitting, setSubmitting] =
+    useState(false)
   const [error, setError] = useState('')
 
   const handleSubmit = async (event) => {
@@ -85,7 +87,7 @@ function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f6f6ff]">
+    <main className="secura-login-page min-h-screen bg-[#f6f6ff]">
       <div className="grid min-h-screen grid-cols-1 lg:grid-cols-2">
         <section className="secura-login-hero relative hidden min-h-screen overflow-hidden bg-[#11083f] text-white lg:flex">
           <div className="absolute inset-0 bg-gradient-to-b from-[#10073d] via-[#1b0d61] to-[#24205c]" />
@@ -214,7 +216,7 @@ function LoginPage() {
           </div>
         </section>
 
-        <section className="flex min-h-screen items-center justify-center px-6 py-12 sm:px-10 lg:px-14 xl:px-20">
+        <section className="secura-login-panel flex min-h-screen items-center justify-center px-6 py-12 sm:px-10 lg:px-14 xl:px-20">
           <div className="secura-login-form w-full max-w-[430px]">
             <div className="mb-10 lg:hidden">
               <div className="flex items-center gap-3">
@@ -223,22 +225,22 @@ function LoginPage() {
                 </div>
 
                 <div>
-                  <p className="text-base font-semibold text-[#22283b]">
+                  <p className="secura-login-mobile-brand text-base font-semibold text-[#22283b]">
                     Secura
                   </p>
 
-                  <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#6560c9]">
+                  <p className="secura-login-mobile-note text-[9px] font-semibold uppercase tracking-[0.18em] text-[#6560c9]">
                     Secure Workspace
                   </p>
                 </div>
               </div>
             </div>
 
-            <h2 className="text-[28px] font-semibold tracking-[-0.04em] text-[#17172f]">
+            <h2 className="secura-login-title text-[28px] font-semibold tracking-[-0.04em] text-[#17172f]">
               Sign In
             </h2>
 
-            <p className="mt-2 text-sm text-[#7d8494]">
+            <p className="secura-login-subtitle mt-2 text-sm text-[#7d8494]">
               Welcome back! Enter your credentials to continue.
             </p>
 
@@ -248,7 +250,7 @@ function LoginPage() {
             >
               <div>
                 <label
-                  className="mb-2 block text-sm font-medium text-[#23233e]"
+                  className="secura-login-label mb-2 block text-sm font-medium text-[#23233e]"
                   htmlFor="email"
                 >
                   Email
@@ -272,7 +274,7 @@ function LoginPage() {
               <div>
                 <div className="mb-2 flex items-center justify-between gap-4">
                   <label
-                    className="text-sm font-medium text-[#23233e]"
+                    className="secura-login-label text-sm font-medium text-[#23233e]"
                     htmlFor="password"
                   >
                     Password
@@ -280,7 +282,7 @@ function LoginPage() {
 
                   <Link
                     to="/forgot-password"
-                    className="text-xs font-semibold text-[#704dea] transition hover:text-[#514caf]"
+                    className="secura-login-forgot text-xs font-semibold text-[#704dea] transition hover:text-[#514caf]"
                   >
                     Forgot password?
                   </Link>
@@ -356,17 +358,17 @@ function LoginPage() {
               </button>
             </form>
 
-            <div className="mt-8 flex items-center gap-3 text-[10px] text-[#a0a4b0]">
-              <div className="h-px flex-1 bg-[#e9eaf0]" />
+            <div className="mt-8 flex items-center gap-3">
+              <div className="secura-login-divider-line h-px flex-1 bg-[#e9eaf0]" />
 
-              <span>
+              <span className="secura-login-divider-copy text-[10px] text-[#a0a4b0]">
                 Protected access
               </span>
 
-              <div className="h-px flex-1 bg-[#e9eaf0]" />
+              <div className="secura-login-divider-line h-px flex-1 bg-[#e9eaf0]" />
             </div>
 
-            <p className="mt-5 text-center text-[10px] leading-5 text-[#9da1ad]">
+            <p className="secura-login-footnote mt-5 text-center text-[10px] leading-5 text-[#9da1ad]">
               Access is restricted to authorized Secura users. Authentication
               activity may be recorded for security auditing.
             </p>

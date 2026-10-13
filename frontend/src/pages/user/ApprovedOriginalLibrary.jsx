@@ -229,7 +229,7 @@ function ApprovedOriginalLibrary() {
     }
 
   return (
-    <>
+    <div className="secura-bold-approved">
       <header className="approved-library-header">
         <p className="secura-eyebrow">
           SECURE WORKSPACE
@@ -785,7 +785,7 @@ function ApprovedOriginalLibrary() {
           </section>
         </div>
       )}
-    </>
+    </div>
   )
 }
 

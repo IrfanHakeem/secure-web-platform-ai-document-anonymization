@@ -5,12 +5,19 @@ import {
   ChevronDown,
   ChevronUp,
   Download,
+  Eye,
+  FileCheck2,
   FileText,
+  Fingerprint,
+  Hash,
   LockKeyhole,
+  Mail,
+  Phone,
   Share2,
   ShieldCheck,
   Sparkles,
   UploadCloud,
+  UserRound,
   X,
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
@@ -32,6 +39,13 @@ const PII_LABELS = {
   EMAIL: 'Email addresses',
   PHONE: 'Phone numbers',
   MALAYSIAN_IC: 'Malaysian IC numbers',
+}
+
+const PII_ICONS = {
+  NAME: UserRound,
+  EMAIL: Mail,
+  PHONE: Phone,
+  MALAYSIAN_IC: Fingerprint,
 }
 
 function getExtension(filename) {
@@ -146,6 +160,7 @@ function AnonymizeDocument() {
     setSharedDepartmentIds([])
     setShowShare(false)
     setShowReport(false)
+    setShowReplacements(false)
 
     if (!file) {
       return
@@ -355,13 +370,17 @@ function AnonymizeDocument() {
     setSharing(false)
   }
 
-  const piiRows = Object.entries(
-    result?.pii_counts ?? {},
-  ).map(([type, count]) => ({
-    type,
-    label: PII_LABELS[type] ?? type,
-    count,
-  }))
+  const piiRows = Object.entries(PII_LABELS).map(
+    ([type, label]) => ({
+      type,
+      label,
+      count: Number(result?.pii_counts?.[type] ?? 0),
+    }),
+  )
+
+  const detectedPiiRows = piiRows.filter(
+    (item) => item.count > 0,
+  )
 
   const selectedDepartmentNames =
     departments
@@ -369,6 +388,50 @@ function AnonymizeDocument() {
         selectedDepartmentIds.includes(department.id),
       )
       .map((department) => department.name)
+
+  const uploadStepComplete = Boolean(uploadedDocument)
+  const aiStepComplete = Boolean(result)
+
+  const workflowSteps = [
+    {
+      number: '1',
+      label: 'Upload',
+      note: uploadStepComplete
+        ? 'Document secured'
+        : uploading
+          ? 'Securing document'
+          : 'Choose a document',
+      state: uploadStepComplete
+        ? 'complete'
+        : 'active',
+    },
+    {
+      number: '2',
+      label: 'AI Detection',
+      note: aiStepComplete
+        ? 'Sensitive data protected'
+        : anonymizing
+          ? 'Analyzing document'
+          : uploadStepComplete
+            ? 'Ready to process'
+            : 'Waiting for upload',
+      state: aiStepComplete
+        ? 'complete'
+        : uploadStepComplete
+          ? 'active'
+          : 'pending',
+    },
+    {
+      number: '3',
+      label: 'Protected',
+      note: aiStepComplete
+        ? 'Anonymized copy ready'
+        : 'Final secure output',
+      state: aiStepComplete
+        ? 'complete'
+        : 'pending',
+    },
+  ]
 
   return (
     <>
@@ -393,6 +456,35 @@ function AnonymizeDocument() {
           information.
         </p>
       </header>
+
+      <section
+        className="anonymize-progress-shell"
+        aria-label="Anonymization progress"
+      >
+        {workflowSteps.map((step, index) => (
+          <div
+            className={`anonymize-progress-step ${step.state}`}
+            key={step.label}
+          >
+            <span className="anonymize-progress-number">
+              {step.state === 'complete' ? (
+                <Check size={14} />
+              ) : (
+                step.number
+              )}
+            </span>
+
+            <span className="anonymize-progress-copy">
+              <b>{step.label}</b>
+              <small>{step.note}</small>
+            </span>
+
+            {index < workflowSteps.length - 1 && (
+              <i className="anonymize-progress-line" />
+            )}
+          </div>
+        ))}
+      </section>
 
       {error && (
         <div
@@ -599,12 +691,25 @@ function AnonymizeDocument() {
           </section>
         </div>
       ) : (
-        <section className="anonymize-completion">
+        <section className="anonymize-completion anonymize-completion-smart">
           <div className="anonymize-process-grid">
             <article className="anonymize-process-card">
-              <h2>1. Upload document</h2>
+              <div className="anonymize-card-heading-row">
+                <span className="anonymize-card-status complete">
+                  <Check size={14} />
+                </span>
 
-              <b>{uploadedDocument.original_filename}</b>
+                <div>
+                  <p className="secura-eyebrow">
+                    STEP 1 COMPLETE
+                  </p>
+                  <h2>Document secured</h2>
+                </div>
+              </div>
+
+              <b className="anonymize-result-filename">
+                {uploadedDocument.original_filename}
+              </b>
 
               <p>
                 {formatBytes(uploadedDocument.file_size)}
@@ -612,72 +717,109 @@ function AnonymizeDocument() {
 
               <div className="anonymize-process-divider" />
 
-              <strong>Security checks</strong>
+              <div className="anonymize-check-grid">
+                <p>
+                  <Check size={13} />
+                  File validated
+                </p>
 
-              <p>
-                <Check size={13} />
-                File validated
-              </p>
+                <p>
+                  <Check size={13} />
+                  Original encrypted
+                </p>
 
-              <p>
-                <Check size={13} />
-                Original encrypted
-              </p>
-
-              <p>
-                <Check size={13} />
-                SHA-256 generated
-              </p>
+                <p>
+                  <Check size={13} />
+                  SHA-256 generated
+                </p>
+              </div>
             </article>
 
             <article className="anonymize-process-card processing-card">
-              <h2>2. AI processing</h2>
+              <div className="anonymize-card-heading-row">
+                <span className="anonymize-card-status complete purple">
+                  <Sparkles size={14} />
+                </span>
 
-              <p>
-                <Check size={13} />
-                Analysis completed
-              </p>
+                <div>
+                  <p className="secura-eyebrow">
+                    STEP 2 COMPLETE
+                  </p>
+                  <h2>AI protection complete</h2>
+                </div>
+              </div>
 
-              <p>
-                <Check size={13} />
-                Anonymization completed
-              </p>
+              <div className="anonymize-ai-result-summary">
+                <div>
+                  <small>SENSITIVE DATA</small>
+                  <b>{result.pii_count}</b>
+                  <span>protected</span>
+                </div>
 
-              <div className="anonymize-process-divider" />
+                <div>
+                  <small>CATEGORIES</small>
+                  <b>{detectedPiiRows.length}</b>
+                  <span>detected</span>
+                </div>
+              </div>
 
-              <strong>
-                Total sensitive data points protected
-              </strong>
-
-              <p className="anonymize-protected-label">
-                {result.pii_count} data point
-                {result.pii_count === 1 ? '' : 's'} protected
-                <Check size={14} />
-              </p>
+              <div className="anonymize-detected-chips">
+                {detectedPiiRows.length > 0 ? (
+                  detectedPiiRows.map((item) => (
+                    <span key={item.type}>
+                      <Check size={12} />
+                      {item.label}: {item.count}
+                    </span>
+                  ))
+                ) : (
+                  <span>
+                    <Check size={12} />
+                    No supported PII detected
+                  </span>
+                )}
+              </div>
             </article>
           </div>
 
-          <section className="anonymize-ready-card">
-            <div>
-              <b>
-                <Check size={17} />
-                Your anonymized file is ready
-              </b>
+          <section className="anonymize-ready-card anonymize-ready-card-smart">
+            <div className="anonymize-ready-copy">
+              <span className="anonymize-ready-icon">
+                <FileCheck2 size={22} />
+              </span>
 
-              <p>
-                {buildOutputFilename(result.filename)}
-              </p>
+              <div>
+                <p className="secura-eyebrow">
+                  STEP 3 · PROTECTED OUTPUT
+                </p>
+
+                <b>Your anonymized file is ready</b>
+
+                <p>
+                  {buildOutputFilename(result.filename)}
+                </p>
+              </div>
             </div>
 
-            <div className="anonymize-result-actions">
+            <div className="anonymize-result-actions anonymize-result-actions-smart">
               <button
                 type="button"
                 className="anonymize-secondary-button"
                 onClick={handleDownload}
               >
                 <Download size={15} />
-                Download anonymized
+                Download
               </button>
+
+              {result.replacements?.length > 0 && (
+                <button
+                  type="button"
+                  className="anonymize-before-after-primary"
+                  onClick={() => setShowReplacements(true)}
+                >
+                  <Eye size={15} />
+                  Before / After
+                </button>
+              )}
 
               <button
                 type="button"
@@ -696,12 +838,8 @@ function AnonymizeDocument() {
                 <Share2 size={15} />
 
                 {sharedDepartmentIds.length
-                  ? `Shared with ${sharedDepartmentIds.length} department${
-                      sharedDepartmentIds.length > 1
-                        ? 's'
-                        : ''
-                    }`
-                  : 'Share with department'}
+                  ? `Shared with ${sharedDepartmentIds.length}`
+                  : 'Share'}
               </button>
 
               <button
@@ -709,7 +847,8 @@ function AnonymizeDocument() {
                 className="anonymize-secondary-button"
                 onClick={resetWorkflow}
               >
-                Anonymize another document
+                <Sparkles size={15} />
+                New document
               </button>
             </div>
           </section>
@@ -797,7 +936,7 @@ function AnonymizeDocument() {
             </section>
           )}
 
-          <section className="anonymize-detection-panel">
+          <section className="anonymize-detection-panel anonymize-detection-panel-smart">
             <div className="anonymize-detection-header">
               <div>
                 <p className="secura-eyebrow">
@@ -809,6 +948,10 @@ function AnonymizeDocument() {
                   {result.pii_count === 1 ? '' : 's'} detected
                   and protected
                 </h2>
+
+                <p className="anonymize-report-subtitle">
+                  Detection summary for this anonymization run.
+                </p>
               </div>
 
               <button
@@ -830,20 +973,31 @@ function AnonymizeDocument() {
               </button>
             </div>
 
-            <div className="anonymize-detection-list">
-              {piiRows.length === 0 ? (
-                <p>
-                  <b>0</b>
-                  No supported PII categories detected
-                </p>
-              ) : (
-                piiRows.map((item) => (
-                  <p key={item.type}>
-                    <b>{item.count}</b>
-                    {item.label}
-                  </p>
-                ))
-              )}
+            <div className="anonymize-detection-list anonymize-detection-list-smart">
+              {piiRows.map((item) => {
+                const Icon = PII_ICONS[item.type] ?? ShieldCheck
+                const detected = item.count > 0
+
+                return (
+                  <article
+                    key={item.type}
+                    className={detected ? 'detected' : 'zero'}
+                  >
+                    <span className="anonymize-pii-icon">
+                      <Icon size={17} />
+                    </span>
+
+                    <div>
+                      <b>{item.count}</b>
+                      <p>{item.label}</p>
+                    </div>
+
+                    <small>
+                      {detected ? 'Protected' : 'Not detected'}
+                    </small>
+                  </article>
+                )
+              })}
             </div>
 
             {showReport && (
@@ -890,21 +1044,67 @@ function AnonymizeDocument() {
             )}
           </section>
 
-          <aside className="anonymize-privacy-note">
-            <ShieldCheck size={19} />
+          <section className="anonymize-protection-summary">
+            <div className="anonymize-protection-heading">
+              <div>
+                <p className="secura-eyebrow">
+                  DOCUMENT PROTECTION
+                </p>
+                <h2>Security controls applied</h2>
+              </div>
 
-            <div>
-              <b>
-                Your original document stays protected
-              </b>
-
-              <p>
-                Every upload is encrypted and original-file
-                access is restricted through an approval
-                workflow.
-              </p>
+              <span>
+                <ShieldCheck size={18} />
+                Protected
+              </span>
             </div>
-          </aside>
+
+            <div className="anonymize-protection-grid">
+              <article>
+                <span>
+                  <LockKeyhole size={17} />
+                </span>
+                <div>
+                  <b>Original encrypted</b>
+                  <small>Protected at rest</small>
+                </div>
+                <Check size={15} />
+              </article>
+
+              <article>
+                <span>
+                  <Hash size={17} />
+                </span>
+                <div>
+                  <b>SHA-256 recorded</b>
+                  <small>Integrity reference</small>
+                </div>
+                <Check size={15} />
+              </article>
+
+              <article>
+                <span>
+                  <FileCheck2 size={17} />
+                </span>
+                <div>
+                  <b>Anonymized copy ready</b>
+                  <small>Safe working version</small>
+                </div>
+                <Check size={15} />
+              </article>
+
+              <article>
+                <span>
+                  <ShieldCheck size={17} />
+                </span>
+                <div>
+                  <b>Original access controlled</b>
+                  <small>Approval workflow required</small>
+                </div>
+                <Check size={15} />
+              </article>
+            </div>
+          </section>
         </section>
       )}
 

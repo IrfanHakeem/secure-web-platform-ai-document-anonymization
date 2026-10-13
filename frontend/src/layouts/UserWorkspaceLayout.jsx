@@ -48,9 +48,13 @@ function UserWorkspaceLayout() {
   const location = useLocation()
 
   return (
-    <div className="secura-workspace-shell">
-      <aside className="secura-sidebar">
-        <div className="secura-sidebar-brand">
+    <div className="secura-workspace-shell secura-workspace-shell--bold">
+      <aside className="secura-sidebar secura-sidebar--bold">
+        <div className="secura-sidebar-bold__mesh" />
+        <div className="secura-sidebar-bold__orb secura-sidebar-bold__orb--one" />
+        <div className="secura-sidebar-bold__orb secura-sidebar-bold__orb--two" />
+
+        <div className="secura-sidebar-brand secura-sidebar-brand--bold">
           <span className="secura-sidebar-brand-mark">
             S
           </span>
@@ -68,16 +72,15 @@ function UserWorkspaceLayout() {
           WORKSPACE
         </p>
 
-        <nav className="secura-side-nav">
+        <nav className="secura-side-nav secura-side-nav--bold">
           {navigation.map((item) => {
             const Icon = item.icon
 
             const paths =
               item.activePaths ?? [item.path]
 
-            const isActive = paths.includes(
-              location.pathname,
-            )
+            const isActive =
+              paths.includes(location.pathname)
 
             return (
               <Link
@@ -85,21 +88,25 @@ function UserWorkspaceLayout() {
                 to={item.path}
                 className={[
                   'secura-side-link',
+                  'secura-side-link--bold',
                   isActive ? 'active' : '',
                 ]
                   .filter(Boolean)
                   .join(' ')}
               >
-                <Icon size={17} />
+                <span className="secura-side-link__icon">
+                  <Icon size={17} />
+                </span>
 
                 <span>{item.label}</span>
               </Link>
             )
           })}
         </nav>
+
       </aside>
 
-      <main className="secura-workspace-main">
+      <main className="secura-workspace-main secura-workspace-main--bold">
         <Outlet />
       </main>
     </div>
