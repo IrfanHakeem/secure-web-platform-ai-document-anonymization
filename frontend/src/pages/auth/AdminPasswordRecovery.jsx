@@ -1,913 +1,369 @@
 import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
   CheckCircle2,
   Eye,
   EyeOff,
+  Fingerprint,
   KeyRound,
+  LoaderCircle,
   LockKeyhole,
   Mail,
   RefreshCw,
   ShieldCheck,
 } from 'lucide-react'
-
-import {
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
-
-import {
-  useNavigate,
-} from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
 import api from '../../api/client'
+import SecuraLogoMark from '../../components/SecuraLogoMark'
+import './LoginPage.css'
+import './AdminPasswordRecovery.css'
 
-function getApiError(
-  error,
-  fallback,
-) {
-  const detail =
-    error?.response?.data?.detail
+const emptyOtp = () => Array(6).fill('')
 
-  if (typeof detail === 'string') {
-    return detail
-  }
-
-  return fallback
+function getApiError(error, fallback) {
+  const detail = error?.response?.data?.detail
+  return typeof detail === 'string' ? detail : fallback
 }
 
-function maskEmail(email) {
-  const [
-    name,
-    domain,
-  ] = email.split('@')
-
-  if (
-    !name ||
-    !domain
-  ) {
-    return email
-  }
-
-  const visible =
-    name.slice(0, 2)
-
-  const hidden =
-    '*'.repeat(
-      Math.max(
-        name.length - 2,
-        3,
-      ),
-    )
-
-  return `${visible}${hidden}@${domain}`
+function maskEmail(address) {
+  const [local, domain] = address.split('@')
+  if (!local || !domain) return address
+  return `${local.slice(0, 2)}${'*'.repeat(Math.max(local.length - 2, 3))}@${domain}`
 }
+
+const journey = [
+  { key: 'email', number: '01', label: 'Your email', icon: Mail },
+  { key: 'otp', number: '02', label: 'Verify identity', icon: Fingerprint },
+  { key: 'password', number: '03', label: 'New password', icon: LockKeyhole },
+]
 
 function AdminPasswordRecovery() {
-  const navigate =
-    useNavigate()
+  const navigate = useNavigate()
+  const otpRefs = useRef([])
 
-  const otpRefs =
-    useRef([])
-
-  const [step, setStep] =
-    useState('email')
-
-  const [email, setEmail] =
-    useState('')
-
-  const [otp, setOtp] =
-    useState(
-      Array(6).fill(''),
-    )
-
-  const [
-    resetToken,
-    setResetToken,
-  ] = useState('')
-
-  const [
-    newPassword,
-    setNewPassword,
-  ] = useState('')
-
-  const [
-    confirmPassword,
-    setConfirmPassword,
-  ] = useState('')
-
-  const [
-    showPassword,
-    setShowPassword,
-  ] = useState(false)
-
-  const [
-    showConfirmPassword,
-    setShowConfirmPassword,
-  ] = useState(false)
-
-  const [
-    countdown,
-    setCountdown,
-  ] = useState(0)
-
-  const [loading, setLoading] =
-    useState(false)
-
-  const [error, setError] =
-    useState('')
-
-  const [message, setMessage] =
-    useState('')
+  const [step, setStep] = useState('email')
+  const [email, setEmail] = useState('')
+  const [otp, setOtp] = useState(emptyOtp)
+  const [resetToken, setResetToken] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [countdown, setCountdown] = useState(0)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [message, setMessage] = useState('')
 
   useEffect(() => {
-    if (countdown <= 0) {
-      return undefined
-    }
+    if (step !== 'otp' || countdown <= 0) return undefined
+    const timer = window.setInterval(() => setCountdown((value) => Math.max(value - 1, 0)), 1000)
+    return () => window.clearInterval(timer)
+  }, [step, countdown])
 
-    const timer =
-      window.setInterval(() => {
-        setCountdown(
-          (current) =>
-            Math.max(
-              current - 1,
-              0,
-            ),
-        )
-      }, 1000)
+  useEffect(() => {
+    if (step === 'otp') otpRefs.current[0]?.focus()
+  }, [step])
 
-    return () => {
-      window.clearInterval(
-        timer,
-      )
-    }
-  }, [countdown])
+  const clearFeedback = () => {
+    setError('')
+    setMessage('')
+  }
 
-  const requestOtp =
-    async () => {
-      const normalizedEmail =
-        email
-          .trim()
-          .toLowerCase()
-
-      if (!normalizedEmail) {
-        setError(
-          'Administrator email is required.',
-        )
-
-        return
-      }
-
-      setLoading(true)
-      setError('')
-      setMessage('')
-
-      try {
-        await api.post(
-          '/auth/admin-forgot-password',
-          {
-            email:
-              normalizedEmail,
-          },
-        )
-
-        setEmail(
-          normalizedEmail,
-        )
-
-        setOtp(
-          Array(6).fill(''),
-        )
-
-        setStep('otp')
-
-        setCountdown(30)
-
-        setMessage(
-          'If the email belongs to the Administrator account, a 6-digit OTP has been sent.',
-        )
-
-        window.setTimeout(() => {
-          otpRefs.current[
-            0
-          ]?.focus()
-        }, 100)
-      } catch (requestError) {
-        setError(
-          getApiError(
-            requestError,
-            'Unable to send password reset OTP.',
-          ),
-        )
-      } finally {
-        setLoading(false)
-      }
-    }
-
-  const handleEmailSubmit =
-    (event) => {
-      event.preventDefault()
-
-      requestOtp()
-    }
-
-  const handleOtpChange = (
-    index,
-    value,
-  ) => {
-    const digit =
-      value.replace(
-        /\D/g,
-        '',
-      )
-
-    if (!digit) {
-      setOtp(
-        (current) => {
-          const next =
-            [...current]
-
-          next[index] = ''
-
-          return next
-        },
-      )
-
+  const requestOtp = async () => {
+    if (loading) return
+    const normalized = email.trim().toLowerCase()
+    if (!normalized) {
+      setError('Administrator email is required.')
       return
     }
+    setLoading(true)
+    clearFeedback()
+    try {
+      await api.post('/auth/admin-forgot-password', { email: normalized })
+      setEmail(normalized)
+      setOtp(emptyOtp())
+      setResetToken('')
+      setCountdown(30)
+      setStep('otp')
+      setMessage('If this is the registered Administrator email, a verification code has been sent.')
+    } catch (requestError) {
+      setError(getApiError(requestError, 'Unable to request the verification code. Please try again.'))
+    } finally {
+      setLoading(false)
+    }
+  }
 
-    const lastDigit =
-      digit.slice(-1)
-
+  const handleOtpChange = (index, raw) => {
+    const digits = raw.replace(/\D/g, '')
+    if (digits.length > 1) {
+      const next = emptyOtp()
+      digits.slice(0, 6).split('').forEach((digit, position) => { next[position] = digit })
+      setOtp(next)
+      otpRefs.current[Math.min(digits.length, 5)]?.focus()
+      return
+    }
     setOtp((current) => {
-      const next =
-        [...current]
-
-      next[index] =
-        lastDigit
-
+      const next = [...current]
+      next[index] = digits
       return next
     })
+    if (digits && index < 5) otpRefs.current[index + 1]?.focus()
+  }
 
-    if (index < 5) {
-      otpRefs.current[
-        index + 1
-      ]?.focus()
+  const handleOtpKeyDown = (index, event) => {
+    if (event.key === 'Backspace' && !otp[index] && index > 0) otpRefs.current[index - 1]?.focus()
+    if (event.key === 'ArrowLeft' && index > 0) otpRefs.current[index - 1]?.focus()
+    if (event.key === 'ArrowRight' && index < 5) otpRefs.current[index + 1]?.focus()
+  }
+
+  const handleOtpPaste = (event) => {
+    event.preventDefault()
+    const digits = event.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6)
+    if (!digits) return
+    const next = emptyOtp()
+    digits.split('').forEach((digit, index) => { next[index] = digit })
+    setOtp(next)
+    otpRefs.current[Math.min(digits.length, 5)]?.focus()
+  }
+
+  const verifyOtp = async (event) => {
+    event.preventDefault()
+    if (loading) return
+    const otpValue = otp.join('')
+    if (otpValue.length !== 6) {
+      setError('Enter the complete 6-digit OTP.')
+      return
+    }
+    setLoading(true)
+    clearFeedback()
+    try {
+      const response = await api.post('/auth/admin-verify-otp', { email, otp: otpValue })
+      if (!response.data?.reset_token) throw new Error('Missing reset token')
+      setResetToken(response.data.reset_token)
+      setStep('password')
+      setMessage('Verification successful. Create a new Administrator password.')
+    } catch (verifyError) {
+      setError(getApiError(verifyError, 'Unable to verify the code. Please try again.'))
+    } finally {
+      setLoading(false)
     }
   }
 
-  const handleOtpKeyDown = (
-    index,
-    event,
-  ) => {
-    if (
-      event.key ===
-        'Backspace' &&
-      !otp[index] &&
-      index > 0
-    ) {
-      otpRefs.current[
-        index - 1
-      ]?.focus()
+  const resetPassword = async (event) => {
+    event.preventDefault()
+    if (loading) return
+    if (newPassword.length < 8) {
+      setError('Your new password must contain at least 8 characters.')
+      return
     }
-
-    if (
-      event.key ===
-        'ArrowLeft' &&
-      index > 0
-    ) {
-      otpRefs.current[
-        index - 1
-      ]?.focus()
+    if (new TextEncoder().encode(newPassword).length > 72) {
+      setError('Password exceeds the supported length (72 bytes).')
+      return
     }
-
-    if (
-      event.key ===
-        'ArrowRight' &&
-      index < 5
-    ) {
-      otpRefs.current[
-        index + 1
-      ]?.focus()
+    if (newPassword !== confirmPassword) {
+      setError('Password confirmation does not match.')
+      return
+    }
+    if (!resetToken) {
+      setError('Your reset session expired. Request a new verification code.')
+      return
+    }
+    setLoading(true)
+    clearFeedback()
+    try {
+      await api.post('/auth/admin-reset-password', {
+        reset_token: resetToken,
+        new_password: newPassword,
+      })
+      setResetToken('')
+      setOtp(emptyOtp())
+      setNewPassword('')
+      setConfirmPassword('')
+      setStep('success')
+    } catch (resetError) {
+      setError(getApiError(resetError, 'Unable to update your password. Please try again.'))
+    } finally {
+      setLoading(false)
     }
   }
 
-  const handleOtpPaste =
-    (event) => {
-      event.preventDefault()
-
-      const digits =
-        event.clipboardData
-          .getData('text')
-          .replace(/\D/g, '')
-          .slice(0, 6)
-          .split('')
-
-      if (
-        digits.length === 0
-      ) {
-        return
-      }
-
-      const next =
-        Array(6).fill('')
-
-      digits.forEach(
-        (digit, index) => {
-          next[index] =
-            digit
-        },
-      )
-
-      setOtp(next)
-
-      const focusIndex =
-        Math.min(
-          digits.length,
-          5,
-        )
-
-      otpRefs.current[
-        focusIndex
-      ]?.focus()
-    }
-
-  const verifyOtp =
-    async (event) => {
-      event.preventDefault()
-
-      const otpValue =
-        otp.join('')
-
-      if (
-        otpValue.length !== 6
-      ) {
-        setError(
-          'Enter the complete 6-digit OTP.',
-        )
-
-        return
-      }
-
-      setLoading(true)
-      setError('')
-      setMessage('')
-
-      try {
-        const response =
-          await api.post(
-            '/auth/admin-verify-otp',
-            {
-              email,
-              otp: otpValue,
-            },
-          )
-
-        setResetToken(
-          response.data
-            .reset_token,
-        )
-
-        setStep('password')
-
-        setMessage(
-          'Identity verified. Create a new Administrator password.',
-        )
-      } catch (verifyError) {
-        setError(
-          getApiError(
-            verifyError,
-            'Unable to verify OTP.',
-          ),
-        )
-      } finally {
-        setLoading(false)
-      }
-    }
-
-  const resetPassword =
-    async (event) => {
-      event.preventDefault()
-
-      if (
-        newPassword.length < 8
-      ) {
-        setError(
-          'New password must contain at least 8 characters.',
-        )
-
-        return
-      }
-
-      const passwordBytes =
-        new TextEncoder()
-          .encode(
-            newPassword,
-          ).length
-
-      if (
-        passwordBytes > 72
-      ) {
-        setError(
-          'New password is too long.',
-        )
-
-        return
-      }
-
-      if (
-        newPassword !==
-        confirmPassword
-      ) {
-        setError(
-          'Password confirmation does not match.',
-        )
-
-        return
-      }
-
-      if (!resetToken) {
-        setError(
-          'Password reset session is no longer valid. Request a new OTP.',
-        )
-
-        return
-      }
-
-      setLoading(true)
-      setError('')
-      setMessage('')
-
-      try {
-        await api.post(
-          '/auth/admin-reset-password',
-          {
-            reset_token:
-              resetToken,
-
-            new_password:
-              newPassword,
-          },
-        )
-
-        setStep('success')
-
-        setResetToken('')
-        setOtp(
-          Array(6).fill(''),
-        )
-        setNewPassword('')
-        setConfirmPassword('')
-      } catch (resetError) {
-        setError(
-          getApiError(
-            resetError,
-            'Unable to reset Administrator password.',
-          ),
-        )
-      } finally {
-        setLoading(false)
-      }
-    }
-
-  const resendOtp =
-    async () => {
-      if (
-        countdown > 0 ||
-        loading
-      ) {
-        return
-      }
-
-      await requestOtp()
-    }
+  const stepIndex = step === 'success' ? 3 : journey.findIndex((item) => item.key === step)
 
   return (
-    <main className="admin-recovery-page">
-      <section className="admin-recovery-card">
-        <div className="admin-recovery-brand">
-          <span>S</span>
+    <main className="slx-login srx-recovery">
+      <div className="slx-login__layout">
+        <section className="slx-story srx-story" aria-label="Secura account recovery">
+          <div className="slx-story__grid" aria-hidden="true" />
+          <div className="slx-story__glow slx-story__glow--top" aria-hidden="true" />
+          <div className="slx-story__glow slx-story__glow--bottom" aria-hidden="true" />
+          <div className="slx-story__sweep" aria-hidden="true" />
 
-          <b>Secura</b>
-        </div>
-
-        {step === 'email' && (
-          <>
-            <div className="admin-recovery-icon">
-              <ShieldCheck
-                size={25}
-              />
-            </div>
-
-            <p className="secura-eyebrow">
-              ADMINISTRATOR RECOVERY
-            </p>
-
-            <h1>
-              Forgot your password?
-            </h1>
-
-            <p className="admin-recovery-description">
-              Enter the registered
-              Administrator email.
-              We will send a
-              verification OTP before
-              allowing the password
-              to be changed.
-            </p>
-
-            {error && (
-              <div className="admin-recovery-error">
-                {error}
-              </div>
-            )}
-
-            <form
-              onSubmit={
-                handleEmailSubmit
-              }
-            >
-              <label className="admin-recovery-label">
-                Administrator email
-              </label>
-
-              <div className="admin-recovery-input">
-                <Mail
-                  size={15}
-                />
-
-                <input
-                  type="email"
-                  value={email}
-                  placeholder="Enter registered email"
-                  autoComplete="email"
-                  onChange={(event) =>
-                    setEmail(
-                      event.target
-                        .value,
-                    )
-                  }
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="admin-recovery-primary"
-                disabled={loading}
-              >
-                <KeyRound
-                  size={15}
-                />
-
-                {loading
-                  ? 'Sending OTP...'
-                  : 'Request OTP'}
-              </button>
-            </form>
-
-            <div className="admin-recovery-note">
-              Only the registered
-              Administrator account
-              can use this recovery
-              process.
-            </div>
-          </>
-        )}
-
-        {step === 'otp' && (
-          <>
-            <div className="admin-recovery-icon">
-              <KeyRound
-                size={25}
-              />
-            </div>
-
-            <p className="secura-eyebrow">
-              EMAIL VERIFICATION
-            </p>
-
-            <h1>
-              Enter verification code
-            </h1>
-
-            <p className="admin-recovery-description">
-              Enter the 6-digit OTP
-              sent to
-            </p>
-
-            <div className="admin-recovery-email">
-              {maskEmail(email)}
-            </div>
-
-            {message && (
-              <div className="admin-recovery-success-message">
-                {message}
-              </div>
-            )}
-
-            {error && (
-              <div className="admin-recovery-error">
-                {error}
-              </div>
-            )}
-
-            <form
-              onSubmit={verifyOtp}
-            >
-              <div
-                className="admin-recovery-otp"
-                onPaste={
-                  handleOtpPaste
-                }
-              >
-                {otp.map(
-                  (
-                    digit,
-                    index,
-                  ) => (
-                    <input
-                      key={index}
-                      ref={(element) => {
-                        otpRefs.current[
-                          index
-                        ] = element
-                      }}
-                      inputMode="numeric"
-                      maxLength={1}
-                      value={digit}
-                      aria-label={`OTP digit ${index + 1}`}
-                      onChange={(
-                        event,
-                      ) =>
-                        handleOtpChange(
-                          index,
-                          event.target
-                            .value,
-                        )
-                      }
-                      onKeyDown={(
-                        event,
-                      ) =>
-                        handleOtpKeyDown(
-                          index,
-                          event,
-                        )
-                      }
-                    />
-                  ),
-                )}
-              </div>
-
-              <div className="admin-recovery-resend">
-                <span>
-                  Didn&apos;t receive
-                  the code?
-                </span>
-
-                <button
-                  type="button"
-                  disabled={
-                    countdown > 0 ||
-                    loading
-                  }
-                  onClick={
-                    resendOtp
-                  }
-                >
-                  <RefreshCw
-                    size={12}
-                  />
-
-                  {countdown > 0
-                    ? `Resend in ${countdown}s`
-                    : 'Resend OTP'}
-                </button>
-              </div>
-
-              <div className="admin-recovery-button-row">
-                <button
-                  type="submit"
-                  className="admin-recovery-primary inline"
-                  disabled={loading}
-                >
-                  {loading
-                    ? 'Verifying...'
-                    : 'Verify OTP'}
-                </button>
-              </div>
-            </form>
-          </>
-        )}
-
-        {step === 'password' && (
-          <>
-            <div className="admin-recovery-verified">
-              <CheckCircle2
-                size={18}
-              />
-
-              <div>
-                <b>
-                  Identity verified
-                </b>
-
-                <small>
-                  OTP verification
-                  completed successfully.
-                </small>
-              </div>
-            </div>
-
-            <p className="secura-eyebrow">
-              NEW PASSWORD
-            </p>
-
-            <h1>
-              Create new password
-            </h1>
-
-            <p className="admin-recovery-description">
-              Create a new password
-              for the Administrator
-              account.
-            </p>
-
-            {message && (
-              <div className="admin-recovery-success-message">
-                {message}
-              </div>
-            )}
-
-            {error && (
-              <div className="admin-recovery-error">
-                {error}
-              </div>
-            )}
-
-            <form
-              onSubmit={
-                resetPassword
-              }
-            >
-              <label className="admin-recovery-label">
-                New password
-              </label>
-
-              <div className="admin-recovery-input">
-                <LockKeyhole
-                  size={15}
-                />
-
-                <input
-                  type={
-                    showPassword
-                      ? 'text'
-                      : 'password'
-                  }
-                  value={
-                    newPassword
-                  }
-                  placeholder="Minimum 8 characters"
-                  autoComplete="new-password"
-                  onChange={(event) =>
-                    setNewPassword(
-                      event.target
-                        .value,
-                    )
-                  }
-                />
-
-                <button
-                  type="button"
-                  className="admin-recovery-eye"
-                  onClick={() =>
-                    setShowPassword(
-                      (current) =>
-                        !current,
-                    )
-                  }
-                >
-                  {showPassword ? (
-                    <EyeOff
-                      size={15}
-                    />
-                  ) : (
-                    <Eye
-                      size={15}
-                    />
-                  )}
-                </button>
-              </div>
-
-              <p className="admin-recovery-hint">
-                Minimum 8 characters.
-              </p>
-
-              <label className="admin-recovery-label">
-                Confirm new password
-              </label>
-
-              <div className="admin-recovery-input">
-                <LockKeyhole
-                  size={15}
-                />
-
-                <input
-                  type={
-                    showConfirmPassword
-                      ? 'text'
-                      : 'password'
-                  }
-                  value={
-                    confirmPassword
-                  }
-                  placeholder="Repeat new password"
-                  autoComplete="new-password"
-                  onChange={(event) =>
-                    setConfirmPassword(
-                      event.target
-                        .value,
-                    )
-                  }
-                />
-
-                <button
-                  type="button"
-                  className="admin-recovery-eye"
-                  onClick={() =>
-                    setShowConfirmPassword(
-                      (current) =>
-                        !current,
-                    )
-                  }
-                >
-                  {showConfirmPassword ? (
-                    <EyeOff
-                      size={15}
-                    />
-                  ) : (
-                    <Eye
-                      size={15}
-                    />
-                  )}
-                </button>
-              </div>
-
-              <div className="admin-recovery-button-row">
-                <button
-                  type="submit"
-                  className="admin-recovery-primary inline"
-                  disabled={loading}
-                >
-                  {loading
-                    ? 'Updating...'
-                    : 'Update Password'}
-                </button>
-              </div>
-            </form>
-          </>
-        )}
-
-        {step === 'success' && (
-          <div className="admin-recovery-complete">
-            <div className="admin-recovery-complete-icon">
-              <CheckCircle2
-                size={29}
-              />
-            </div>
-
-            <p className="secura-eyebrow">
-              PASSWORD UPDATED
-            </p>
-
-            <h1>
-              Password reset successful
-            </h1>
-
-            <p>
-              Your Administrator
-              password has been
-              updated. You can now
-              sign in using the new
-              password.
-            </p>
-
-            <button
-              type="button"
-              className="admin-recovery-primary"
-              onClick={() =>
-                navigate(
-                  '/login',
-                  {
-                    replace: true,
-                  },
-                )
-              }
-            >
-              Back to Login
-            </button>
+          <div className="slx-brand">
+            <SecuraLogoMark />
+            <span className="slx-brand__copy">
+              <strong>Secura</strong>
+              <small>DOCUMENT PRIVACY WORKSPACE</small>
+            </span>
           </div>
-        )}
-      </section>
+
+          <div className="srx-story__copy">
+            <span className="slx-story__eyebrow"><span className="slx-story__eyebrow-dot" />ACCOUNT RECOVERY</span>
+            <h1>Back to your <span>workspace.</span></h1>
+            <p>Recover Administrator access with a verification code and a new password.</p>
+
+            <div className="srx-journey" aria-label="Recovery stages">
+              {journey.map((item, index) => {
+                const Icon = item.icon
+                return (
+                  <div key={item.key} className={`srx-journey__step ${index < stepIndex ? 'is-complete' : ''} ${index === stepIndex ? 'is-current' : ''}`}>
+                    <span className="srx-journey__number">{index < stepIndex ? <Check size={17} /> : <Icon size={17} />}</span>
+                    <span><small>STEP {item.number}</small><b>{item.label}</b></span>
+                    {index < stepIndex && <CheckCircle2 className="srx-journey__check" size={17} />}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          <div className="srx-story__art" aria-hidden="true">
+            <span className="srx-story__ring srx-story__ring--outer" />
+            <span className="srx-story__ring srx-story__ring--inner" />
+            <span className="srx-story__spark srx-story__spark--one" />
+            <span className="srx-story__spark srx-story__spark--two" />
+            <span className="srx-story__art-core"><KeyRound size={38} /></span>
+          </div>
+
+          <p className="srx-story__footer">Restricted to the registered Administrator account.</p>
+        </section>
+
+        <section className="slx-auth srx-auth" aria-label="Administrator password recovery form">
+          <div className="slx-auth__mobile-brand">
+            <SecuraLogoMark />
+            <span><strong>Secura</strong><small>DOCUMENT PRIVACY WORKSPACE</small></span>
+          </div>
+
+          <div className="slx-auth__card srx-card" key={step}>
+            <span className={`srx-card__icon ${step === 'success' ? 'srx-card__icon--success' : ''}`}>
+              {step === 'email' && <Mail size={25} />}
+              {step === 'otp' && <Fingerprint size={25} />}
+              {step === 'password' && <LockKeyhole size={25} />}
+              {step === 'success' && <CheckCircle2 size={27} />}
+            </span>
+            <span className="slx-auth__eyebrow">
+              {step === 'email' && 'ADMINISTRATOR RECOVERY'}
+              {step === 'otp' && 'VERIFY YOUR IDENTITY'}
+              {step === 'password' && 'SECURE YOUR ACCOUNT'}
+              {step === 'success' && 'RECOVERY COMPLETE'}
+            </span>
+
+            {step === 'email' && (
+              <>
+                <h1 className="srx-card__title">Forgot your <span>password?</span></h1>
+                <p className="srx-card__description">Enter your registered Administrator email to begin the recovery process.</p>
+                <form noValidate className="slx-form srx-form" onSubmit={(event) => { event.preventDefault(); requestOtp() }}>
+                  <label htmlFor="srx-email">Administrator email</label>
+                  <div className="slx-form__field">
+                    <Mail size={19} aria-hidden="true" />
+                    <input id="srx-email" type="email" autoComplete="email" value={email} placeholder="name@example.com" onChange={(event) => setEmail(event.target.value)} />
+                  </div>
+                  {error && <p role="alert" className="slx-form__error">{error}</p>}
+                  <button type="submit" disabled={loading} className="slx-form__submit">
+                    {loading ? <LoaderCircle size={18} className="slx-spin" /> : <Mail size={18} />}
+                    <span>{loading ? 'Requesting code...' : 'Send verification code'}</span>
+                    {!loading && <ArrowRight size={18} className="slx-form__submit-arrow" />}
+                  </button>
+                </form>
+                <p className="srx-card__hint"><ShieldCheck size={17} /> Only the registered Administrator can use this process.</p>
+              </>
+            )}
+
+            {step === 'otp' && (
+              <>
+                <h1 className="srx-card__title">Check your <span>email.</span></h1>
+                <p className="srx-card__description">Enter the six-digit verification code sent to <strong>{maskEmail(email)}</strong>.</p>
+                {message && <p className="srx-message srx-message--info" role="status">{message}</p>}
+                <form noValidate className="slx-form srx-form" onSubmit={verifyOtp}>
+                  <label htmlFor="srx-digit-0">Verification code</label>
+                  <div className="srx-otp" onPaste={handleOtpPaste}>
+                    {otp.map((digit, index) => (
+                      <input
+                        key={index}
+                        id={`srx-digit-${index}`}
+                        ref={(element) => { otpRefs.current[index] = element }}
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        maxLength={6}
+                        autoComplete={index === 0 ? 'one-time-code' : 'off'}
+                        aria-label={`OTP digit ${index + 1}`}
+                        value={digit}
+                        onChange={(event) => handleOtpChange(index, event.target.value)}
+                        onKeyDown={(event) => handleOtpKeyDown(index, event)}
+                      />
+                    ))}
+                  </div>
+                  {error && <p role="alert" className="slx-form__error">{error}</p>}
+                  <div className="srx-otp__resend">
+                    <span>Didn't get the code?</span>
+                    <button type="button" onClick={requestOtp} disabled={loading || countdown > 0}>
+                      <RefreshCw size={14} /> {countdown > 0 ? `Resend in ${countdown}s` : 'Resend code'}
+                    </button>
+                  </div>
+                  <button type="submit" disabled={loading} className="slx-form__submit">
+                    {loading ? <LoaderCircle size={18} className="slx-spin" /> : <Fingerprint size={18} />}
+                    <span>{loading ? 'Verifying...' : 'Verify code'}</span>
+                    {!loading && <ArrowRight size={18} className="slx-form__submit-arrow" />}
+                  </button>
+                </form>
+              </>
+            )}
+
+            {step === 'password' && (
+              <>
+                <h1 className="srx-card__title">Create new <span>password.</span></h1>
+                <p className="srx-card__description">Your code has been verified. Choose a new Administrator password.</p>
+                <p className="srx-message srx-message--success" role="status"><CheckCircle2 size={18} /> Identity verified successfully</p>
+                <form noValidate className="slx-form srx-form" onSubmit={resetPassword}>
+                  <label htmlFor="srx-password">New password</label>
+                  <div className="slx-form__field">
+                    <LockKeyhole size={19} aria-hidden="true" />
+                    <input id="srx-password" type={showPassword ? 'text' : 'password'} autoComplete="new-password" value={newPassword} placeholder="Minimum 8 characters" onChange={(event) => setNewPassword(event.target.value)} />
+                    <button className="slx-form__eye" type="button" onClick={() => setShowPassword((value) => !value)} aria-label={showPassword ? 'Hide password' : 'Show password'} aria-pressed={showPassword}>{showPassword ? <EyeOff size={19} /> : <Eye size={19} />}</button>
+                  </div>
+                  <p className="srx-password-hint">At least 8 characters; maximum 72 bytes.</p>
+                  <label htmlFor="srx-confirm">Confirm password</label>
+                  <div className="slx-form__field">
+                    <LockKeyhole size={19} aria-hidden="true" />
+                    <input id="srx-confirm" type={showConfirmPassword ? 'text' : 'password'} autoComplete="new-password" value={confirmPassword} placeholder="Repeat your new password" onChange={(event) => setConfirmPassword(event.target.value)} />
+                    <button className="slx-form__eye" type="button" onClick={() => setShowConfirmPassword((value) => !value)} aria-label={showConfirmPassword ? 'Hide password' : 'Show password'} aria-pressed={showConfirmPassword}>{showConfirmPassword ? <EyeOff size={19} /> : <Eye size={19} />}</button>
+                  </div>
+                  {error && <p role="alert" className="slx-form__error">{error}</p>}
+                  <button type="submit" disabled={loading} className="slx-form__submit">
+                    {loading ? <LoaderCircle size={18} className="slx-spin" /> : <LockKeyhole size={18} />}
+                    <span>{loading ? 'Updating password...' : 'Update password'}</span>
+                    {!loading && <ArrowRight size={18} className="slx-form__submit-arrow" />}
+                  </button>
+                </form>
+              </>
+            )}
+
+            {step === 'success' && (
+              <div className="srx-complete">
+                <h1 className="srx-card__title">You're <span>all set.</span></h1>
+                <p className="srx-card__description">Your Administrator password has been updated. Sign in using your new password.</p>
+                <div className="srx-complete__tick"><Check size={31} /></div>
+                <button type="button" className="slx-form__submit" onClick={() => navigate('/login', { replace: true })}><ShieldCheck size={18} /> Back to Sign In <ArrowRight size={18} className="slx-form__submit-arrow" /></button>
+              </div>
+            )}
+
+            {step === 'email' && <Link className="srx-card__back" to="/login"><ArrowLeft size={16} /> Back to Sign In</Link>}
+          </div>
+          <p className="slx-auth__bottom">SECURA <span /> SECURE WEB PLATFORM FOR AI DOCUMENT ANONYMIZATION</p>
+        </section>
+      </div>
     </main>
   )
 }

@@ -1,85 +1,81 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import {
+  ArrowRight,
+  Check,
   Eye,
   EyeOff,
+  FileCheck2,
+  FileLock2,
+  Fingerprint,
   LoaderCircle,
+  LockKeyhole,
+  Mail,
   ShieldCheck,
+  Sparkles,
 } from 'lucide-react'
-import {
-  Link,
-  useNavigate,
-} from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
+import SecuraLogoMark from '../../components/SecuraLogoMark'
 import { useAuth } from '../../context/useAuth'
 import { ROLES } from '../../utils/roles'
+import './LoginPage.css'
 
 function getDashboardPath(role) {
-  if (role === ROLES.ADMINISTRATOR) {
-    return '/admin/dashboard'
-  }
-
-  if (role === ROLES.SECURITY_OFFICER) {
-    return '/security/dashboard'
-  }
-
+  if (role === ROLES.ADMINISTRATOR) return '/admin/dashboard'
+  if (role === ROLES.SECURITY_OFFICER) return '/security/dashboard'
   return '/user/dashboard'
 }
 
 function LoginPage() {
   const navigate = useNavigate()
   const { login } = useAuth()
+  const visualRef = useRef(null)
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] =
-    useState(false)
-  const [submitting, setSubmitting] =
-    useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
+
+  const handleStoryPointerMove = (event) => {
+    const visual = visualRef.current
+    if (!visual || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return
+    }
+
+    const bounds = event.currentTarget.getBoundingClientRect()
+    const x = (event.clientX - bounds.left) / bounds.width - 0.5
+    const y = (event.clientY - bounds.top) / bounds.height - 0.5
+    visual.style.setProperty('--slx-shift-x', `${(x * 16).toFixed(1)}px`)
+    visual.style.setProperty('--slx-shift-y', `${(y * 12).toFixed(1)}px`)
+  }
+
+  const resetStoryPointer = () => {
+    visualRef.current?.style.setProperty('--slx-shift-x', '0px')
+    visualRef.current?.style.setProperty('--slx-shift-y', '0px')
+  }
 
   const handleSubmit = async (event) => {
     event.preventDefault()
     setError('')
 
-    const cleanEmail =
-      email.trim().toLowerCase()
-
+    const cleanEmail = email.trim().toLowerCase()
     if (!cleanEmail || !password) {
-      setError(
-        'Please enter your email and password.',
-      )
-
+      setError('Please enter your email and password.')
       return
     }
 
+    setSubmitting(true)
     try {
-      setSubmitting(true)
-
-      const authenticatedUser =
-        await login(
-          cleanEmail,
-          password,
-        )
-
-      navigate(
-        getDashboardPath(
-          authenticatedUser.role,
-        ),
-        {
-          replace: true,
-        },
-      )
+      const authenticatedUser = await login(cleanEmail, password)
+      navigate(getDashboardPath(authenticatedUser.role), { replace: true })
     } catch (err) {
-      if (
-        err.response?.status === 401
-      ) {
-        setError(
-          'Invalid email or password.',
-        )
+      if (err.response?.status === 401) {
+        setError('Invalid email or password.')
+      } else if (err.response?.status === 403) {
+        setError('This account is inactive or access is restricted.')
       } else {
-        setError(
-          'Unable to sign in right now. Please check the server connection and try again.',
-        )
+        setError('Unable to sign in. Please check the server connection and try again.')
       }
     } finally {
       setSubmitting(false)
@@ -87,292 +83,167 @@ function LoginPage() {
   }
 
   return (
-    <main className="secura-login-page min-h-screen bg-[#f6f6ff]">
-      <div className="grid min-h-screen grid-cols-1 lg:grid-cols-2">
-        <section className="secura-login-hero relative hidden min-h-screen overflow-hidden bg-[#11083f] text-white lg:flex">
-          <div className="absolute inset-0 bg-gradient-to-b from-[#10073d] via-[#1b0d61] to-[#24205c]" />
+    <main className="slx-login">
+      <div className="slx-login__ambient slx-login__ambient--one" aria-hidden="true" />
+      <div className="slx-login__ambient slx-login__ambient--two" aria-hidden="true" />
 
-          <div className="secura-login-shape-a absolute left-[54%] top-[5%] h-14 w-14 rounded-xl bg-fuchsia-600/90 shadow-lg shadow-fuchsia-950/20" />
+      <div className="slx-login__layout">
+        <section
+          className="slx-story"
+          aria-label="Secura secure document workspace"
+          onPointerMove={handleStoryPointerMove}
+          onPointerLeave={resetStoryPointer}
+        >
+          <div className="slx-story__grid" aria-hidden="true" />
+          <div className="slx-story__glow slx-story__glow--top" aria-hidden="true" />
+          <div className="slx-story__glow slx-story__glow--bottom" aria-hidden="true" />
+          <div className="slx-story__sweep" aria-hidden="true" />
 
-          <div className="secura-login-shape-b absolute left-[40%] top-[9%] h-12 w-12 rounded-full bg-violet-500/90 shadow-lg shadow-violet-950/20" />
+          <div className="slx-brand">
+            <SecuraLogoMark />
+            <span className="slx-brand__copy">
+              <strong>Secura</strong>
+              <small>DOCUMENT PRIVACY WORKSPACE</small>
+            </span>
+          </div>
 
-          <div className="secura-login-shape-c secura-login-hex absolute bottom-[11%] left-[11%] h-[70px] w-[70px] bg-orange-500" />
-
-          <div className="secura-login-shape-d absolute bottom-[22%] left-[18%] h-8 w-8 rounded-md bg-cyan-400/90" />
-
-          <div className="secura-login-shape-a absolute bottom-[27%] right-[17%] h-5 w-5 rounded-full bg-violet-400/70" />
-
-          <div className="secura-login-shape-b absolute bottom-[30%] right-[12%] h-3 w-3 rounded-full bg-violet-300/60" />
-
-          <svg
-            className="secura-login-wave absolute inset-0 h-full w-full"
-            viewBox="0 0 900 900"
-            preserveAspectRatio="none"
-            fill="none"
-            aria-hidden="true"
-          >
-            <defs>
-              <linearGradient
-                id="waveOne"
-                x1="0"
-                y1="0"
-                x2="1"
-                y2="0"
-              >
-                <stop
-                  offset="0%"
-                  stopColor="#f07c5e"
-                />
-
-                <stop
-                  offset="55%"
-                  stopColor="#6e52ee"
-                />
-
-                <stop
-                  offset="100%"
-                  stopColor="#2fc5ff"
-                />
-              </linearGradient>
-
-              <linearGradient
-                id="waveTwo"
-                x1="0"
-                y1="0"
-                x2="1"
-                y2="0"
-              >
-                <stop
-                  offset="0%"
-                  stopColor="#7444df"
-                />
-
-                <stop
-                  offset="100%"
-                  stopColor="#b84fc4"
-                />
-              </linearGradient>
-            </defs>
-
-            <path
-              d="M-20 318 C105 248 220 470 366 394 S627 145 920 311"
-              stroke="url(#waveOne)"
-              strokeWidth="4"
-              opacity="0.78"
-            />
-
-            <path
-              d="M-25 424 C135 343 266 522 430 467 S695 203 925 362"
-              stroke="#5764d8"
-              strokeWidth="4"
-              opacity="0.78"
-            />
-
-            <path
-              d="M-30 548 C150 492 278 638 450 574 S704 302 930 496"
-              stroke="url(#waveTwo)"
-              strokeWidth="3"
-              opacity="0.57"
-            />
-          </svg>
-
-          <div className="relative z-10 flex w-full flex-col px-12 py-12 xl:px-16">
-            <div className="flex items-center gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-xl bg-white/10 backdrop-blur-sm">
-                <ShieldCheck size={21} />
-              </div>
-
-              <div>
-                <p className="text-sm font-semibold">
-                  Secura
-                </p>
-
-                <p className="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-white/55">
-                  Secure Workspace
-                </p>
-              </div>
-            </div>
-
-            <div className="secura-login-copy my-auto max-w-[560px]">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-violet-300">
-                Secure Web Platform for Automated AI Document Anonymization
-              </p>
-
-              <h1 className="mt-5 text-[44px] font-bold leading-[1.08] tracking-[-0.04em] text-white xl:text-[52px]">
-                Protect Sensitive
-                <br />
-                Data, Effortlessly.
-              </h1>
-
-              <p className="mt-5 max-w-[430px] text-sm leading-7 text-violet-100/70">
-                Automated AI document anonymization with controlled original-file access,
-                audit logging, and security monitoring — all in one secure portal.
-              </p>
-            </div>
-
-            <p className="text-[10px] text-white/40">
-              Protected access for authorized Secura users.
+          <div className="slx-story__content">
+            <span className="slx-story__eyebrow">
+              <span className="slx-story__eyebrow-dot" />
+              SECURE DOCUMENT WORKSPACE
+            </span>
+            <h1>
+              Protect the <span>original.</span>
+              <br />
+              Share the <em>essential.</em>
+            </h1>
+            <p>
+              Turn sensitive documents into privacy-ready files with AI anonymization,
+              controlled original access and traceable approvals.
             </p>
+
+            <div className="slx-story__features" aria-label="Platform capabilities">
+              <span><Sparkles size={15} /> AI anonymization</span>
+              <span><LockKeyhole size={15} /> Controlled access</span>
+              <span><FileCheck2 size={15} /> Verified originals</span>
+            </div>
+          </div>
+
+          <div className="slx-visual" ref={visualRef} aria-hidden="true">
+            <div className="slx-visual__halo" />
+            <div className="slx-visual__orbit slx-visual__orbit--outer" />
+            <div className="slx-visual__orbit slx-visual__orbit--inner" />
+            <div className="slx-visual__trace slx-visual__trace--one" />
+            <div className="slx-visual__trace slx-visual__trace--two" />
+            <div className="slx-visual__spark slx-visual__spark--one" />
+            <div className="slx-visual__spark slx-visual__spark--two" />
+            <div className="slx-visual__spark slx-visual__spark--three" />
+            <div className="slx-visual__document slx-visual__document--back">
+              <span /> <span /> <span />
+            </div>
+            <div className="slx-visual__document slx-visual__document--mid">
+              <span /> <span /> <span />
+            </div>
+            <div className="slx-visual__document slx-visual__document--front">
+              <div className="slx-visual__document-head">
+                <FileLock2 size={31} strokeWidth={1.6} />
+                <span><Check size={13} strokeWidth={3} /></span>
+              </div>
+              <div className="slx-visual__document-lines"><i /><i /><i /></div>
+              <div className="slx-visual__scan" />
+            </div>
+            <div className="slx-visual__tag slx-visual__tag--top">
+              <span><Fingerprint size={16} /></span>
+              <b>SENSITIVE DATA</b>
+              <small>Detected &amp; protected</small>
+            </div>
+            <div className="slx-visual__tag slx-visual__tag--bottom">
+              <span><ShieldCheck size={16} /></span>
+              <b>SECURE ACCESS</b>
+              <small>Approval controlled</small>
+            </div>
+          </div>
+
+          <div className="slx-story__footer">
+            <span className="slx-story__footer-mark" />
+            Privacy at every step. Built for responsible document handling.
           </div>
         </section>
 
-        <section className="secura-login-panel flex min-h-screen items-center justify-center px-6 py-12 sm:px-10 lg:px-14 xl:px-20">
-          <div className="secura-login-form w-full max-w-[430px]">
-            <div className="mb-10 lg:hidden">
-              <div className="flex items-center gap-3">
-                <div className="grid h-10 w-10 place-items-center rounded-xl bg-[#6560c9] text-white">
-                  <ShieldCheck size={21} />
-                </div>
+        <section className="slx-auth" aria-labelledby="slx-login-title">
+          <div className="slx-auth__mobile-brand">
+            <SecuraLogoMark />
+            <span><strong>Secura</strong><small>DOCUMENT PRIVACY WORKSPACE</small></span>
+          </div>
 
-                <div>
-                  <p className="secura-login-mobile-brand text-base font-semibold text-[#22283b]">
-                    Secura
-                  </p>
-
-                  <p className="secura-login-mobile-note text-[9px] font-semibold uppercase tracking-[0.18em] text-[#6560c9]">
-                    Secure Workspace
-                  </p>
-                </div>
-              </div>
+          <div className="slx-auth__card">
+            <div className="slx-auth__card-top">
+              <span className="slx-auth__icon"><LockKeyhole size={24} strokeWidth={1.8} /></span>
+              <span className="slx-auth__eyebrow">WELCOME BACK</span>
+              <h2 id="slx-login-title">Sign in to <span>Secura.</span></h2>
+              <p>Enter your credentials to continue to your secure workspace.</p>
             </div>
 
-            <h2 className="secura-login-title text-[28px] font-semibold tracking-[-0.04em] text-[#17172f]">
-              Sign In
-            </h2>
-
-            <p className="secura-login-subtitle mt-2 text-sm text-[#7d8494]">
-              Welcome back! Enter your credentials to continue.
-            </p>
-
-            <form
-              className="mt-9 space-y-5"
-              onSubmit={handleSubmit}
-            >
-              <div>
-                <label
-                  className="secura-login-label mb-2 block text-sm font-medium text-[#23233e]"
-                  htmlFor="email"
-                >
-                  Email
-                </label>
-
+            <form className="slx-form" onSubmit={handleSubmit} noValidate>
+              <label htmlFor="slx-email">Email address</label>
+              <div className="slx-form__field">
+                <Mail size={19} aria-hidden="true" />
                 <input
-                  id="email"
+                  id="slx-email"
                   type="email"
                   autoComplete="email"
                   value={email}
-                  onChange={(event) =>
-                    setEmail(
-                      event.target.value,
-                    )
-                  }
+                  name="email"
                   placeholder="name@example.com"
-                  className="secura-login-field h-12 w-full rounded-xl border border-[#ddddea] bg-white px-4 text-sm text-[#22283b] outline-none placeholder:text-[#a4a7b3] focus:border-[#7b70e2] focus:ring-4 focus:ring-[#6560c9]/10"
+                  onChange={(event) => setEmail(event.target.value)}
+                  required
                 />
               </div>
 
-              <div>
-                <div className="mb-2 flex items-center justify-between gap-4">
-                  <label
-                    className="secura-login-label text-sm font-medium text-[#23233e]"
-                    htmlFor="password"
-                  >
-                    Password
-                  </label>
-
-                  <Link
-                    to="/forgot-password"
-                    className="secura-login-forgot text-xs font-semibold text-[#704dea] transition hover:text-[#514caf]"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
-
-                <div className="relative">
-                  <input
-                    id="password"
-                    type={
-                      showPassword
-                        ? 'text'
-                        : 'password'
-                    }
-                    autoComplete="current-password"
-                    value={password}
-                    onChange={(event) =>
-                      setPassword(
-                        event.target.value,
-                      )
-                    }
-                    placeholder="Enter your password"
-                    className="secura-login-field h-12 w-full rounded-xl border border-[#ddddea] bg-white px-4 pr-12 text-sm text-[#22283b] outline-none placeholder:text-[#a4a7b3] focus:border-[#7b70e2] focus:ring-4 focus:ring-[#6560c9]/10"
-                  />
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setShowPassword(
-                        (current) =>
-                          !current,
-                      )
-                    }
-                    className="secura-login-eye absolute right-4 top-1/2 grid -translate-y-1/2 place-items-center text-[#9094a2] hover:text-[#514caf]"
-                    aria-label={
-                      showPassword
-                        ? 'Hide password'
-                        : 'Show password'
-                    }
-                  >
-                    {showPassword ? (
-                      <EyeOff size={17} />
-                    ) : (
-                      <Eye size={17} />
-                    )}
-                  </button>
-                </div>
+              <div className="slx-form__password-top">
+                <label htmlFor="slx-password">Password</label>
+                <Link to="/forgot-password">Forgot password?</Link>
+              </div>
+              <div className="slx-form__field">
+                <LockKeyhole size={19} aria-hidden="true" />
+                <input
+                  id="slx-password"
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="current-password"
+                  value={password}
+                  name="password"
+                  placeholder="Enter your password"
+                  onChange={(event) => setPassword(event.target.value)}
+                  required
+                />
+                <button
+                  className="slx-form__eye"
+                  type="button"
+                  onClick={() => setShowPassword((value) => !value)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  aria-pressed={showPassword}
+                >
+                  {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
+                </button>
               </div>
 
-              {error && (
-                <div
-                  role="alert"
-                  className="secura-login-alert rounded-xl border border-[#f1d4d0] bg-[#fff6f4] px-4 py-3 text-sm text-[#9f4e46]"
-                >
-                  {error}
-                </div>
-              )}
+              {error && <p className="slx-form__error" role="alert">{error}</p>}
 
-              <button
-                type="submit"
-                disabled={submitting}
-                className="secura-login-submit flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#6b5bd6] px-5 text-sm font-semibold text-white focus:outline-none focus:ring-4 focus:ring-[#6560c9]/20 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {submitting && (
-                  <LoaderCircle
-                    size={16}
-                    className="animate-spin"
-                  />
-                )}
-
-                {submitting
-                  ? 'Signing in...'
-                  : 'Sign In'}
+              <button className="slx-form__submit" type="submit" disabled={submitting}>
+                {submitting ? <LoaderCircle size={18} className="slx-spin" /> : <span className="slx-form__submit-icon"><ShieldCheck size={18} /></span>}
+                <span>{submitting ? 'Signing you in...' : 'Sign in securely'}</span>
+                {!submitting && <ArrowRight className="slx-form__submit-arrow" size={18} />}
               </button>
             </form>
 
-            <div className="mt-8 flex items-center gap-3">
-              <div className="secura-login-divider-line h-px flex-1 bg-[#e9eaf0]" />
-
-              <span className="secura-login-divider-copy text-[10px] text-[#a0a4b0]">
-                Protected access
-              </span>
-
-              <div className="secura-login-divider-line h-px flex-1 bg-[#e9eaf0]" />
+            <div className="slx-auth__separator"><span>PROTECTED ACCESS</span></div>
+            <div className="slx-auth__notice">
+              <ShieldCheck size={18} aria-hidden="true" />
+              <p>Only authorized users can access this platform. Permissions are enforced by account role.</p>
             </div>
-
-            <p className="secura-login-footnote mt-5 text-center text-[10px] leading-5 text-[#9da1ad]">
-              Access is restricted to authorized Secura users. Authentication
-              activity may be recorded for security auditing.
-            </p>
           </div>
+
+          <p className="slx-auth__bottom">SECURA <span /> SECURE WEB PLATFORM FOR AI DOCUMENT ANONYMIZATION</p>
         </section>
       </div>
     </main>
