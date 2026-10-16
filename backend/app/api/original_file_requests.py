@@ -55,6 +55,9 @@ SECURITY_REVIEW_AUDIT_ACTIONS = {
     "SECURITY_ORIGINAL_REVIEW_FAILED",
 }
 
+# Reason lives in the existing audit log: no database schema migration needed.
+SECURITY_REJECTION_REASON_PREFIX = "Rejection reason: "
+
 
 MEDIA_TYPES = {
     "pdf": "application/pdf",
@@ -113,6 +116,23 @@ def build_request_response(
             original_request.security_officer_id,
         )
 
+    rejection_reason = None
+    if original_request.status == "REJECTED_BY_SECURITY":
+        decision_details = db.scalar(
+            select(AuditLog.details)
+            .where(
+                AuditLog.action == "SECURITY_REJECTED",
+                AuditLog.resource_type == "original_file_request",
+                AuditLog.resource_id == original_request.id,
+            )
+            .order_by(AuditLog.created_at.desc(), AuditLog.id.desc())
+            .limit(1)
+        )
+        if decision_details and SECURITY_REJECTION_REASON_PREFIX in decision_details:
+            rejection_reason = decision_details.split(
+                SECURITY_REJECTION_REASON_PREFIX, 1
+            )[1]
+
     return {
         "id": original_request.id,
         "document_id": document.id,
@@ -148,6 +168,7 @@ def build_request_response(
             else None
         ),
         "reason": original_request.reason,
+        "rejection_reason": rejection_reason,
         "status": original_request.status,
         "requested_at": original_request.requested_at,
         "owner_reviewed_at": original_request.owner_reviewed_at,
@@ -743,6 +764,23 @@ def security_decision(
             ),
         )
 
+    rejection_reason = None
+    if decision.decision == "REJECT":
+        # Normalize whitespace to avoid injecting new lines into audit logs.
+        rejection_reason = " ".join(
+            (decision.rejection_reason or "").split()
+        )
+        if not rejection_reason:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Rejection Reason is required when rejecting a request",
+            )
+        if len(rejection_reason) > 500:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Rejection Reason cannot exceed 500 characters",
+            )
+
     if decision.decision == "APPROVE":
         if (
             review_audit.action
@@ -828,8 +866,12 @@ def security_decision(
         resource_type="original_file_request",
         resource_id=original_request.id,
         details=(
-            "Security Officer decision: "
-            f"{decision.decision}"
+            f"Security Officer decision: {decision.decision}"
+            + (
+                f" | {SECURITY_REJECTION_REASON_PREFIX}{rejection_reason}"
+                if rejection_reason is not None
+                else ""
+            )
         ),
         ip_address=get_client_ip(request),
     )

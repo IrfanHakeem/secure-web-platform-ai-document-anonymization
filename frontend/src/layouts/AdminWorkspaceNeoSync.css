@@ -1,0 +1,647 @@
+/* SECURA NeoFlow V11.3 — Admin management precision sync.
+   Full stylesheet. Replaces AdminWorkspaceNeoSync.css, do not append it.
+   This file changes visuals only; API, React forms, and role behavior are untouched. */
+
+/* Native scrolling with invisible rails across User, Admin and Security Officer. */
+html:has(.secura-neo-layout, .secura-workspace-shell, .role-dashboard--user, .role-dashboard--security, .secura-profile-page-shell, .security-ws),
+body:has(.secura-neo-layout, .secura-workspace-shell, .role-dashboard--user, .role-dashboard--security, .secura-profile-page-shell, .security-ws),
+body:has(.secura-neo-layout, .secura-workspace-shell, .role-dashboard--user, .role-dashboard--security, .secura-profile-page-shell, .security-ws) * {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+html:has(.secura-neo-layout, .secura-workspace-shell, .role-dashboard--user, .role-dashboard--security, .secura-profile-page-shell, .security-ws)::-webkit-scrollbar,
+body:has(.secura-neo-layout, .secura-workspace-shell, .role-dashboard--user, .role-dashboard--security, .secura-profile-page-shell, .security-ws)::-webkit-scrollbar,
+body:has(.secura-neo-layout, .secura-workspace-shell, .role-dashboard--user, .role-dashboard--security, .secura-profile-page-shell, .security-ws) *::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+}
+
+/* One shared palette for both management pages and standalone Admin Profile. */
+html:not([data-theme="light"]) .secura-neo-admin-sync {
+  --admin-sync-ink: #f5f3ff;
+  --admin-sync-muted: #abb2ca;
+  --admin-sync-line: rgba(157,148,222,.23);
+  --admin-sync-panel: #171c30;
+  --admin-sync-panel2: #20263f;
+  --admin-sync-input: #12182a;
+  --admin-sync-thead: #28233e;
+  --admin-sync-glow: rgba(152,80,255,.24);
+  --admin-sync-scene: radial-gradient(ellipse at 94% 1%,rgba(128,65,215,.18),transparent 39%), radial-gradient(ellipse at 4% 84%,rgba(27,186,206,.10),transparent 37%), #0c101d;
+}
+html[data-theme="light"] .secura-neo-admin-sync {
+  --admin-sync-ink: #252543;
+  --admin-sync-muted: #69708a;
+  --admin-sync-line: rgba(117,102,181,.21);
+  --admin-sync-panel: #fff;
+  --admin-sync-panel2: #f3f1ff;
+  --admin-sync-input: #faf9ff;
+  --admin-sync-thead: #eee9fc;
+  --admin-sync-glow: rgba(152,80,255,.12);
+  --admin-sync-scene: radial-gradient(ellipse at 92% 0%,rgba(158,106,239,.16),transparent 39%), radial-gradient(ellipse at 5% 82%,rgba(71,191,212,.11),transparent 37%), #f3f3fb;
+}
+html body .secura-neo-layout.secura-neo-admin-sync,
+html body .secura-neo-admin-profile-shell.secura-neo-admin-sync {
+  background: var(--admin-sync-scene) !important;
+  color: var(--admin-sync-ink);
+}
+/* Department V10.6.4 contains its own page-scene selectors. Override only
+   their parent shell, never the globally shared sidebar. */
+html[data-theme="dark"] body .secura-workspace-shell.secura-neo-admin-sync:has(.secura-departments-v106),
+html[data-theme="light"] body .secura-workspace-shell.secura-neo-admin-sync:has(.secura-departments-v106) {
+  background: var(--admin-sync-scene) !important;
+}
+.secura-neo-admin-sync .secura-neo-admin-management-main {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  padding: 34px clamp(20px,3vw,54px) 78px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.secura-neo-admin-sync .secura-neo-admin-content {
+  box-sizing: border-box;
+  width: min(100%,1124px) !important;
+  max-width: 1124px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  min-width:0;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+/* Prevent leftover boxed background from the older User stylesheet. */
+.secura-neo-admin-sync .secura-neo-admin-content:has(.admin-users-header),
+.secura-neo-admin-sync .secura-neo-admin-content:has(.sd-hero),
+.secura-neo-admin-sync .secura-departments-v106 {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+.secura-neo-admin-sync .secura-departments-v106 {
+  box-sizing: border-box;
+  width:100% !important;
+  max-width:none !important;
+  margin:0 !important;
+  padding:0 0 26px !important;
+  color:var(--admin-sync-ink);
+}
+.secura-neo-admin-sync :is(.admin-users-header,.admin-users-card,.admin-users-success,.admin-users-error,.admin-users-overview,.admin-users-stats,.admin-user-overview,.admin-user-stats) {
+  box-sizing:border-box;
+  max-width: none !important;
+  width: 100% !important;
+  margin-inline:0 !important;
+}
+
+/* User Management & Department Management HERO: exact shared geometry. */
+.secura-neo-admin-sync .admin-users-header,
+.secura-neo-admin-sync .secura-departments-v106 .sd-hero {
+  position: relative !important;
+  isolation: isolate;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:22px !important;
+  width:100% !important;
+  max-width:none !important;
+  min-height:184px !important;
+  margin:0 0 19px !important;
+  padding:29px clamp(24px,2.9vw,40px) !important;
+  overflow:hidden !important;
+  border:1px solid rgba(186,154,255,.34) !important;
+  border-radius:21px !important;
+  background:radial-gradient(ellipse at 92% 4%,rgba(160,81,249,.29),transparent 47%),linear-gradient(112deg,#293153 0%,#292646 58%,#392451 100%) !important;
+  box-shadow:0 16px 45px rgba(4,6,24,.16), inset 0 1px rgba(255,255,255,.08) !important;
+  color:#fff !important;
+  animation: securaAdminV113Arrive .48s cubic-bezier(.2,.78,.2,1) both;
+}
+/* Matching grid treatment and circles, including User Management (previously absent). */
+.secura-neo-admin-sync .admin-users-header::before,
+.secura-neo-admin-sync .secura-departments-v106 .sd-hero::before {
+  content:'' !important;
+  position:absolute !important;
+  inset:0 !important;
+  z-index:-1 !important;
+  pointer-events:none !important;
+  opacity:.36 !important;
+  background-image:linear-gradient(rgba(214,196,255,.075) 1px,transparent 1px),linear-gradient(90deg,rgba(214,196,255,.075) 1px,transparent 1px) !important;
+  background-size:48px 48px !important;
+}
+.secura-neo-admin-sync .admin-users-header::after,
+.secura-neo-admin-sync .secura-departments-v106 .sd-hero::after {
+  content:'' !important;
+  position:absolute !important;
+  z-index:-1 !important;
+  right:-134px !important;
+  top:-150px !important;
+  inset:auto -134px auto auto !important;
+  width:460px !important;
+  height:460px !important;
+  pointer-events:none !important;
+  border-radius:50% !important;
+  border:1px solid rgba(215,170,255,.20) !important;
+  box-shadow:0 0 0 62px rgba(199,150,255,.034),0 0 0 120px rgba(199,150,255,.025) !important;
+  background:radial-gradient(circle at 40% 58%,rgba(178,86,248,.17),transparent 70%) !important;
+}
+.secura-neo-admin-sync .admin-users-header > div,
+.secura-neo-admin-sync .sd-hero__copy { min-width:0; flex:1; position:relative; z-index:1; }
+.secura-neo-admin-sync .admin-users-header .secura-eyebrow,
+.secura-neo-admin-sync .sd-hero .sd-eyebrow {
+  color:#dcb4ff !important;
+  font-size:10px !important;
+  font-weight:850 !important;
+  line-height:1.5;
+  letter-spacing:1.65px !important;
+}
+.secura-neo-admin-sync .admin-users-header h1,
+.secura-neo-admin-sync .sd-hero h1 {
+  margin:11px 0 9px !important;
+  color:#fff !important;
+  font-size:clamp(30px,2.75vw,40px) !important;
+  font-weight:830 !important;
+  letter-spacing:-.045em !important;
+  line-height:1.09 !important;
+  background:linear-gradient(105deg,#fff 12%,#f7ebff 65%,#dbaafc 100%) !important;
+  background-clip:text !important;
+  -webkit-background-clip:text !important;
+  -webkit-text-fill-color:transparent !important;
+}
+.secura-neo-admin-sync .admin-users-header > div > p:last-child,
+.secura-neo-admin-sync .sd-hero p {
+  margin:0 !important;
+  max-width:630px !important;
+  color:#d8d6ee !important;
+  font-size:12.5px !important;
+  line-height:1.62 !important;
+}
+/* Primary CTA: exactly ONE surface. Old pseudo/inner border decorations removed.
+   Doesn't affect the modal's Create Department button. */
+.secura-neo-admin-sync .admin-users-header .admin-create-user-button,
+.secura-neo-admin-sync .sd-hero button.sd-button.sd-hero__action {
+  appearance:none !important;
+  box-sizing:border-box;
+  position:relative;
+  z-index:1;
+  display:inline-flex !important;
+  flex:0 0 auto;
+  justify-content:center !important;
+  align-items:center !important;
+  gap:9px !important;
+  margin:0 !important;
+  min-height:44px !important;
+  height:auto !important;
+  padding:11px 18px !important;
+  background:linear-gradient(120deg,#9751f7,#ba3bdb) !important;
+  border:1px solid rgba(209,159,255,.66) !important;
+  border-radius:12px !important;
+  outline:none !important;
+  box-shadow:0 8px 24px rgba(135,66,231,.24) !important;
+  color:#fff !important;
+  -webkit-text-fill-color:#fff !important;
+  font-size:12px !important;
+  font-weight:800 !important;
+  letter-spacing:0;
+  white-space:nowrap;
+  text-decoration:none !important;
+  filter:none !important;
+  transition:transform .2s ease,box-shadow .2s ease !important;
+}
+.secura-neo-admin-sync .sd-hero button.sd-button.sd-hero__action::before,
+.secura-neo-admin-sync .sd-hero button.sd-button.sd-hero__action::after,
+.secura-neo-admin-sync .admin-users-header .admin-create-user-button::before,
+.secura-neo-admin-sync .admin-users-header .admin-create-user-button::after {
+  content:none !important;
+  display:none !important;
+  border:0 !important;
+  background:none !important;
+  box-shadow:none !important;
+}
+/* Occasionally legacy V10 wraps the CTA label in a decorative span.
+   Reset that decoration but preserve icon and text. */
+.secura-neo-admin-sync .sd-hero button.sd-hero__action > span,
+.secura-neo-admin-sync .admin-users-header .admin-create-user-button > span {
+  border:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  outline:none !important;
+  padding:0 !important;
+  margin:0 !important;
+  border-radius:0 !important;
+}
+.secura-neo-admin-sync .admin-users-header .admin-create-user-button:hover:not(:disabled),
+.secura-neo-admin-sync .sd-hero button.sd-hero__action:hover:not(:disabled) {
+  transform:translateY(-2px) !important;
+  box-shadow:0 0 29px rgba(159,86,250,.36),0 9px 24px rgba(112,51,196,.22) !important;
+}
+
+/* KPI rows retain real backend data, but match card size & visual language. */
+.secura-neo-admin-sync .sd-metrics,
+.secura-neo-admin-sync :is(.admin-user-stats,.admin-users-stats,.admin-users-overview,.admin-user-overview) {
+  display:grid;
+  grid-template-columns: repeat(4,minmax(0,1fr));
+  gap:14px !important;
+  margin:0 0 18px !important;
+  padding:0 !important;
+}
+.secura-neo-admin-sync .sd-metric,
+.secura-neo-admin-sync :is(.admin-user-stats,.admin-users-stats,.admin-users-overview,.admin-user-overview) > * {
+  min-height:146px !important;
+  border-radius:17px !important;
+  border:1px solid var(--admin-sync-line) !important;
+  box-shadow:0 10px 27px rgba(0,0,0,.055);
+}
+.secura-neo-admin-sync .sd-metric { background:var(--admin-sync-panel2) !important; }
+.secura-neo-admin-sync .sd-metric:hover { transform:none !important; border-color:rgba(160,108,255,.34) !important; }
+
+/* Unified directory panels & tables. */
+.secura-neo-admin-sync .admin-users-card,
+.secura-neo-admin-sync .sd-directory {
+  width:100% !important;
+  max-width:none !important;
+  margin:0 !important;
+  border:1px solid var(--admin-sync-line) !important;
+  border-radius:20px !important;
+  background:var(--admin-sync-panel) !important;
+  box-shadow:0 16px 41px rgba(3,4,21,.13) !important;
+  overflow:hidden;
+  animation:securaAdminV113Arrive .48s .08s both;
+}
+.secura-neo-admin-sync .admin-users-toolbar,
+.secura-neo-admin-sync .sd-directory__head { padding:22px !important; }
+.secura-neo-admin-sync .admin-users-toolbar { min-height:72px; gap:12px; }
+.secura-neo-admin-sync .sd-directory__head { display:flex; align-items:center; justify-content:space-between; gap:14px; }
+.secura-neo-admin-sync .sd-directory h2 { font-size:18px; color:var(--admin-sync-ink); }
+.secura-neo-admin-sync .admin-users-row:not(.admin-users-heading):hover,
+.secura-neo-admin-sync .sd-table tbody tr:hover {
+  background:rgba(145,103,248,.075) !important;
+}
+.secura-neo-admin-sync .admin-users-heading,
+.secura-neo-admin-sync .sd-table thead {
+  background:var(--admin-sync-thead) !important;
+}
+.secura-neo-admin-sync .admin-users-table-wrap { overflow-x:auto !important; }
+.secura-neo-admin-sync .admin-users-table { min-width:860px; width:100%; }
+.secura-neo-admin-sync .admin-users-row { min-width:860px; }
+
+/* Fix 1: single search surface — the input is transparent inside its rounded shell.
+   The legacy global input dark rectangle was painting on TOP of .sd-search. */
+.secura-neo-admin-sync .admin-users-search,
+.secura-neo-admin-sync .secura-departments-v106 .sd-search {
+  display:flex;
+  align-items:center;
+  gap:9px;
+  min-height:42px;
+  border:1px solid var(--admin-sync-line) !important;
+  border-radius:11px !important;
+  background:var(--admin-sync-input) !important;
+  box-shadow:none !important;
+  color:var(--admin-sync-muted);
+  overflow:hidden;
+}
+.secura-neo-admin-sync .admin-users-search input,
+.secura-neo-admin-sync .secura-departments-v106 .sd-search input,
+html body .secura-neo-admin-sync .sd-search input:focus,
+html body .secura-neo-admin-sync .admin-users-search input:focus {
+  box-sizing:border-box;
+  flex:1;
+  min-width:0;
+  width:100%;
+  height:100%;
+  min-height:34px;
+  margin:0 !important;
+  padding:6px 2px !important;
+  outline:none !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  background-color:transparent !important;
+  background-image:none !important;
+  box-shadow:none !important;
+  filter:none !important;
+  color:var(--admin-sync-ink) !important;
+  -webkit-text-fill-color:var(--admin-sync-ink) !important;
+  caret-color:var(--admin-sync-ink);
+}
+.secura-neo-admin-sync .admin-users-search input::placeholder,
+.secura-neo-admin-sync .sd-search input::placeholder { color:var(--admin-sync-muted) !important; -webkit-text-fill-color:var(--admin-sync-muted); opacity:1; }
+.secura-neo-admin-sync .admin-users-search:focus-within,
+.secura-neo-admin-sync .sd-search:focus-within {
+  border-color:rgba(168,112,247,.74) !important;
+  box-shadow:0 0 0 3px rgba(163,103,249,.12) !important;
+}
+/* Remove residual black autofill block in Chromium without changing text color. */
+.secura-neo-admin-sync .admin-users-search input:-webkit-autofill,
+.secura-neo-admin-sync .sd-search input:-webkit-autofill {
+  -webkit-box-shadow:0 0 0 100px var(--admin-sync-input) inset !important;
+  box-shadow:0 0 0 100px var(--admin-sync-input) inset !important;
+}
+.secura-neo-admin-sync .sd-search button,
+.secura-neo-admin-sync .admin-users-search button { background:transparent !important; border:0 !important; box-shadow:none !important; }
+
+/* Clean filter and sort controls. */
+.secura-neo-admin-sync .sd-filters,
+.secura-neo-admin-sync .admin-users-filters { gap:5px; }
+.secura-neo-admin-sync .sd-filters button.is-active,
+.secura-neo-admin-sync .admin-users-filters button.selected {
+  color:#fff;
+  border-color:rgba(173,113,255,.40) !important;
+  background:linear-gradient(115deg,#8d54ef,#9547da) !important;
+  box-shadow:0 4px 15px rgba(138,73,213,.18);
+}
+.secura-neo-admin-sync .sd-sort { background:var(--admin-sync-input) !important; border-color:var(--admin-sync-line) !important; }
+.secura-neo-admin-sync .sd-sort select { background:transparent !important; color:var(--admin-sync-ink) !important; }
+.secura-neo-admin-sync .sd-sort select option { background:var(--admin-sync-panel); color:var(--admin-sync-ink); }
+/* Keep backend safety note inside directory; hide duplicated guidance underneath. */
+.secura-neo-admin-sync .sd-footnote { display:none !important; }
+
+@keyframes adminSyncEnter { from {opacity:0;transform:translateY(11px)} to {opacity:1;transform:translateY(0)} }
+@keyframes securaAdminV113Arrive {
+  from { opacity:0; transform:translateY(11px); }
+  to { opacity:1; transform:translateY(0); }
+}
+@media (max-width:1020px) {
+  .secura-neo-admin-sync .sd-toolbar { flex-wrap:wrap; }
+  .secura-neo-admin-sync .sd-search { flex:1 1 100%; width:100%; }
+  .secura-neo-admin-sync .admin-users-toolbar { flex-wrap:wrap; }
+  .secura-neo-admin-sync .admin-users-search { width:100%; }
+}
+@media (max-width:850px) {
+  .secura-neo-admin-sync .secura-neo-admin-management-main { padding:73px 16px 55px !important; }
+  .secura-neo-admin-sync .secura-neo-admin-content { width:100% !important; }
+  .secura-neo-admin-sync .admin-users-header,
+  .secura-neo-admin-sync .sd-hero { flex-direction:column !important; align-items:flex-start !important; min-height:unset !important; padding:25px 22px !important; }
+  .secura-neo-admin-sync .sd-metrics,
+  .secura-neo-admin-sync :is(.admin-user-stats,.admin-users-stats,.admin-users-overview,.admin-user-overview) { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px !important; }
+}
+@media (max-width:560px) {
+  .secura-neo-admin-sync .admin-users-header h1,
+  .secura-neo-admin-sync .sd-hero h1 { font-size:29px !important; }
+  .secura-neo-admin-sync .sd-toolbar { padding-inline:12px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .secura-neo-admin-sync .admin-users-header,
+  .secura-neo-admin-sync .sd-hero,
+  .secura-neo-admin-sync .admin-users-card,
+  .secura-neo-admin-sync .sd-directory { animation:none !important; }
+  .secura-neo-admin-sync .admin-create-user-button,
+  .secura-neo-admin-sync .sd-hero__action { transition:none !important; }
+}
+
+/* Previously approved Admin Profile appearance and route-enter animation. */
+
+/* 6) Standalone Administrator Profile, same gradients and panel language. */
+.secura-neo-admin-profile-shell { padding: 30px clamp(16px,3.4vw,52px) 70px; }
+.secura-neo-admin-profile-main { width:min(100%,1180px); max-width:1180px; }
+.secura-neo-admin-profile-shell .secura-profile-back-link {
+  min-height:40px;
+  padding:8px 14px;
+  border:1px solid var(--admin-sync-line);
+  border-radius:11px;
+  background:var(--admin-sync-panel);
+  color:var(--admin-sync-ink);
+  font-size:12px;
+  font-weight:750;
+  transition:transform .24s,background .24s,border-color .24s;
+}
+.secura-neo-admin-profile-shell .secura-profile-back-link:hover { transform:translateX(-2px); border-color:rgba(174,116,247,.52); background:var(--admin-sync-panel2); }
+.secura-neo-admin-profile-shell .role-profile-admin { max-width:none; width:100%; }
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__header {
+  position:relative;
+  min-height:170px;
+  display:flex;
+  align-items:center;
+  padding:26px clamp(22px,3vw,38px);
+  margin:10px 0 20px;
+  overflow:hidden;
+  border:1px solid rgba(183,150,255,.29);
+  border-radius:23px;
+  background:radial-gradient(ellipse at 90% 8%,rgba(160,78,252,.24),transparent 45%),linear-gradient(112deg,#293052 0%,#292748 58%,#342349 100%);
+  color:#fff;
+  box-shadow:0 20px 48px rgba(4,4,20,.14);
+  animation:adminSyncEnter .46s ease both;
+}
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__header .secura-eyebrow { color:#d5b2ff; letter-spacing:1.5px; font-size:10px; }
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__header h1 { color:#fff; font-size:clamp(29px,2.7vw,39px); }
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__header > div > p:last-child { color:#d7d7ed; font-size:13px; }
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__identity-card,
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__card,
+.secura-neo-admin-profile-shell .role-profile-admin .admin-security-card {
+  border:1px solid var(--admin-sync-line);
+  background:var(--admin-sync-panel);
+  border-radius:21px;
+  box-shadow:0 20px 50px rgba(0,0,0,.08);
+  color:var(--admin-sync-ink);
+  transition:border-color .25s,box-shadow .25s;
+}
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__identity-card:hover,
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__card:hover { border-color:rgba(166,109,246,.38); box-shadow:0 19px 45px rgba(93,45,181,.09); }
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__section-heading > span { color:#b98bff; background:rgba(153,95,239,.12); }
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__input { border-color:var(--admin-sync-line); background:var(--admin-sync-input); color:var(--admin-sync-ink); }
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__input:focus { outline:none; border-color:#ac75fa; box-shadow:0 0 0 3px rgba(157,107,248,.15); }
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__save { border-radius:11px; background:linear-gradient(110deg,#8954f5,#bd43d5); border:1px solid rgba(215,165,255,.45); color:#fff; box-shadow:0 0 20px rgba(145,79,255,.13); }
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__save:hover:not(:disabled) { box-shadow:0 0 28px rgba(145,79,255,.29); transform:translateY(-1px); }
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__facts { color:var(--admin-sync-muted); }
+
+
+/* === Profile: remove the dark rectangular slab, add light-catching surfaces. === */
+html[data-theme="dark"] body .secura-neo-admin-profile-shell,
+html:not([data-theme="light"]) body .secura-neo-admin-profile-shell {
+  background:
+    radial-gradient(ellipse at 82% 0%,rgba(154,74,237,.25),transparent 43%),
+    radial-gradient(ellipse at 13% 87%,rgba(35,218,213,.13),transparent 43%),
+    #0c101e !important;
+}
+html[data-theme="light"] body .secura-neo-admin-profile-shell {
+  background:
+    radial-gradient(ellipse at 84% 0%,rgba(170,98,236,.17),transparent 40%),
+    radial-gradient(ellipse at 12% 80%,rgba(56,208,215,.10),transparent 43%),
+    #f2f3fb !important;
+}
+.secura-neo-admin-profile-shell {
+  position:relative;
+  isolation:isolate;
+  min-height:100vh;
+  overflow: clip;
+  padding: 28px clamp(16px,3vw,55px) 85px;
+}
+/* Important: old index.css paints a separate rectangle on the profile main.
+   This must be transparent, so the page is one continuous NeoFlow canvas. */
+html[data-theme] body .secura-neo-admin-profile-shell .secura-neo-admin-profile-main,
+html[data-theme] body .secura-neo-admin-profile-shell .secura-profile-page-main,
+.secura-neo-admin-profile-shell .role-profile-admin,
+.secura-neo-admin-profile-shell .security-profile-pro__layout,
+.secura-neo-admin-profile-shell .security-profile-pro__main {
+  background:transparent !important;
+  background-image:none !important;
+  box-shadow:none !important;
+}
+.secura-neo-admin-profile-shell .secura-neo-admin-profile-main {
+  width:min(100%,1130px) !important;
+  max-width:1130px !important;
+  margin-inline:auto;
+  position:relative;
+  z-index:1;
+  padding:0 !important;
+  animation:neoAdminProfileEntrance .64s cubic-bezier(.18,.7,.24,1) both;
+}
+.secura-neo-admin-profile-shell .secura-profile-page-back-row { margin-bottom:17px; }
+.secura-neo-admin-profile-shell .secura-profile-back-link {
+  min-height:42px;
+  border-color:rgba(183,147,245,.29) !important;
+  background:var(--admin-sync-panel) !important;
+  box-shadow:0 8px 22px rgba(8,4,32,.08);
+}
+/* Transient gentle lavender/cyan bloom on route entry, not a strobe. */
+.secura-neo-admin-profile-shell::before {
+  content:'';
+  pointer-events:none;
+  position:fixed;
+  inset:0;
+  z-index:6;
+  background:
+    radial-gradient(circle at 50% 37%,rgba(226,212,255,.56) 0%,rgba(180,130,255,.23) 24%,transparent 64%);
+  opacity:0;
+  animation:neoProfileSoftFlash .68s cubic-bezier(.21,.73,.37,1) both;
+}
+@keyframes neoProfileSoftFlash {
+  0% { opacity:0; }
+  14% { opacity:.68; }
+  100% { opacity:0; }
+}
+@keyframes neoAdminProfileEntrance {
+  from { opacity:0; transform:translateY(18px) scale(.984); filter:blur(3px); }
+  to { opacity:1; transform:translateY(0) scale(1); filter:blur(0); }
+}
+/* Bright, rich hero: lilac wash over the existing dark navy. */
+html[data-theme] .secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__header {
+  position:relative;
+  isolation:isolate;
+  width:100%;
+  min-height:180px;
+  border:1px solid rgba(205,151,255,.40) !important;
+  border-radius:23px !important;
+  background:
+    radial-gradient(ellipse at 85% 8%,rgba(217,97,255,.31),transparent 50%),
+    radial-gradient(ellipse at 2% 98%,rgba(75,201,247,.15),transparent 45%),
+    linear-gradient(120deg,#293358,#352852 68%,#422657) !important;
+  box-shadow:0 16px 45px rgba(54,22,121,.17),inset 0 1px 0 rgba(255,255,255,.12) !important;
+  color:#fff;
+  margin: 8px 0 22px;
+  overflow:hidden;
+}
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__header::before {
+  content:'';
+  position:absolute;
+  pointer-events:none;
+  inset:0;
+  background-image:radial-gradient(rgba(220,202,255,.19) .65px, transparent .65px);
+  background-size:21px 21px;
+  opacity:.3;
+  z-index:-1;
+}
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__header h1 {
+  font-size:clamp(33px,3vw,42px) !important;
+  line-height:1.12;
+  font-weight:850 !important;
+  letter-spacing:-1.3px;
+  color:#fff !important;
+}
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__header .secura-eyebrow { color:#edc6ff !important; }
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__header p:not(.secura-eyebrow) { color:#e3ddf4 !important; }
+.secura-neo-admin-profile-shell .security-profile-pro__active-badge {
+  border:1px solid rgba(71,235,181,.40) !important;
+  background:rgba(23,140,112,.29) !important;
+  color:#b4ffe2 !important;
+  box-shadow:0 0 20px rgba(52,228,162,.12);
+}
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__identity-card {
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 90% 0%,rgba(149,88,245,.17),transparent 45%),
+    linear-gradient(165deg,var(--admin-sync-panel2),var(--admin-sync-panel)) !important;
+  border-color:rgba(166,133,243,.35) !important;
+  box-shadow:0 16px 40px rgba(17,6,53,.13) !important;
+}
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__identity-card::before {
+  content:'';
+  pointer-events:none;
+  position:absolute;
+  inset:0 auto auto 12%;
+  height:2px;
+  width:76%;
+  background:linear-gradient(90deg,transparent,#bb7cff,#39dccc,transparent);
+}
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__avatar-wrap {
+  filter:drop-shadow(0 8px 19px rgba(136,80,248,.24));
+}
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__identity-card,
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__card,
+.secura-neo-admin-profile-shell .role-profile-admin .admin-security-card {
+  border-radius:20px !important;
+  transition:border-color .26s ease,box-shadow .26s ease,transform .26s ease;
+}
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__identity-card:hover,
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__card:hover {
+  border-color:rgba(176,114,249,.46) !important;
+  box-shadow:0 18px 42px rgba(87,49,177,.15) !important;
+}
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__card {
+  background:
+    radial-gradient(ellipse at 90% 0%,rgba(129,83,232,.065),transparent 53%),
+    var(--admin-sync-panel) !important;
+  border:1px solid rgba(159,139,221,.22) !important;
+  box-shadow:0 13px 37px rgba(2,4,25,.10) !important;
+}
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__input {
+  border-radius:11px;
+  background:var(--admin-sync-input) !important;
+  transition:border-color .22s ease,box-shadow .22s ease;
+}
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__input:focus-within {
+  border-color:rgba(172,118,252,.70) !important;
+  box-shadow:0 0 0 3px rgba(168,106,245,.14) !important;
+}
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__save,
+.secura-neo-admin-profile-shell .role-profile-admin .admin-security-primary {
+  border-radius:11px !important;
+  background:linear-gradient(110deg,#8755fa,#b944d7) !important;
+  color:#fff !important;
+  box-shadow:0 7px 25px rgba(144,74,237,.22) !important;
+}
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__save:hover:not(:disabled),
+.secura-neo-admin-profile-shell .role-profile-admin .admin-security-primary:hover:not(:disabled) {
+  transform:translateY(-2px);
+  box-shadow:0 0 26px rgba(157,84,250,.40) !important;
+}
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__facts article {
+  border-color:rgba(160,141,224,.19) !important;
+  border-radius:12px;
+  background:var(--admin-sync-panel2) !important;
+}
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__facts article:hover {
+  border-color:rgba(166,106,245,.32) !important;
+}
+
+@media (max-width: 900px) {
+  .secura-neo-admin-sync .secura-neo-admin-management-main { padding:74px 15px 55px !important; }
+  .secura-neo-admin-sync .admin-users-header,
+  .secura-neo-admin-sync .secura-departments-v106 .sd-hero { flex-direction:column; align-items:flex-start; min-height:unset !important; }
+  .secura-neo-admin-profile-shell .secura-neo-admin-profile-main { width:100% !important; }
+  .secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__layout { grid-template-columns:1fr !important; }
+  .secura-neo-admin-profile-shell .role-profile-admin .role-profile-password-wrap { width:100% !important; }
+}
+@media (max-width: 650px) {
+  .secura-neo-admin-sync .admin-users-header,
+  .secura-neo-admin-sync .secura-departments-v106 .sd-hero { padding:23px 20px !important; }
+  .secura-neo-admin-sync .admin-users-header h1,
+  .secura-neo-admin-sync .secura-departments-v106 .sd-hero h1 { font-size:30px !important; }
+  .secura-neo-admin-profile-shell { padding:17px 13px 55px !important; }
+  .secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__header { padding:23px 20px !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .secura-neo-admin-profile-shell::before { animation:none !important; opacity:0 !important; }
+  .secura-neo-admin-profile-shell .secura-neo-admin-profile-main { animation:none !important; filter:none !important; transform:none !important; }
+  .secura-neo-admin-sync .admin-create-user-button,
+  .secura-neo-admin-sync .secura-departments-v106 .sd-hero .sd-hero__action { transition:none !important; }
+}
+

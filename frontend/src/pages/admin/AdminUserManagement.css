@@ -1,0 +1,1711 @@
+/* ============================================================
+
+   SECURA BOLD GLASS V10.4 — ADMIN USER MANAGEMENT
+
+   Isolated design layer. API calls and account controls unchanged.
+
+   ============================================================ */
+
+.secura-admin-users-v10 {
+
+  --adm-bg: #ece9f6;
+
+  --adm-ink: #252641;
+
+  --adm-muted: #6d7391;
+
+  --adm-card: #f8f5fe;
+
+  --adm-card-alt: #ece5f9;
+
+  --adm-input: #f4f0fc;
+
+  --adm-line: rgba(104, 78, 162, .23);
+
+  --adm-purple: #9436e7;
+
+  --adm-magenta: #c52ed5;
+
+  --adm-cyan: #219dcc;
+
+  --adm-green: #218866;
+
+  --adm-shadow: 0 20px 44px rgba(67, 48, 112, .12);
+
+  position: relative;
+
+  min-height: 100vh;
+
+  padding: 27px clamp(18px, 3vw, 48px) 72px;
+
+  background: var(--adm-bg);
+
+  color: var(--adm-ink);
+
+  isolation: isolate;
+
+}
+
+html[data-theme="dark"] .secura-admin-users-v10 {
+
+  --adm-bg: #111729;
+
+  --adm-ink: #f4f2ff;
+
+  --adm-muted: #aeb6d2;
+
+  --adm-card: #1b233a;
+
+  --adm-card-alt: #242a48;
+
+  --adm-input: #161e33;
+
+  --adm-line: rgba(160, 144, 239, .22);
+
+  --adm-purple: #b775ff;
+
+  --adm-magenta: #e06bec;
+
+  --adm-cyan: #47c5e9;
+
+  --adm-green: #6bdaa9;
+
+  --adm-shadow: 0 22px 55px rgba(0, 0, 0, .24);
+
+}
+
+.secura-admin-users-v10 *,
+
+.secura-admin-users-v10 *::before,
+
+.secura-admin-users-v10 *::after { box-sizing: border-box; }
+
+
+
+.secura-admin-users-v10::before {
+
+  content: "";
+
+  position: absolute;
+
+  z-index: -1;
+
+  pointer-events: none;
+
+  inset: 0;
+
+  background:
+
+    radial-gradient(circle at 89% 1%, rgba(191, 58, 222, .17), transparent 27%),
+
+    radial-gradient(circle at 7% 95%, rgba(54, 170, 238, .09), transparent 35%);
+
+}
+
+.secura-admin-users-v10::after {
+
+  content: "";
+
+  position: absolute;
+
+  z-index: -1;
+
+  pointer-events: none;
+
+  inset: 0;
+
+  opacity: .13;
+
+  background-image: linear-gradient(var(--adm-line) 1px, transparent 1px),
+
+    linear-gradient(90deg, var(--adm-line) 1px, transparent 1px);
+
+  background-size: 54px 54px;
+
+  mask-image: linear-gradient(to bottom, #000, transparent 60%);
+
+}
+
+.secura-admin-users-v10__content { max-width: 1280px; margin: 0 auto; }
+
+
+
+/* Bold navy hero — the same family as Admin Dashboard V10.2. */
+
+.secura-admin-users-v10 .admin-users-header {
+
+  position: relative;
+
+  isolation: isolate;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  max-width: none;
+
+  width: 100%;
+
+  min-height: 205px;
+
+  margin: 0 0 20px;
+
+  padding: 32px clamp(22px, 3vw, 40px);
+
+  border: 1px solid rgba(178, 150, 248, .24);
+
+  border-radius: 23px;
+
+  overflow: hidden;
+
+  background: linear-gradient(120deg, #35436b 0%, #283458 53%, #302352 100%);
+
+  box-shadow: var(--adm-shadow);
+
+  animation: admUserUp .5s cubic-bezier(.22, 1, .36, 1) both;
+
+}
+
+html[data-theme="dark"] .secura-admin-users-v10 .admin-users-header {
+
+  background: linear-gradient(118deg, #2b365b 0%, #202a49 53%, #2e214f 100%);
+
+}
+
+.secura-admin-users-v10 .admin-users-header::before {
+
+  content: "";
+
+  pointer-events: none;
+
+  position: absolute;
+
+  inset: 0;
+
+  opacity: .24;
+
+  background-image: linear-gradient(rgba(255, 255, 255, .08) 1px, transparent 1px),
+
+    linear-gradient(90deg, rgba(255, 255, 255, .08) 1px, transparent 1px);
+
+  background-size: 46px 46px;
+
+}
+
+.secura-admin-users-v10 .admin-users-header::after {
+
+  content: "";
+
+  pointer-events: none;
+
+  position: absolute;
+
+  right: 17%;
+
+  top: -130px;
+
+  width: 350px;
+
+  height: 350px;
+
+  border-radius: 50%;
+
+  background: radial-gradient(circle, rgba(208, 85, 246, .19), transparent 70%);
+
+  animation: admUserGlow 8s ease-in-out infinite alternate;
+
+}
+
+.secura-admin-users-v10 .admin-users-header > * { position: relative; z-index: 1; }
+
+.secura-admin-users-v10 .admin-users-header .secura-eyebrow {
+
+  color: #d9b4ff;
+
+  font-size: 10px;
+
+  letter-spacing: 1.7px;
+
+}
+
+.secura-admin-users-v10 .admin-users-header h1 {
+
+  margin: 13px 0 9px;
+
+  font-size: clamp(32px, 3.3vw, 47px);
+
+  line-height: 1.1;
+
+  font-weight: 800;
+
+  letter-spacing: -1.55px;
+
+  color: #fff;
+
+}
+
+.secura-admin-users-v10 .admin-users-header > div > p:last-child {
+
+  max-width: 530px;
+
+  font-size: 13px;
+
+  line-height: 1.65;
+
+  color: #c7d0e5;
+
+}
+
+.secura-admin-users-v10 .admin-create-user-button {
+
+  min-height: 46px;
+
+  margin: 0;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 0 19px;
+
+  border: 1px solid rgba(255, 255, 255, .22);
+
+  border-radius: 12px;
+
+  color: #fff;
+
+  background: linear-gradient(125deg, #9934e9, #c22bd7);
+
+  box-shadow: 0 13px 29px rgba(161, 43, 209, .31);
+
+  font-size: 12px;
+
+  font-weight: 800;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+
+}
+
+.secura-admin-users-v10 .admin-create-user-button:hover {
+
+  background: linear-gradient(125deg, #a740f7, #d33ae4);
+
+  transform: translateY(-2px);
+
+  filter: brightness(1.06);
+
+  box-shadow: 0 17px 33px rgba(161, 43, 209, .38);
+
+}
+
+
+
+/* Display-only summary cards; actual database values. */
+
+.secura-admin-users-v10__stats {
+
+  display: grid;
+
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  gap: 13px;
+
+  margin: 0 0 17px;
+
+}
+
+.secura-admin-users-v10__stat {
+
+  --stat-a: #9b42ec;
+
+  --stat-b: #8067ff;
+
+  --stat-tint: rgba(148, 54, 231, .13);
+
+  position: relative;
+
+  min-width: 0;
+
+  min-height: 142px;
+
+  padding: 19px;
+
+  overflow: hidden;
+
+  border: 1px solid var(--adm-line);
+
+  border-radius: 19px;
+
+  background: linear-gradient(145deg, var(--adm-card), var(--adm-card-alt));
+
+  box-shadow: var(--adm-shadow);
+
+  cursor: default;
+
+  animation: admUserUp .48s .06s ease both;
+
+}
+
+.secura-admin-users-v10__stat.is-green { --stat-a:#43bb8f; --stat-b:#45c9ce; --stat-tint:rgba(54,188,136,.13); }
+
+.secura-admin-users-v10__stat.is-orange { --stat-a:#e79a62; --stat-b:#d6769e; --stat-tint:rgba(224,139,92,.13); }
+
+.secura-admin-users-v10__stat.is-cyan { --stat-a:#398feb; --stat-b:#42cde3; --stat-tint:rgba(40,168,211,.13); }
+
+.secura-admin-users-v10__stat::before {
+
+  content: "";
+
+  position: absolute;
+
+  top: 0; left: 15px; right: 15px;
+
+  height: 3px;
+
+  background: linear-gradient(90deg, var(--stat-a), var(--stat-b));
+
+  border-radius: 99px;
+
+}
+
+.secura-admin-users-v10__stat::after {
+
+  content: "";
+
+  position: absolute;
+
+  top: -50px; right: -42px;
+
+  width: 115px; height: 115px;
+
+  border-radius: 50%;
+
+  background: var(--stat-tint);
+
+}
+
+.secura-admin-users-v10__stat-icon {
+
+  width: 35px; height: 35px;
+
+  display: grid; place-items: center;
+
+  border-radius: 11px;
+
+  background: var(--stat-tint);
+
+  color: var(--stat-a);
+
+}
+
+.secura-admin-users-v10__stat strong {
+
+  display: block;
+
+  margin: 12px 0 4px;
+
+  color: var(--adm-ink);
+
+  font-size: 29px;
+
+  line-height: 1;
+
+  font-weight: 850;
+
+}
+
+.secura-admin-users-v10__stat b {
+
+  display: block;
+
+  color: var(--adm-ink);
+
+  font-size: 12px;
+
+  font-weight: 800;
+
+}
+
+.secura-admin-users-v10__stat small {
+
+  display: block;
+
+  margin-top: 5px;
+
+  color: var(--adm-muted);
+
+  font-size: 10px;
+
+}
+
+
+
+/* Directory panel with balanced search and role filters. */
+
+.secura-admin-users-v10 .admin-users-card {
+
+  max-width: none;
+
+  width: 100%;
+
+  margin: 0;
+
+  border: 1px solid var(--adm-line);
+
+  border-radius: 21px;
+
+  background: linear-gradient(150deg, var(--adm-card), var(--adm-card-alt));
+
+  box-shadow: var(--adm-shadow);
+
+  overflow: hidden;
+
+  animation: admUserUp .52s .09s ease both;
+
+}
+
+.secura-admin-users-v10__directory-heading {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  gap: 16px;
+
+  padding: 21px 22px 13px;
+
+}
+
+.secura-admin-users-v10__directory-heading span {
+
+  color: var(--adm-purple);
+
+  font-size: 10px;
+
+  font-weight: 850;
+
+  letter-spacing: 1.3px;
+
+}
+
+.secura-admin-users-v10__directory-heading h2 {
+
+  color: var(--adm-ink);
+
+  margin: 6px 0 0;
+
+  font-size: 19px;
+
+  line-height: 1.2;
+
+  font-weight: 760;
+
+  letter-spacing: -.5px;
+
+}
+
+.secura-admin-users-v10__directory-heading > p {
+
+  margin: 0;
+
+  color: var(--adm-muted);
+
+  font-size: 11px;
+
+  text-align: right;
+
+}
+
+.secura-admin-users-v10 .admin-users-toolbar {
+
+  min-height: 0;
+
+  padding: 13px 22px 19px;
+
+  gap: 16px;
+
+  border-color: var(--adm-line);
+
+  background: transparent;
+
+}
+
+.secura-admin-users-v10 .admin-users-search {
+
+  width: min(100%, 390px);
+
+  min-height: 42px;
+
+  border: 1px solid var(--adm-line);
+
+  border-radius: 12px;
+
+  background: var(--adm-input);
+
+  color: var(--adm-muted);
+
+  padding: 0 13px;
+
+  transition: border-color .2s ease, box-shadow .2s ease;
+
+}
+
+.secura-admin-users-v10 .admin-users-search:focus-within {
+
+  border-color: var(--adm-purple);
+
+  box-shadow: 0 0 0 3px rgba(156, 65, 225, .12);
+
+}
+
+.secura-admin-users-v10 .admin-users-search input {
+
+  flex: 1;
+
+  height: 40px;
+
+  margin: 0;
+
+  padding: 0;
+
+  background: transparent !important;
+
+  color: var(--adm-ink);
+
+  border: 0 !important;
+
+  outline: none !important;
+
+  box-shadow: none !important;
+
+  font-size: 12px;
+
+  font-weight: 550;
+
+}
+
+.secura-admin-users-v10 .admin-users-search input::placeholder { color: var(--adm-muted); opacity: .8; }
+
+.secura-admin-users-v10 .admin-users-search button { color: var(--adm-muted); }
+
+.secura-admin-users-v10 .admin-users-filters {
+
+  display: flex;
+
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  gap: 6px;
+
+  padding: 0;
+
+}
+
+.secura-admin-users-v10 .admin-users-filters button {
+
+  min-height: 34px;
+
+  padding: 7px 11px;
+
+  border: 1px solid var(--adm-line);
+
+  border-radius: 10px;
+
+  background: rgba(145, 78, 197, .055);
+
+  color: var(--adm-muted);
+
+  font-size: 11px;
+
+  font-weight: 750;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition: background .18s ease, color .18s ease, border-color .18s ease;
+
+}
+
+.secura-admin-users-v10 .admin-users-filters button:hover {
+
+  transform: none;
+
+  border-color: var(--adm-purple);
+
+  color: var(--adm-ink);
+
+}
+
+.secura-admin-users-v10 .admin-users-filters button.selected {
+
+  border-color: rgba(166, 67, 238, .45);
+
+  background: rgba(150, 70, 224, .17);
+
+  color: var(--adm-purple);
+
+}
+
+
+
+/* Responsive table; permit horizontal scroll instead of cropping actions. */
+
+.secura-admin-users-v10 .admin-users-table-wrap {
+
+  padding: 16px 17px 20px;
+
+  overflow-x: auto;
+
+  scrollbar-width: thin;
+
+  scrollbar-color: var(--adm-line) transparent;
+
+}
+
+.secura-admin-users-v10 .admin-users-table {
+
+  min-width: 990px;
+
+  width: 100%;
+
+  border: 1px solid var(--adm-line);
+
+  border-radius: 14px;
+
+  overflow: hidden;
+
+}
+
+.secura-admin-users-v10 .admin-users-row {
+
+  grid-template-columns:
+
+    minmax(230px, 1.38fr)
+
+    minmax(124px, .72fr)
+
+    minmax(110px, .65fr)
+
+    minmax(87px, .5fr)
+
+    minmax(297px, 1.55fr);
+
+  gap: 10px;
+
+  min-height: 70px;
+
+  padding: 12px 15px;
+
+  border: 0;
+
+  border-bottom: 1px solid var(--adm-line);
+
+  background: transparent;
+
+  color: var(--adm-ink);
+
+  font-size: 11px;
+
+  transition: background .16s ease;
+
+}
+
+.secura-admin-users-v10 .admin-users-row:last-child { border-bottom: 0; }
+
+.secura-admin-users-v10 .admin-users-heading,
+
+html[data-theme="dark"] .secura-admin-users-v10 .admin-users-heading {
+
+  min-height: 47px;
+
+  padding-top: 0;
+
+  padding-bottom: 0;
+
+  background: rgba(139, 71, 200, .15);
+
+  color: var(--adm-muted);
+
+}
+
+.secura-admin-users-v10 .admin-users-heading span {
+
+  font-size: 10px;
+
+  font-weight: 850;
+
+  text-transform: uppercase;
+
+  letter-spacing: .7px;
+
+}
+
+html[data-theme="dark"] .secura-admin-users-v10 .admin-users-row:not(.admin-users-heading) {
+
+  border-color: var(--adm-line);
+
+  background: transparent;
+
+  color: var(--adm-ink);
+
+}
+
+.secura-admin-users-v10 .admin-users-row:not(.admin-users-heading):nth-child(odd) {
+
+  background: rgba(139, 71, 200, .025);
+
+}
+
+.secura-admin-users-v10 .admin-users-row:not(.admin-users-heading):hover,
+
+html[data-theme="dark"] .secura-admin-users-v10 .admin-users-row:not(.admin-users-heading):hover {
+
+  background: rgba(150, 73, 222, .105);
+
+  box-shadow: inset 3px 0 0 var(--adm-magenta);
+
+}
+
+.secura-admin-users-v10 .admin-user-avatar {
+
+  width: 39px;
+
+  height: 39px;
+
+  border-radius: 12px;
+
+  background: rgba(159, 72, 224, .17);
+
+  color: var(--adm-purple);
+
+  font-size: 13px;
+
+}
+
+.secura-admin-users-v10 .admin-user-identity { gap: 10px; }
+
+.secura-admin-users-v10 .admin-user-identity b { color: var(--adm-ink); font-size: 12px; font-weight: 780; }
+
+.secura-admin-users-v10 .admin-user-identity small { color: var(--adm-muted); font-size: 10px; overflow-wrap: anywhere; }
+
+.secura-admin-users-v10 .admin-user-identity em { color: var(--adm-muted); font-size: 10px; }
+
+.secura-admin-users-v10 .admin-department-value { color: var(--adm-muted); font-size: 11px; }
+
+.secura-admin-users-v10 .admin-role-badge,
+
+.secura-admin-users-v10 .admin-account-status,
+
+.secura-admin-users-v10 .admin-protected-account {
+
+  width: max-content;
+
+  min-height: 26px;
+
+  padding: 6px 10px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 999px;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  line-height: 1.2;
+
+}
+
+.secura-admin-users-v10 .admin-role-badge.user { background: rgba(54, 166, 225, .12); color: var(--adm-cyan); }
+
+.secura-admin-users-v10 .admin-role-badge.security { background: rgba(58, 197, 143, .13); color: var(--adm-green); }
+
+.secura-admin-users-v10 .admin-role-badge.administrator { background: rgba(162, 87, 234, .16); color: var(--adm-purple); }
+
+.secura-admin-users-v10 .admin-account-status.active { background: rgba(52, 188, 133, .12); color: var(--adm-green); }
+
+.secura-admin-users-v10 .admin-account-status.inactive { background: rgba(225, 102, 104, .14); color: #d66870; }
+
+.secura-admin-users-v10 .admin-user-actions { flex-wrap: nowrap; gap: 5px; }
+
+.secura-admin-users-v10 .admin-user-actions button {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  min-height: 32px;
+
+  padding: 6px 8px;
+
+  border-radius: 9px;
+
+  border: 1px solid var(--adm-line);
+
+  background: rgba(148, 81, 211, .055);
+
+  color: var(--adm-ink);
+
+  font-size: 10px;
+
+  font-weight: 750;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+}
+
+.secura-admin-users-v10 .admin-user-actions button:hover {
+
+  transform: translateY(-1px);
+
+  border-color: var(--adm-purple);
+
+  color: var(--adm-purple);
+
+  box-shadow: 0 8px 16px rgba(61, 43, 110, .10);
+
+}
+
+.secura-admin-users-v10 .admin-user-actions .admin-status-action.deactivate {
+
+  border-color: rgba(216, 118, 105, .30);
+
+  color: #c66b70;
+
+}
+
+.secura-admin-users-v10 .admin-user-actions .admin-status-action.reactivate {
+
+  border-color: rgba(51, 172, 128, .28);
+
+  color: var(--adm-green);
+
+}
+
+.secura-admin-users-v10 .admin-protected-account {
+
+  background: rgba(139, 71, 200, .1);
+
+  color: var(--adm-muted);
+
+}
+
+.secura-admin-users-v10 .admin-users-loading { gap: 12px; padding: 20px; }
+
+.secura-admin-users-v10 .admin-users-loading div {
+
+  height: 62px;
+
+  background: linear-gradient(95deg, var(--adm-card), var(--adm-card-alt), var(--adm-card));
+
+  background-size: 200% 100%;
+
+  border: 1px solid var(--adm-line);
+
+  animation: admUserSkeleton 1.9s linear infinite;
+
+}
+
+.secura-admin-users-v10 .admin-users-empty {
+
+  min-height: 250px;
+
+  justify-content: center;
+
+  color: var(--adm-purple);
+
+}
+
+.secura-admin-users-v10 .admin-users-empty b { color: var(--adm-ink); font-size: 15px; }
+
+.secura-admin-users-v10 .admin-users-empty p { color: var(--adm-muted); font-size: 12px; }
+
+.secura-admin-users-v10 .admin-users-success,
+
+.secura-admin-users-v10 .admin-users-error {
+
+  max-width: none;
+
+  width: 100%;
+
+  min-height: 45px;
+
+  margin: 0 0 15px;
+
+  padding: 12px 14px;
+
+  border-radius: 12px;
+
+  font-size: 12px;
+
+}
+
+.secura-admin-users-v10 .admin-users-success { background: rgba(63, 197, 145, .12); color: var(--adm-green); border: 1px solid rgba(63, 197, 145, .28); }
+
+.secura-admin-users-v10 .admin-users-error { background: rgba(223, 103, 108, .11); color: #d4767c; border: 1px solid rgba(223, 103, 108, .3); }
+
+
+
+/* Solid, readable dialogs. Avoid transparent rectangle/backdrop issues. */
+
+.secura-admin-users-v10 .admin-modal-backdrop {
+
+  position: fixed;
+
+  inset: 0;
+
+  width: 100vw;
+
+  height: 100dvh;
+
+  max-width: none;
+
+  z-index: 1000;
+
+  display: grid;
+
+  place-items: center;
+
+  overflow-y: auto;
+
+  padding: 22px;
+
+  background: rgba(21, 18, 41, .52);
+
+  backdrop-filter: blur(7px);
+
+  -webkit-backdrop-filter: blur(7px);
+
+}
+
+html[data-theme="dark"] .secura-admin-users-v10 .admin-modal-backdrop { background: rgba(2, 5, 16, .72); }
+
+.secura-admin-users-v10 :is(.admin-user-modal,.admin-small-modal) {
+
+  position: relative;
+
+  width: min(100%, 590px);
+
+  max-height: calc(100dvh - 44px);
+
+  overflow-y: auto;
+
+  margin: auto;
+
+  padding: 27px;
+
+  border-radius: 21px;
+
+  border: 1px solid var(--adm-line);
+
+  background: #f5f1fd;
+
+  color: var(--adm-ink);
+
+  box-shadow: 0 28px 85px rgba(14, 12, 39, .30);
+
+  backdrop-filter: none;
+
+}
+
+html[data-theme="dark"] .secura-admin-users-v10 :is(.admin-user-modal,.admin-small-modal) {
+
+  background: #1a2136;
+
+  color: var(--adm-ink);
+
+  border-color: var(--adm-line);
+
+  box-shadow: 0 28px 85px rgba(0, 0, 0, .52);
+
+}
+
+.secura-admin-users-v10 .admin-small-modal { width: min(100%, 460px); }
+
+.secura-admin-users-v10 :is(.admin-user-modal,.admin-small-modal) .secura-eyebrow {
+
+  color: var(--adm-purple);
+
+  font-size: 10px;
+
+  letter-spacing: 1.4px;
+
+}
+
+.secura-admin-users-v10 :is(.admin-user-modal,.admin-small-modal) h2 {
+
+  margin: 9px 30px 8px 0;
+
+  color: var(--adm-ink);
+
+  font-size: 24px;
+
+  font-weight: 790;
+
+  letter-spacing: -.6px;
+
+}
+
+.secura-admin-users-v10 .admin-small-modal > p,
+
+.secura-admin-users-v10 .admin-modal-subtitle {
+
+  color: var(--adm-muted);
+
+  font-size: 12px;
+
+  line-height: 1.55;
+
+}
+
+.secura-admin-users-v10 .admin-modal-close {
+
+  top: 16px;
+
+  right: 18px;
+
+  width: 32px;
+
+  height: 32px;
+
+  border-radius: 9px;
+
+  background: rgba(151, 91, 212, .09);
+
+  color: var(--adm-muted);
+
+  cursor: pointer;
+
+}
+
+.secura-admin-users-v10 .admin-modal-close:hover { background: rgba(151, 91, 212, .18); color: var(--adm-ink); }
+
+.secura-admin-users-v10 .admin-create-grid { gap: 14px; margin-top: 23px; }
+
+.secura-admin-users-v10 .admin-create-grid label,
+
+.secura-admin-users-v10 .admin-small-modal label {
+
+  display: block;
+
+  color: var(--adm-ink);
+
+  font-size: 12px;
+
+  font-weight: 760;
+
+}
+
+.secura-admin-users-v10 .admin-create-grid :is(input,select),
+
+.secura-admin-users-v10 .admin-small-modal :is(input,select) {
+
+  width: 100%;
+
+  min-height: 43px;
+
+  margin-top: 8px;
+
+  padding: 9px 12px;
+
+  border: 1px solid var(--adm-line);
+
+  border-radius: 11px;
+
+  background: var(--adm-input);
+
+  color: var(--adm-ink);
+
+  font-size: 12px;
+
+  outline: 0;
+
+  box-shadow: none;
+
+  transition: border-color .16s ease, box-shadow .16s ease;
+
+}
+
+.secura-admin-users-v10 .admin-create-grid :is(input,select):focus,
+
+.secura-admin-users-v10 .admin-small-modal :is(input,select):focus {
+
+  border-color: var(--adm-purple);
+
+  box-shadow: 0 0 0 3px rgba(157, 66, 222, .11);
+
+}
+
+.secura-admin-users-v10 .admin-create-grid select:disabled { opacity: .58; cursor: not-allowed; }
+
+.secura-admin-users-v10 .admin-create-note,
+
+.secura-admin-users-v10 .admin-status-note {
+
+  border: 1px solid var(--adm-line);
+
+  border-radius: 12px;
+
+  background: rgba(142, 86, 209, .09);
+
+  padding: 12px;
+
+  color: var(--adm-muted);
+
+}
+
+.secura-admin-users-v10 .admin-create-note svg,
+
+.secura-admin-users-v10 .admin-status-note svg { color: var(--adm-purple); flex-shrink: 0; }
+
+.secura-admin-users-v10 :is(.admin-create-note,.admin-status-note) p { margin: 0; font-size: 11px; line-height: 1.55; }
+
+/* Clear visual distinction for activate/deactivate confirmations. */
+
+.secura-admin-users-v10 .admin-status-modal-icon {
+
+  display: grid;
+
+  place-items: center;
+
+  width: 44px;
+
+  height: 44px;
+
+  border-radius: 13px;
+
+}
+
+.secura-admin-users-v10 .admin-status-modal-icon.deactivate {
+
+  background: rgba(211, 92, 108, .13);
+
+  color: #d16a77;
+
+}
+
+.secura-admin-users-v10 .admin-status-modal-icon.reactivate {
+
+  background: rgba(60, 194, 133, .13);
+
+  color: var(--adm-green);
+
+}
+
+.secura-admin-users-v10 .admin-modal-actions { gap: 10px; margin-top: 22px; }
+
+.secura-admin-users-v10 .admin-modal-actions button {
+
+  min-height: 42px;
+
+  padding: 8px 15px;
+
+  border-radius: 11px;
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  cursor: pointer;
+
+}
+
+.secura-admin-users-v10 .admin-modal-cancel {
+
+  background: rgba(153, 80, 215, .065);
+
+  color: var(--adm-muted);
+
+  border: 1px solid var(--adm-line);
+
+}
+
+.secura-admin-users-v10 .admin-modal-primary {
+
+  border: 0;
+
+  color: #fff;
+
+  background: linear-gradient(125deg, #9234e3, #c42bd8);
+
+  box-shadow: 0 9px 22px rgba(146, 52, 227, .18);
+
+}
+
+.secura-admin-users-v10 .admin-modal-danger {
+
+  border: 1px solid rgba(212, 82, 97, .35);
+
+  background: #b9495b;
+
+  color: #fff;
+
+}
+
+.secura-admin-users-v10 .admin-modal-actions button:disabled { opacity: .55; cursor: not-allowed; }
+
+.secura-admin-users-v10 :is(button,input,select):focus-visible { outline: 2px solid var(--adm-purple); outline-offset: 3px; }
+
+
+
+/* Deliberately let longer tables and shorter screens scroll. */
+
+@media (max-width: 1240px) {
+
+  .secura-admin-users-v10 .admin-users-toolbar { flex-wrap: wrap; }
+
+  .secura-admin-users-v10 .admin-users-search { flex: 1 1 300px; }
+
+}
+
+@media (max-width: 900px) {
+
+  .secura-admin-users-v10 { padding: 18px 18px 56px; }
+
+  .secura-admin-users-v10__stats { grid-template-columns: repeat(2,minmax(0,1fr)); }
+
+  .secura-admin-users-v10 .admin-users-header { min-height: 0; }
+
+  .secura-admin-users-v10 .admin-users-filters { align-self: stretch; }
+
+}
+
+@media (max-width: 600px) {
+
+  .secura-admin-users-v10 { padding: 13px 13px 60px; }
+
+  .secura-admin-users-v10 .admin-users-header { padding: 26px 21px; flex-direction: column; align-items: flex-start; }
+
+  .secura-admin-users-v10 .admin-users-header h1 { font-size: 31px; }
+
+  .secura-admin-users-v10 .admin-create-user-button { width: 100%; justify-content: center; }
+
+  .secura-admin-users-v10__stats { gap: 9px; }
+
+  .secura-admin-users-v10__stat { min-height: 129px; padding: 14px; }
+
+  .secura-admin-users-v10__stat strong { font-size: 26px; }
+
+  .secura-admin-users-v10__directory-heading { flex-direction: column; align-items: flex-start; }
+
+  .secura-admin-users-v10__directory-heading > p { text-align: left; }
+
+  .secura-admin-users-v10 .admin-users-toolbar { padding: 12px 14px; }
+
+  .secura-admin-users-v10 .admin-users-filters { flex-wrap: nowrap; width: 100%; overflow-x: auto; padding-bottom: 5px; }
+
+  .secura-admin-users-v10 .admin-users-filters button { flex-shrink: 0; }
+
+  .secura-admin-users-v10 .admin-users-table-wrap { padding: 12px; }
+
+  .secura-admin-users-v10 .admin-create-grid { grid-template-columns: 1fr; }
+
+  .secura-admin-users-v10 .admin-create-grid .full { grid-column: auto; }
+
+  .secura-admin-users-v10 :is(.admin-user-modal,.admin-small-modal) { padding: 21px; }
+
+}
+
+@keyframes admUserUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+@keyframes admUserGlow { from { opacity: .55; transform: scale(.96); } to { opacity: 1; transform: scale(1.05); } }
+
+@keyframes admUserSkeleton { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+
+  .secura-admin-users-v10 .admin-users-header,
+
+  .secura-admin-users-v10__stat,
+
+  .secura-admin-users-v10 .admin-users-card,
+
+  .secura-admin-users-v10 .admin-users-loading div,
+
+  .secura-admin-users-v10 .admin-users-header::after { animation: none !important; }
+
+}
+
+
+/* ============================================================
+   SECURA NeoFlow V11.4 | User Management matches Departments.
+   Scope: only User Management. Original backend logic, dialogs,
+   theme switch, Dashboard and Department Management are untouched.
+   ============================================================ */
+html .secura-neo-admin-sync .secura-admin-users-v10 {
+  --adm-ink: var(--admin-sync-ink, #f6f3ff);
+  --adm-muted: var(--admin-sync-muted, #abb2ca);
+  --adm-card: var(--admin-sync-panel2, #20263f);
+  --adm-card-alt: var(--admin-sync-panel2, #20263f);
+  --adm-input: var(--admin-sync-input, #12182a);
+  --adm-line: var(--admin-sync-line, rgba(157,148,222,.23));
+  --adm-purple: #be79ff;
+  --adm-magenta: #e66dd8;
+  --adm-cyan: #45cbeb;
+  --adm-green: #79dfb2;
+  --adm-shadow: 0 10px 27px rgba(0,0,0,.055);
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 0 26px !important;
+  color: var(--adm-ink);
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  isolation: auto;
+}
+html[data-theme="light"] .secura-neo-admin-sync .secura-admin-users-v10 {
+  --adm-purple: #8b40e8;
+  --adm-magenta: #b830c5;
+  --adm-cyan: #218ec0;
+  --adm-green: #218d69;
+  --adm-shadow: 0 10px 27px rgba(55,38,99,.055);
+}
+/* All the glow belongs to the outer workspace, not a big boxed page. */
+html body .secura-neo-admin-sync .secura-neo-admin-content:has(> .secura-admin-users-v10) {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  padding: 0 !important;
+  width: min(100%, 1124px) !important;
+  max-width: 1124px !important;
+}
+html .secura-neo-admin-sync .secura-admin-users-v10::before,
+html .secura-neo-admin-sync .secura-admin-users-v10::after {
+  content: none !important;
+  display: none !important;
+}
+html .secura-neo-admin-sync .secura-admin-users-v10 .secura-admin-users-v10__content {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+/* Header matches Dept Management's V11.3 synced hero dimensions. */
+html .secura-neo-admin-sync .secura-admin-users-v10 .admin-users-header {
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 184px !important;
+  margin: 0 0 19px !important;
+  padding: 29px clamp(24px,2.9vw,40px) !important;
+  border-radius: 21px !important;
+}
+html .secura-neo-admin-sync .secura-admin-users-v10 .admin-users-header h1 {
+  margin: 11px 0 9px !important;
+  font-size: clamp(30px, 2.75vw, 40px) !important;
+  letter-spacing: -.045em !important;
+}
+html .secura-neo-admin-sync .secura-admin-users-v10 .secura-admin-users-v10__breadcrumb {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-weight: 850; white-space: nowrap;
+}
+.secura-neo-admin-sync .secura-admin-users-v10__breadcrumb-dot {
+  width: 7px; height: 7px; border-radius: 50%; flex: 0 0 7px;
+  background: #b976f4; box-shadow: 0 0 0 4px rgba(185,118,244,.15);
+}
+html .secura-neo-admin-sync .secura-admin-users-v10 .admin-create-user-button {
+  min-height: 44px !important;
+  padding: 11px 18px !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 24px rgba(135,66,231,.24) !important;
+  background: linear-gradient(120deg,#9751f7,#ba3bdb) !important;
+  border: 1px solid rgba(209,159,255,.66) !important;
+}
+html .secura-neo-admin-sync .secura-admin-users-v10__hero-hint {
+  display:inline-flex; align-items:center; gap:9px;
+  margin-top:19px; color:#c6bce6; font-size:11px; line-height:1.4;
+}
+html .secura-neo-admin-sync .secura-admin-users-v10__hero-hint svg { color:#b697ff; }
+/* ============================================================
+   SECURA NeoFlow V11.4.2 — User Management overview cards.
+   Full-file replacement. Match the Department Management cards:
+   muted upper-right glow, icon on the left, subtle ChevronRight,
+   readable spacing and zero additional accent lines.
+   No data URLs or inline SVG strings are used.
+   ============================================================ */
+html .secura-neo-admin-sync .secura-admin-users-v10__stats {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+  width: 100% !important;
+  margin: 0 0 18px !important;
+  padding: 0 !important;
+}
+
+html .secura-neo-admin-sync .secura-admin-users-v10__stat {
+  --stat-a: #b576ff;
+  --stat-tint: rgba(155, 96, 244, .19);
+  --stat-corner: rgba(147, 92, 242, .17);
+  position: relative;
+  isolation: isolate;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 178px !important;
+  margin: 0 !important;
+  padding: 20px 20px 18px !important;
+  overflow: hidden;
+  border-radius: 20px !important;
+  border: 1px solid rgba(122, 134, 198, .27) !important;
+  background: linear-gradient(145deg, #222a48 0%, #222b49 100%) !important;
+  box-shadow: 0 9px 24px rgba(0, 0, 0, .09) !important;
+  cursor: default;
+  transform: none;
+  transition: border-color .24s ease, box-shadow .24s ease !important;
+}
+
+html .secura-neo-admin-sync .secura-admin-users-v10__stat.is-green {
+  --stat-a: #40b5fb;
+  --stat-tint: rgba(54, 164, 232, .18);
+  --stat-corner: rgba(54, 164, 232, .15);
+}
+html .secura-neo-admin-sync .secura-admin-users-v10__stat.is-orange {
+  --stat-a: #40d7af;
+  --stat-tint: rgba(47, 190, 152, .16);
+  --stat-corner: rgba(47, 190, 152, .15);
+}
+html .secura-neo-admin-sync .secura-admin-users-v10__stat.is-cyan {
+  --stat-a: #ed81c7;
+  --stat-tint: rgba(211, 101, 178, .17);
+  --stat-corner: rgba(211, 101, 178, .15);
+}
+
+/* Remove old high-contrast top accent completely. */
+html .secura-neo-admin-sync .secura-admin-users-v10__stat::before {
+  content: none !important;
+  display: none !important;
+}
+
+/* Single subtle glow tucked into the upper-right corner. */
+html .secura-neo-admin-sync .secura-admin-users-v10__stat::after {
+  content: '';
+  display: block;
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  right: 0;
+  width: 145px;
+  height: 145px;
+  border-radius: 0;
+  background: radial-gradient(ellipse at 100% 0%, var(--stat-corner) 0%, transparent 73%);
+  pointer-events: none;
+  opacity: 1;
+}
+
+html .secura-neo-admin-sync .secura-admin-users-v10__stat > * {
+  position: relative;
+  z-index: 1;
+}
+
+html .secura-neo-admin-sync .secura-admin-users-v10__stat-top {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  margin: 0 0 13px !important;
+}
+html .secura-neo-admin-sync .secura-admin-users-v10__stat-icon {
+  display: grid !important;
+  place-items: center;
+  flex: 0 0 42px !important;
+  width: 42px !important;
+  height: 42px !important;
+  margin: 0 !important;
+  border-radius: 12px !important;
+  background: var(--stat-tint) !important;
+  color: var(--stat-a) !important;
+}
+html .secura-neo-admin-sync .secura-admin-users-v10__stat-icon svg {
+  width: 21px;
+  height: 21px;
+}
+
+/* JSX already renders a ChevronRight: don't recreate it as CSS/SVG. */
+html .secura-neo-admin-sync .secura-admin-users-v10__stat-arrow {
+  width: 16px;
+  height: 16px;
+  color: #939cbe;
+  opacity: .38;
+}
+html .secura-neo-admin-sync .secura-admin-users-v10__stat strong {
+  display: block;
+  margin: 0 0 5px !important;
+  color: #f5f4ff !important;
+  font-size: 31px !important;
+  font-weight: 850 !important;
+  line-height: 1.08 !important;
+  letter-spacing: -.6px !important;
+}
+html .secura-neo-admin-sync .secura-admin-users-v10__stat b {
+  display: block;
+  margin: 0 !important;
+  color: #f5f3ff !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+  line-height: 1.35 !important;
+}
+html .secura-neo-admin-sync .secura-admin-users-v10__stat small {
+  display: block;
+  margin: 6px 0 0 !important;
+  color: #aab4d2 !important;
+  font-size: 11px !important;
+  line-height: 1.45 !important;
+}
+html .secura-neo-admin-sync .secura-admin-users-v10__stat:hover {
+  border-color: rgba(172, 143, 245, .34) !important;
+  box-shadow: 0 11px 28px rgba(9, 13, 39, .13) !important;
+  transform: none !important;
+}
+
+/* Retain readable cards in light mode. */
+html[data-theme="light"] .secura-neo-admin-sync .secura-admin-users-v10__stat {
+  background: linear-gradient(145deg, #f9f7ff, #efeffb) !important;
+  border-color: rgba(107, 91, 172, .23) !important;
+}
+html[data-theme="light"] .secura-neo-admin-sync .secura-admin-users-v10__stat strong,
+html[data-theme="light"] .secura-neo-admin-sync .secura-admin-users-v10__stat b {
+  color: #262743 !important;
+}
+html[data-theme="light"] .secura-neo-admin-sync .secura-admin-users-v10__stat small {
+  color: #68728f !important;
+}
+/* Account directory uses the same navy panel as Department directory. */
+html .secura-neo-admin-sync .secura-admin-users-v10 .admin-users-card {
+  width:100% !important; max-width:none !important; margin:0 !important;
+  border:1px solid var(--adm-line) !important;
+  border-radius:20px !important;
+  background:var(--admin-sync-panel, #171c30) !important;
+  background-image:none !important;
+  box-shadow:0 16px 41px rgba(3,4,21,.13) !important;
+}
+html .secura-neo-admin-sync .secura-admin-users-v10__directory-heading {
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between;
+  gap:14px; padding:22px 22px 10px !important;
+}
+html .secura-neo-admin-sync .secura-admin-users-v10__directory-intro {
+  display:flex; align-items:center; gap:12px; min-width:0;
+}
+.secura-neo-admin-sync .secura-admin-users-v10__directory-icon {
+  display:grid; place-items:center; flex:0 0 40px;
+  width:40px; height:40px; border-radius:12px;
+  color:#bb86fa; background:rgba(153,91,255,.14);
+}
+html .secura-neo-admin-sync .secura-admin-users-v10__directory-heading span.secura-admin-users-v10__directory-label {
+  font-size:10px !important; color:var(--adm-purple) !important;
+  font-weight:850; letter-spacing:1.2px;
+}
+html .secura-neo-admin-sync .secura-admin-users-v10__directory-heading h2 {
+  margin:5px 0 0 !important; font-size:18px !important; line-height:1.28;
+  color:var(--adm-ink); font-weight:850;
+}
+.secura-neo-admin-sync .secura-admin-users-v10__directory-intro small {
+  display:block; color:var(--adm-muted); font-size:11px; margin-top:5px; line-height:1.4;
+}
+html .secura-neo-admin-sync .secura-admin-users-v10__directory-heading > p {
+  margin:0 !important; color:var(--adm-muted); font-size:10.5px; text-align:right;
+}
+html .secura-neo-admin-sync .secura-admin-users-v10 .admin-users-toolbar {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:10px !important; padding:12px 22px 17px !important;
+  margin:0 !important; background:transparent !important;
+  border:0 !important; min-height:60px;
+}
+html .secura-neo-admin-sync .secura-admin-users-v10 .admin-users-search {
+  display:flex; align-items:center; min-height:38px !important;
+  flex:0 1 350px; width:min(100%,350px) !important; min-width:180px;
+  padding:0 12px; border-radius:10px;
+  background:var(--admin-sync-input, #12182a) !important;
+  border:1px solid var(--adm-line) !important;
+}
+html .secura-neo-admin-sync .secura-admin-users-v10 .admin-users-search input {
+  min-width:0; min-height:0; height:35px; background:transparent !important;
+  -webkit-box-shadow:none !important; box-shadow:none !important;
+  color:var(--adm-ink) !important; -webkit-text-fill-color:var(--adm-ink) !important;
+}
+html .secura-neo-admin-sync .secura-admin-users-v10 .admin-users-filters button {
+  border:1px solid var(--adm-line) !important; background:rgba(140,96,237,.055) !important;
+  color:var(--adm-muted); border-radius:9px; min-height:33px; font-size:11px;
+}
+html .secura-neo-admin-sync .secura-admin-users-v10 .admin-users-filters button.selected {
+  background:linear-gradient(115deg,#8d54ef,#9547da) !important;
+  border-color:rgba(173,113,255,.4) !important;
+  color:#fff !important;
+}
+html .secura-neo-admin-sync .secura-admin-users-v10 .admin-users-table-wrap {
+  padding:0 15px 16px !important; overflow-x:auto; max-width:100%;
+}
+html .secura-neo-admin-sync .secura-admin-users-v10 .admin-users-table {
+  border-radius:14px; min-width:940px; border:1px solid var(--adm-line);
+  background:var(--admin-sync-panel, #171c30) !important;
+}
+html .secura-neo-admin-sync .secura-admin-users-v10 .admin-users-heading {
+  background:var(--admin-sync-thead, #28233e) !important;
+  min-height:46px; border-bottom:1px solid var(--adm-line);
+}
+html .secura-neo-admin-sync .secura-admin-users-v10 .admin-users-row:not(.admin-users-heading) {
+  background:transparent !important; border-bottom:1px solid var(--adm-line);
+}
+html .secura-neo-admin-sync .secura-admin-users-v10 .admin-users-row:not(.admin-users-heading):hover {
+  background:rgba(145,103,248,.075) !important;
+  box-shadow:inset 3px 0 0 var(--adm-purple);
+}
+@media (max-width:1130px) {
+  html .secura-neo-admin-sync .secura-admin-users-v10 .admin-users-toolbar { flex-wrap:wrap; }
+  html .secura-neo-admin-sync .secura-admin-users-v10 .admin-users-search { width:100% !important; flex:1 1 100%; }
+}
+@media (max-width:850px) {
+  html .secura-neo-admin-sync .secura-admin-users-v10 .admin-users-header {
+    min-height:unset !important; padding:25px 22px !important;
+    align-items:flex-start !important; flex-direction:column !important;
+  }
+  html .secura-neo-admin-sync .secura-admin-users-v10__stats { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+  html .secura-neo-admin-sync .secura-admin-users-v10__directory-heading { align-items:flex-start; }
+  html .secura-neo-admin-sync .secura-admin-users-v10__directory-heading > p { text-align:left; }
+}
+@media (max-width:560px) {
+  html .secura-neo-admin-sync .secura-admin-users-v10 { padding-bottom:30px !important; }
+  html .secura-neo-admin-sync .secura-admin-users-v10__stats { grid-template-columns:repeat(2,minmax(0,1fr)) !important; gap:9px !important; }
+  html .secura-neo-admin-sync .secura-admin-users-v10__stat { min-height:156px !important; padding:15px !important; }
+  html .secura-neo-admin-sync .secura-admin-users-v10__stat-icon { width:36px !important; height:36px !important; flex-basis:36px; }
+  html .secura-neo-admin-sync .secura-admin-users-v10__stat strong { font-size:27px !important; }
+  html .secura-neo-admin-sync .secura-admin-users-v10__stat b { font-size:11.5px !important; }
+  html .secura-neo-admin-sync .secura-admin-users-v10__stat small { font-size:10px !important; }
+  html .secura-neo-admin-sync .secura-admin-users-v10 .admin-create-user-button { width:100%; }
+  html .secura-neo-admin-sync .secura-admin-users-v10 .admin-users-toolbar { padding:10px 13px 14px !important; }
+  html .secura-neo-admin-sync .secura-admin-users-v10 .admin-users-table-wrap { padding:0 10px 14px !important; }
+  html .secura-neo-admin-sync .secura-admin-users-v10__directory-heading { padding:17px 13px 12px !important; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .secura-neo-admin-sync .secura-admin-users-v10 *,
+  .secura-neo-admin-sync .secura-admin-users-v10 *::before,
+  .secura-neo-admin-sync .secura-admin-users-v10 *::after { animation:none !important; transition:none !important; }
+}

@@ -1,0 +1,1250 @@
+/* SECURA NeoFlow V15.0 — User Dashboard ONLY. Never styles the other roles. */
+.secura-user-neo {
+  --sun-bg: #f5f6fc;
+  --sun-side: #ffffff;
+  --sun-card: #ffffff;
+  --sun-text: #212742;
+  --sun-muted: #7b849f;
+  --sun-line: #e7eaf4;
+  --sun-field: #f5f7fe;
+  --sun-shadow: 0 12px 34px rgba(46, 53, 118, .055);
+  --sun-button: #f2efff;
+  min-height: 100vh;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  color: var(--sun-text);
+  background: var(--sun-bg);
+  font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-x: clip;
+}
+html:not([data-theme="light"]) .secura-user-neo {
+  --sun-bg: #0d1020;
+  --sun-side: #13182b;
+  --sun-card: #1b2136;
+  --sun-text: #f6f5ff;
+  --sun-muted: #a2aec9;
+  --sun-line: #333b56;
+  --sun-field: #202841;
+  --sun-shadow: 0 16px 42px rgba(0, 0, 0, .18);
+  --sun-button: #29233d;
+}
+.secura-user-neo, .secura-user-neo *, .secura-user-neo *::before, .secura-user-neo *::after { box-sizing: border-box; }
+.secura-user-neo button, .secura-user-neo input { font: inherit; }
+.secura-user-neo button { color: inherit; cursor: pointer; }
+.secura-user-neo button:disabled { cursor: not-allowed; opacity: .65; }
+.secura-user-neo :focus-visible { outline: 3px solid #9d87f4; outline-offset: 3px; }
+.secura-user-neo h1, .secura-user-neo h2, .secura-user-neo h3, .secura-user-neo p { margin: 0; }
+.secura-user-neo .sun15__shell { width: 100%; max-width: none; min-height: 100vh; margin: 0; padding: 0; display: flex; background: transparent; box-shadow: none; border: 0; }
+.sun15__sidebar { flex: 0 0 244px; width: 244px; height: 100vh; min-height: 680px; position: sticky; top: 0; z-index: 25; display: flex; flex-direction: column; background: var(--sun-side); border-right: 1px solid var(--sun-line); padding: 25px 16px 19px; }
+.sun15__brand { display: flex; align-items: center; gap: 11px; width: 100%; border: 0; text-align: left; background: transparent; padding: 6px 9px 28px; }
+.sun15__brand-mark { display: grid; place-items: center; width: 43px; height: 43px; flex-shrink: 0; border-radius: 14px; background: linear-gradient(135deg, #5a7aff, #9664f5); color: #fff; box-shadow: 0 9px 24px rgba(100, 113, 244, .3); }
+.sun15__brand b { display: block; font-size: 20px; letter-spacing: -.055em; font-weight: 850; line-height: 1.1; }
+.sun15__brand small { display: block; margin-top: 4px; color: var(--sun-muted); font-size: 8px; letter-spacing: .17em; font-weight: 800; white-space: nowrap; }
+.sun15__nav-label, .sun15__overline { font-size: 10px; font-weight: 850; letter-spacing: .125em; color: #8b71df; }
+.sun15__nav-label { padding: 11px 16px 13px; color: var(--sun-muted); }
+.sun15__nav { display: flex; flex-direction: column; gap: 7px; }
+.sun15__nav-item { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 47px; border: 0; border-radius: 13px; text-align: left; padding: 10px 13px; background: transparent; color: var(--sun-muted)!important; font-size: 12px!important; font-weight: 700; transition: background 160ms ease, color 160ms ease, transform 160ms ease; }
+.sun15__nav-item:hover { transform: translateX(2px); background: var(--sun-field); color: var(--sun-text)!important; }
+.sun15__nav-item.is-active { background: linear-gradient(105deg, #e7e9ff, #f1eaff); color: #5c47db!important; }
+html:not([data-theme="light"]) .sun15__nav-item.is-active { background: linear-gradient(100deg, #3a305c, #2a304f); color: #c3acff!important; }
+.sun15__nav-item em { margin-left: auto; border-radius: 99px; background: #f6e5c7; color: #8d5f15; padding: 1px 7px; font-size: 10px; font-style: normal; }
+.sun15__sidebar-bottom { margin-top: auto; padding-top: 18px; display: grid; gap: 8px; }
+.sun15__workspace { flex: 1; min-width: 0; background: var(--sun-bg); }
+.sun15__topbar { height: 76px; padding: 12px 29px; background: var(--sun-side); display: flex; align-items: center; gap: 22px; border-bottom: 1px solid var(--sun-line); }
+.sun15__search { height: 44px; display: flex; align-items: center; gap: 11px; padding: 0 14px; max-width: 495px; width: min(100%, 495px); border: 1px solid var(--sun-line); border-radius: 15px; color: var(--sun-muted); background: var(--sun-field); transition: border-color 180ms, box-shadow 180ms; }
+.sun15__search:focus-within { border-color: #a48cfb; box-shadow: 0 0 0 3px rgba(137, 105, 235, .1); }
+.sun15__search input { min-width: 0; flex: 1; height: 100%; outline: none!important; background: transparent!important; border: 0!important; box-shadow: none!important; color: var(--sun-text)!important; font-size: 12px!important; }
+.sun15__search input::placeholder { color: var(--sun-muted); opacity: .95; }
+.sun15__search kbd { color: var(--sun-muted); background: var(--sun-card); padding: 3px 6px; border: 1px solid var(--sun-line); border-radius: 6px; white-space: nowrap; font-size: 10px; }
+.sun15__search button, .sun15__mobile-menu { padding: 0; border: 0; background: transparent; }
+.sun15__top-actions { display: flex; align-items: center; gap: 14px; margin-left: auto; }
+.sun15__today { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; color: var(--sun-muted); white-space: nowrap; }
+.sun15__notify { display: grid; place-items: center; width: 38px; height: 38px; position: relative; background: var(--sun-field); border: 1px solid var(--sun-line); border-radius: 12px; }
+.sun15__notify i { position: absolute; top: 6px; right: 6px; width: 8px; height: 8px; background: #f1849b; border-radius: 50%; border: 2px solid var(--sun-side); }
+.sun15__account { display: flex; align-items: center; gap: 9px; background: transparent; border: 0; padding: 4px; max-width: 200px; min-width: 0; text-align: left; }
+.sun15__account-avatar { flex: 0 0 37px; width: 37px!important; height: 37px!important; display: grid; place-items: center; border-radius: 12px; overflow: hidden; background: #dcd4ff; color: #653fcc; }
+.sun15__account-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.sun15__account b, .sun15__account small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sun15__account b { font-weight: 800; font-size: 11px; }
+.sun15__account small { font-size: 10px; color: var(--sun-muted); }
+.sun15__layout { max-width: 1760px; margin: 0 auto; padding: 24px 26px 50px; display: grid; grid-template-columns: minmax(0, 1fr) 282px; gap: 20px; align-items: start; }
+.sun15__primary, .sun15__utility { display: grid; min-width: 0; gap: 18px; }
+.sun15__utility { gap: 18px; }
+.sun15__hero { position: relative; min-height: 233px; display: flex; align-items: center; border: 1px solid #dae1ff; border-radius: 23px; background: linear-gradient(115deg, #e4f3ff 0%, #f1ecff 44%, #e7dbff 76%, #d3e5ff 100%); box-shadow: var(--sun-shadow); overflow: hidden; }
+.sun15__hero::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, .38) 45%, transparent 100%); opacity: .38; pointer-events: none; }
+html:not([data-theme="light"]) .sun15__hero { background: linear-gradient(120deg, #23344f, #33264e 67%, #383568); border-color: #47416f; }
+.sun15__hero-copy { position: relative; z-index: 2; max-width: 630px; padding: 27px 32px; }
+.sun15__eyebrow { display: inline-flex; gap: 6px; align-items: center; font-size: 9px; letter-spacing: .15em; font-weight: 800; color: #7061c6; }
+html:not([data-theme="light"]) .sun15__eyebrow { color: #c8bcff; }
+.sun15__hero h1 { font-weight: 850; font-size: clamp(25px, 2.55vw, 38px); letter-spacing: -.052em; line-height: 1.14; margin: 12px 0 8px; }
+.sun15__hero h1 span { color: #715de5; }
+html:not([data-theme="light"]) .sun15__hero h1 span { color: #bdb0ff; }
+.sun15__hero p { max-width: 470px; color: #6c799a; font-size: 12px; line-height: 1.75; }
+html:not([data-theme="light"]) .sun15__hero p { color: #c5c8e6; }
+.sun15__hero-art { position: absolute; right: 26px; top: 5px; width: 220px; height: 214px; pointer-events: none; }
+.sun15__halo { position: absolute; border-radius: 100%; filter: blur(4px); background: #a3dfff55; }
+.sun15__halo.halo-a { width: 145px; height: 145px; right: 35px; top: 30px; }
+.sun15__halo.halo-b { width: 80px; height: 80px; background: #d38dff55; right: 0; bottom: 0; }
+.sun15__art-file { position: absolute; display: grid; place-items: center; width: 86px; height: 112px; border-radius: 13px; border: 1px solid #ffffffab; background: #fffafcdb; color: #8e8de0; box-shadow: 0 15px 28px #6665bb25; }
+.sun15__art-file.file-back { right: 10px; top: 39px; transform: rotate(13deg); }
+.sun15__art-file.file-front { right: 86px; top: 29px; transform: rotate(-10deg); color: #5b7bea; }
+.sun15__art-shield { position: absolute; right: 58px; top: 85px; width: 96px; height: 100px; display: grid; place-items: center; border-radius: 30px; border: 4px solid #ffffffa1; background: linear-gradient(145deg, #6fc7ff, #615af6); box-shadow: 0 14px 32px #5148c973; color: #fff; animation: sun15Float 4.8s ease-in-out infinite; }
+.sun15__art-spark { position: absolute; right: 160px; top: 14px; font-size: 27px; color: #9e8cf5; }
+.sun15__stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
+.sun15__stat { display: flex; align-items: center; gap: 12px; min-width: 0; padding: 14px; background: var(--sun-card); border: 1px solid var(--sun-line); border-radius: 16px; text-align: left; box-shadow: var(--sun-shadow); transition: transform 160ms, border-color 160ms; }
+.sun15__stat:hover { transform: translateY(-2px); border-color: #ad9cff; }
+.sun15__stat-icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 13px; flex-shrink: 0; }
+.sun15__stat-icon.blue { background: #e7f3ff; color: #2c81ed; }
+.sun15__stat-icon.violet { background: #f0e9ff; color: #8453eb; }
+.sun15__stat-icon.amber { background: #fff0e7; color: #e28c4e; }
+html:not([data-theme="light"]) .sun15__stat-icon.blue { background: #223b57; }
+html:not([data-theme="light"]) .sun15__stat-icon.violet { background: #372b56; }
+html:not([data-theme="light"]) .sun15__stat-icon.amber { background: #4b382d; }
+.sun15__stat strong { display: block; font-size: 24px; line-height: 1.1; letter-spacing: -.04em; }
+.sun15__stat small { display: block; margin-top: 4px; color: var(--sun-muted); font-size: 11px; font-weight: 650; }
+.sun15__stat > svg:last-child { margin-left: auto; align-self: flex-start; color: var(--sun-muted); flex-shrink: 0; }
+.sun15__section, .sun15__panel { background: var(--sun-card); border: 1px solid var(--sun-line); border-radius: 19px; padding: 19px; box-shadow: var(--sun-shadow); min-width: 0; }
+.sun15__section-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
+.sun15__section-head h2 { margin-top: 3px; font-size: 16px; font-weight: 820; letter-spacing: -.025em; }
+.sun15__refresh, .sun15__text-link { display: inline-flex; align-items: center; gap: 5px; border: 0; background: transparent; color: #7565dd!important; padding: 5px; white-space: nowrap; font-size: 11px!important; font-weight: 800; }
+.sun15__refresh:hover, .sun15__text-link:hover { text-decoration: underline; }
+.sun15__quick-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.sun15__quick-card { position: relative; display: flex; flex-direction: column; align-items: flex-start; min-width: 0; min-height: 135px; padding: 16px 13px; border: 1px solid transparent; border-radius: 15px; text-align: left; transition: transform 160ms, box-shadow 160ms; }
+.sun15__quick-card:hover { transform: translateY(-3px); box-shadow: 0 12px 27px #5c609c1e; }
+.sun15__quick-card.blue { background: #edf6ff; color: #1b6ab7; }
+.sun15__quick-card.purple { background: #f1edff; color: #7453cd; }
+.sun15__quick-card.peach { background: #fff0f3; color: #cf5d7a; }
+.sun15__quick-card.mint { background: #e8f9f3; color: #249675; }
+html:not([data-theme="light"]) .sun15__quick-card.blue { background: #213751; color: #7fc6ff; }
+html:not([data-theme="light"]) .sun15__quick-card.purple { background: #362b50; color: #c2a3ff; }
+html:not([data-theme="light"]) .sun15__quick-card.peach { background: #472d43; color: #ff9db1; }
+html:not([data-theme="light"]) .sun15__quick-card.mint { background: #1c423f; color: #6de5c1; }
+.sun15__quick-card > span { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 11px; background: #ffffff9b; }
+html:not([data-theme="light"]) .sun15__quick-card > span { background: #ffffff12; }
+.sun15__quick-card b { font-size: 11px; margin-top: 12px; font-weight: 800; color: var(--sun-text); }
+.sun15__quick-card small { font-size: 10px; margin-top: 3px; line-height: 1.5; color: var(--sun-muted); }
+.sun15__quick-arrow { position: absolute; right: 11px; top: 15px; }
+.sun15__content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 17px; align-items: stretch; min-width: 0; }
+.sun15__list { display: grid; align-content: start; min-width: 0; }
+.sun15__file-row, .sun15__request-row { display: flex; align-items: center; gap: 10px; width: 100%; padding: 11px 0; border: 0; border-top: 1px solid var(--sun-line); background: transparent; text-align: left; min-width: 0; transition: background 160ms; }
+.sun15__file-row:hover, .sun15__request-row:hover { background: var(--sun-field); }
+.sun15__file-icon { flex: 0 0 36px; width: 36px; height: 39px; border-radius: 11px; display: grid; place-items: center; background: #edf2ff; color: #6a66e7; }
+html:not([data-theme="light"]) .sun15__file-icon { background: #2c3154; }
+.sun15__row-main { display: block; flex: 1; min-width: 0; }
+.sun15__row-main b { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 11px; font-weight: 800; }
+.sun15__row-main small { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--sun-muted); font-size: 10px; margin-top: 4px; }
+.sun15__file-row > svg:last-child { color: var(--sun-muted); }
+.sun15__request-row { min-height: 61px; }
+.sun15__status { font-size: 9px; font-weight: 850; white-space: nowrap; padding: 5px 7px; border-radius: 99px; }
+.sun15__status.success { background: #ddf6eb; color: #148a66; }
+.sun15__status.pending { background: #e8f1ff; color: #3976d0; }
+.sun15__status.danger { background: #ffebee; color: #cb5575; }
+.sun15__status.neutral { background: var(--sun-field); color: var(--sun-muted); }
+html:not([data-theme="light"]) .sun15__status.success { background: #26473e; color: #84e4b9; }
+html:not([data-theme="light"]) .sun15__status.pending { background: #263a59; color: #a9c9ff; }
+html:not([data-theme="light"]) .sun15__status.danger { background: #462d40; color: #ffb2be; }
+.sun15__empty { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 7px; padding: 24px 10px; color: var(--sun-muted); min-height: 180px; }
+.sun15__empty svg { color: #9988e9; }
+.sun15__empty b { color: var(--sun-text); font-size: 12px; }
+.sun15__empty p { font-size: 11px; max-width: 230px; }
+.sun15__calendar .sun15__section-head > svg { color: #8571e0; }
+.sun15__month { display: flex; justify-content: space-between; gap: 10px; align-items: center; margin: 16px 0; }
+.sun15__month b { font-size: 12px; }
+.sun15__month div { display: flex; gap: 5px; }
+.sun15__month button { display: grid; place-items: center; height: 27px; width: 27px; border: 1px solid var(--sun-line); border-radius: 9px; background: var(--sun-field); }
+.sun15__calendar-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; text-align: center; }
+.sun15__calendar-grid span { min-width: 0; height: 31px; display: grid; place-items: center; border-radius: 9px; font-size: 11px; position: relative; }
+.sun15__weekdays { margin-bottom: 5px; }
+.sun15__weekdays span { color: var(--sun-muted); font-weight: 700; height: 20px; }
+.sun15__calendar-grid span.today { background: #7662e9; color: #fff; font-weight: 900; }
+.sun15__calendar-grid span.has-request::after { content: ''; position: absolute; width: 4px; height: 4px; bottom: 1px; border-radius: 50%; background: #e17cb8; }
+.sun15__calendar-help { font-size: 10px; color: var(--sun-muted); display: flex; align-items: center; gap: 6px; margin-top: 13px; }
+.sun15__calendar-help i { width: 6px; height: 6px; border-radius: 50%; background: #e17cb8; }
+.sun15__calendar-today { margin-top: 7px; background: transparent; border: 0; font-size: 10px!important; color: #8375e0!important; font-weight: 700; }
+.sun15__timeline { position: relative; display: grid; }
+.sun15__timeline::before { content: ''; position: absolute; top: 17px; bottom: 12px; left: 8px; width: 1px; background: var(--sun-line); }
+.sun15__timeline-item { display: flex; gap: 13px; width: 100%; text-align: left; background: transparent; border: 0; padding: 11px 0; }
+.sun15__timeline-item:hover b { color: #8374e8; }
+.sun15__timeline-dot { position: relative; z-index: 1; margin-top: 4px; flex: 0 0 17px; height: 17px; border: 4px solid var(--sun-card); border-radius: 50%; background: #8998e9; box-shadow: 0 0 0 1px var(--sun-line); }
+.sun15__timeline-dot.success { background: #47c6a2; }.sun15__timeline-dot.pending { background: #86a6ec; }.sun15__timeline-dot.danger { background: #ea8b98; }
+.sun15__timeline-item > span:last-child { min-width: 0; }
+.sun15__timeline-item b { display: block; font-size: 11px; font-weight: 800; }
+.sun15__timeline-item small { display: block; max-width: 225px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10px; color: var(--sun-muted); margin: 4px 0; }
+.sun15__timeline-item em { display: block; font-style: normal; font-size: 9px; color: var(--sun-muted); }
+.sun15__empty.is-small { min-height: 150px; }
+.sun15__warning { background: #ffeded; color: #943b4d; border: 1px solid #edb0bb; padding: 12px; border-radius: 12px; font-size: 11px; }
+.sun15__warning button { background: transparent; border: 0; color: inherit; text-decoration: underline; font-weight: 800; margin-left: 8px; }
+.sun15__mobile-menu, .sun15__backdrop { display: none; }
+.sun15__refresh .is-spinning { animation: sun15Spin 750ms linear infinite; }
+@keyframes sun15Spin { to { transform: rotate(360deg); } }
+@keyframes sun15Float { 50% { transform: translateY(-6px); } }
+/* Hide scrollbar thumbs while retaining keyboard/wheel/touch scrolling. */
+.secura-user-neo, .secura-user-neo * { scrollbar-width: none; }
+.secura-user-neo::-webkit-scrollbar, .secura-user-neo *::-webkit-scrollbar { width: 0; height: 0; }
+@media (max-width: 1320px) {
+  .sun15__sidebar { flex-basis: 219px; width: 219px; }
+  .sun15__layout { grid-template-columns: minmax(0,1fr) 260px; padding: 20px 18px 40px; gap: 16px; }
+  .sun15__quick-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .sun15__quick-card { min-height: 123px; }
+  .sun15__hero-art { opacity: .7; right: 4px; }
+}
+@media (max-width: 1080px) {
+  .sun15__layout { grid-template-columns: minmax(0,1fr); }
+  .sun15__utility { grid-template-columns: minmax(0,1fr) minmax(0,1fr); align-items: start; }
+  .sun15__today { display: none; }
+}
+@media (max-width: 740px) {
+  .sun15__sidebar { position: fixed; top: 0; left: 0; bottom: 0; min-height: 0; transform: translateX(-100%); transition: transform 220ms ease; box-shadow: 8px 0 28px rgba(0,0,0,.18); }
+  .sun15__sidebar.is-open { transform: translateX(0); }
+  .sun15__backdrop { position: fixed; display: block; inset: 0; border: 0; background: #0b103f78; z-index: 24; }
+  .sun15__mobile-menu { display: grid; place-items: center; flex: 0 0 35px; height: 35px; }
+  .sun15__topbar { padding: 10px 15px; height: 70px; gap: 10px; }
+  .sun15__search { flex: 1; min-width: 0; }
+  .sun15__search kbd, .sun15__account span:not(.sun15__account-avatar), .sun15__account > svg { display: none; }
+  .sun15__account { padding: 0; }
+  .sun15__notify { display: none; }
+  .sun15__layout { padding: 15px 12px 26px; }
+  .sun15__hero { min-height: 220px; }
+  .sun15__hero-copy { padding: 24px 18px; }
+  .sun15__hero p { max-width: 90%; }
+  .sun15__hero-art { opacity: .22; right: -60px; }
+  .sun15__stats { grid-template-columns: repeat(3, minmax(0,1fr)); gap: 7px; }
+  .sun15__stat { flex-direction: column; align-items: flex-start; gap: 8px; padding: 10px; }
+  .sun15__stat-icon { width: 32px; height: 32px; }
+  .sun15__stat > svg:last-child { display: none; }
+  .sun15__stat strong { font-size: 21px; }
+  .sun15__stat small { font-size: 10px; }
+  .sun15__content-grid, .sun15__utility { grid-template-columns: 1fr; }
+}
+@media (max-width: 420px) { .sun15__quick-grid { grid-template-columns: 1fr 1fr; } .sun15__quick-card { padding: 11px; } .sun15__quick-card b { font-size: 10px; } .sun15__status { font-size: 8px; white-space: normal; text-align: center; } .sun15__account-avatar { width: 30px!important; height: 30px!important; flex-basis: 30px; } }
+@media (prefers-reduced-motion: reduce) { .secura-user-neo *, .secura-user-neo *::before, .secura-user-neo *::after { animation: none!important; transition-duration: .01ms!important; } }
+
+/* ===============================
+ SECURA NeoFlow V15.1 — Admin-inspired USER sidebar
+ User dashboard only; Admin/Security unchanged.
+=============================== */
+.secura-user-neo .sun15__sidebar {
+  flex: 0 0 270px; width:270px; min-height:0; height:100dvh; padding:24px 13px 14px;
+  position:sticky; top:0; z-index:30;
+  background:linear-gradient(170deg,#111328 0%,#171832 48%,#202c40 100%) !important;
+  border:0; border-right:1px solid rgba(190,156,255,.18);
+  color:#f7f5ff; overflow:hidden; isolation:isolate;
+  transition:width .22s ease, flex-basis .22s ease, transform .22s ease;
+}
+.secura-user-neo .sun15__sidebar.is-mini {flex-basis:78px;width:78px;padding-inline:10px;}
+.secura-user-neo .sun15__side-glow { position:absolute; inset:0; pointer-events:none; z-index:-1;
+ background:radial-gradient(ellipse at 96% 0%,rgba(139,62,224,.25),transparent 42%),radial-gradient(ellipse at -15% 89%,rgba(75,210,240,.11),transparent 33%); }
+.secura-user-neo .sun15__side-top {display:flex;align-items:center;justify-content:space-between;gap:6px;min-height:52px;}
+.secura-user-neo .sun15__brand {min-width:0;flex:1;padding:0 2px; gap:11px;color:#fff;text-align:left;}
+.secura-user-neo .sun15__brand-mark {flex:0 0 42px;width:42px;height:42px;border-radius:13px;background:linear-gradient(130deg,#ad45fb,#7149fb 70%,#ac4aea);
+box-shadow:0 0 23px rgba(146,74,255,.32),inset 0 1px 0 rgba(255,255,255,.30);}
+.secura-user-neo .sun15__brand-copy {display:flex;flex-direction:column;gap:4px;min-width:0;white-space:nowrap;}
+.secura-user-neo .sun15__brand b {color:#fff;font-size:20px;letter-spacing:-.035em;}
+.secura-user-neo .sun15__brand b span {color:#c78bff;}
+.secura-user-neo .sun15__brand small {color:#a6a0c3;font-size:7.5px;letter-spacing:.135em;margin:0;}
+.secura-user-neo .sun15__side-close {display:none;background:transparent;border:0;color:#fff;padding:8px;}
+.secura-user-neo .sun15__collapse-wrap {display:flex;justify-content:flex-end;margin:4px 4px 28px;}
+.secura-user-neo .sun15__collapse {display:grid;place-items:center;width:31px;height:31px;border-radius:9px;
+ border:1px solid rgba(188,170,255,.19);background:rgba(255,255,255,.055);color:#dad2ff;}
+.secura-user-neo .sun15__collapse:hover {background:rgba(159,107,255,.21);}
+.secura-user-neo .sun15__nav-label {color:#8f93b3;padding:0;margin:0 11px 12px;font-size:10px;letter-spacing:.15em;}
+.secura-user-neo .sun15__nav {gap:6px;overflow-y:auto;min-height:0;padding-bottom:12px;}
+.secura-user-neo .sun15__nav-item {position:relative;flex-shrink:0;min-height:47px;gap:13px;border:1px solid transparent;
+ padding:9px 11px;border-radius:12px;color:#aeb2d2!important;font-size:12px!important;white-space:nowrap;}
+.secura-user-neo .sun15__nav-item svg {flex-shrink:0;}
+.secura-user-neo .sun15__nav-item:hover {color:#fff!important;background:rgba(154,113,255,.14);transform:translateX(2px);}
+.secura-user-neo .sun15__nav-item.is-active {color:#fff!important;background:linear-gradient(95deg,rgba(118,78,243,.42),rgba(121,65,205,.20))!important;
+ border-color:rgba(190,141,255,.24);box-shadow:inset 3px 0 #aa5cff,0 7px 25px rgba(110,54,218,.14);}
+.secura-user-neo .sun15__nav-item em {font-size:10px;font-style:normal;color:#f4ebff;background:#6741b0;padding:2px 7px;border-radius:20px;margin-left:auto;}
+.secura-user-neo .sun15__nav-arrow {margin-left:auto;opacity:0;transition:opacity .17s;}
+.secura-user-neo .sun15__nav-item:hover .sun15__nav-arrow,.secura-user-neo .sun15__nav-item.is-active .sun15__nav-arrow {opacity:.85;}
+.secura-user-neo .sun15__sidebar-bottom {position:relative;margin-top:auto;padding-top:14px;gap:13px;}
+.secura-user-neo .sun15__glass-toggle {width:100%;min-height:49px;display:flex;align-items:center;justify-content:space-between;gap:8px;
+ padding:8px 11px;color:#f3edff;background:rgba(143,104,246,.17);border:1px solid rgba(194,165,255,.27);border-radius:12px;
+ transition:background .2s,border-color .2s,box-shadow .2s;}
+.secura-user-neo .sun15__glass-toggle:hover {background:rgba(149,106,255,.26);border-color:rgba(192,160,255,.4);box-shadow:0 0 22px rgba(144,90,255,.14);}
+.secura-user-neo .sun15__glass-title {font-size:11px;font-weight:850;white-space:nowrap;}
+.secura-user-neo .sun15__glass-track {width:62px;min-width:62px;height:29px;display:block;position:relative;border-radius:100px;
+ background:linear-gradient(110deg,#33265d,#6945af);border:1px solid rgba(208,191,255,.25);}
+.secura-user-neo .sun15__glass-sun,.secura-user-neo .sun15__glass-moon {position:absolute;top:7px;color:#c7b7fa;}
+.secura-user-neo .sun15__glass-sun {left:8px;}.secura-user-neo .sun15__glass-moon {right:8px;}
+.secura-user-neo .sun15__glass-thumb {position:absolute;top:2px;left:2px;width:23px;height:23px;border-radius:50%;display:grid;place-items:center;
+ background:#ece2ff;color:#5b37a1;box-shadow:0 2px 7px rgba(0,0,0,.25);transition:transform .28s cubic-bezier(.2,.85,.2,1);}
+.secura-user-neo .sun15__glass-track.is-dark .sun15__glass-thumb {transform:translateX(32px);}
+.secura-user-neo .sun15__side-identity {display:flex;align-items:center;gap:7px;border-top:1px solid rgba(192,172,248,.16);padding:12px 2px 0;}
+.secura-user-neo .sun15__side-person {display:flex;align-items:center;gap:9px;min-width:0;flex:1;}
+.secura-user-neo .sun15__side-avatar {display:grid;place-items:center;width:35px!important;height:35px!important;flex:0 0 35px;
+border-radius:11px;overflow:hidden;}
+.secura-user-neo .sun15__side-avatar img {width:100%;height:100%;object-fit:cover;}
+.secura-user-neo .sun15__side-person > span:last-child {display:grid;gap:3px;min-width:0;}
+.secura-user-neo .sun15__side-person b {font-size:11px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.secura-user-neo .sun15__side-person small {font-size:9px;color:#a9aecd;}
+.secura-user-neo .sun15__side-logout {flex:0 0 35px;width:35px;height:35px;display:grid;place-items:center;
+background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:#dfd8f5;}
+.secura-user-neo .sun15__side-logout:hover {color:#ffd1e0;background:rgba(238,91,136,.22);}
+.secura-user-neo .sun15__sidebar.is-mini .sun15__brand-copy,
+.secura-user-neo .sun15__sidebar.is-mini .sun15__nav-label,
+.secura-user-neo .sun15__sidebar.is-mini .sun15__nav-item > span,
+.secura-user-neo .sun15__sidebar.is-mini .sun15__nav-arrow,
+.secura-user-neo .sun15__sidebar.is-mini .sun15__nav-item em,
+.secura-user-neo .sun15__sidebar.is-mini .sun15__glass-title,
+.secura-user-neo .sun15__sidebar.is-mini .sun15__side-person > span:last-child,
+.secura-user-neo .sun15__sidebar.is-mini .sun15__side-logout {display:none;}
+.secura-user-neo .sun15__sidebar.is-mini .sun15__brand,
+.secura-user-neo .sun15__sidebar.is-mini .sun15__side-person,
+.secura-user-neo .sun15__sidebar.is-mini .sun15__side-identity,
+.secura-user-neo .sun15__sidebar.is-mini .sun15__collapse-wrap {justify-content:center;}
+.secura-user-neo .sun15__sidebar.is-mini .sun15__nav-item {justify-content:center;padding:9px 0;}
+.secura-user-neo .sun15__sidebar.is-mini .sun15__glass-toggle {justify-content:center;padding:9px 2px;}
+.secura-user-neo .sun15__sidebar.is-mini .sun15__glass-track {transform:scale(.75);}
+.secura-user-neo .sun15__sidebar.is-mini .sun15__nav {margin-top:18px;}
+/* KPI cards are purely informative. Interactive links remain in Quick Actions and lists. */
+.secura-user-neo .sun15__stat {cursor:default;transform:none!important;transition:none;}
+.secura-user-neo .sun15__stat:hover {transform:none!important;border-color:var(--sun-line)!important;box-shadow:var(--sun-shadow)!important;}
+.secura-user-neo .sun15__stat::after {display:none!important;}
+/* Keep greeting design but remove the redundant upload CTA. */
+.secura-user-neo .sun15__hero {min-height:208px;}
+.secura-user-neo .sun15__hero-copy {padding-top:26px;padding-bottom:26px;}
+/* A real-data Approval Journey replaces the repetitive Secure Space card. */
+.secura-user-neo .sun15__journey {display:flex;flex-direction:column;gap:0;min-width:0;}
+.secura-user-neo .sun15__journey .sun15__section-head {margin-bottom:14px;}
+.secura-user-neo .sun15__journey .sun15__section-head>svg {color:#8370df;}
+.secura-user-neo .sun15__journey-file {display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+.secura-user-neo .sun15__journey-file b {font-size:11px;line-height:1.5;min-width:0;overflow-wrap:anywhere;}
+.secura-user-neo .sun15__journey-sub {font-size:10px;color:var(--sun-muted);margin-top:8px;line-height:1.6;}
+.secura-user-neo .sun15__journey-steps {position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin-top:20px;}
+.secura-user-neo .sun15__journey-steps::before {content:'';height:2px;position:absolute;top:14px;left:15%;right:15%;background:var(--sun-line);}
+.secura-user-neo .sun15__journey-step {position:relative;display:grid;justify-items:center;text-align:center;gap:7px;z-index:1;color:var(--sun-muted);}
+.secura-user-neo .sun15__journey-step span {display:grid;place-items:center;width:30px;height:30px;border-radius:50%;
+background:var(--sun-field);border:1px solid var(--sun-line);}
+.secura-user-neo .sun15__journey-step small {font-size:9px;font-weight:700;}
+.secura-user-neo .sun15__journey-step.is-done span {color:#fff;background:linear-gradient(130deg,#6b65e8,#aa66ee);border-color:transparent;}
+.secura-user-neo .sun15__journey-step.is-current span {color:#7b58df;background:var(--sun-button);border-color:#a78bee;box-shadow:0 0 0 3px rgba(151,111,241,.12);}
+.secura-user-neo .sun15__journey-step.is-closed span {color:#e7778b;background:var(--sun-field);border-color:#cd879a;}
+.secura-user-neo .sun15__journey-closed {font-size:10px;color:#df7e98;line-height:1.6;margin-top:13px;}
+.secura-user-neo .sun15__journey-footer {margin-top:18px;padding-top:13px;border-top:1px solid var(--sun-line);display:flex;align-items:center;justify-content:space-between;gap:9px;}
+.secura-user-neo .sun15__journey-footer > span {color:var(--sun-muted);font-size:10px;}
+.secura-user-neo .sun15__journey-controls {display:flex;align-items:center;gap:5px;}
+.secura-user-neo .sun15__journey-controls button {display:inline-flex;align-items:center;justify-content:center;gap:4px;
+ min-height:27px;padding:5px 7px;border:1px solid var(--sun-line);border-radius:8px;background:var(--sun-field);font-size:10px;font-weight:750;}
+.secura-user-neo .sun15__journey-controls .sun15__journey-link {background:#6f5be6;color:#fff!important;border-color:#6f5be6;}
+.secura-user-neo .sun15__journey-empty {display:grid;justify-items:start;gap:8px;}
+.secura-user-neo .sun15__journey-empty>svg {color:#69bda7;}
+.secura-user-neo .sun15__journey-empty b {font-size:11px;}
+.secura-user-neo .sun15__journey-empty p {font-size:10px;color:var(--sun-muted);}
+.secura-user-neo .sun15__journey-empty button {display:flex;align-items:center;gap:6px;border-radius:9px;border:0;
+ padding:8px 10px;background:#6f5be6;color:#fff!important;font-size:10px;font-weight:750;}
+@media(max-width:1320px){
+ .secura-user-neo .sun15__sidebar:not(.is-mini) {flex-basis:250px;width:250px;}
+}
+@media(max-width:740px){
+ .secura-user-neo .sun15__sidebar,
+ .secura-user-neo .sun15__sidebar.is-mini {position:fixed;left:0;top:0;bottom:0;z-index:30;height:100dvh;min-height:0;
+ flex-basis:270px!important;width:270px!important;padding:20px 13px 14px;transform:translateX(-105%);}
+ .secura-user-neo .sun15__sidebar.is-open {transform:translateX(0);}
+ .secura-user-neo .sun15__side-close {display:grid;place-items:center;}
+ .secura-user-neo .sun15__collapse-wrap {display:none;}
+ .secura-user-neo .sun15__sidebar.is-mini .sun15__brand-copy {display:flex;}
+ .secura-user-neo .sun15__sidebar.is-mini .sun15__nav-label {display:block;}
+ .secura-user-neo .sun15__sidebar.is-mini .sun15__nav-item > span {display:inline;}
+ .secura-user-neo .sun15__sidebar.is-mini .sun15__nav-item em {display:inline;}
+ .secura-user-neo .sun15__sidebar.is-mini .sun15__glass-title {display:inline;}
+ .secura-user-neo .sun15__sidebar.is-mini .sun15__side-person > span:last-child {display:grid;}
+ .secura-user-neo .sun15__sidebar.is-mini .sun15__side-logout {display:grid;}
+ .secura-user-neo .sun15__sidebar.is-mini .sun15__nav-item {justify-content:flex-start;padding:9px 11px;}
+ .secura-user-neo .sun15__sidebar.is-mini .sun15__glass-toggle {justify-content:space-between;padding:8px 11px;}
+ .secura-user-neo .sun15__sidebar.is-mini .sun15__glass-track {transform:none;}
+ .secura-user-neo .sun15__sidebar.is-mini .sun15__side-identity {justify-content:space-between;}
+ .secura-user-neo .sun15__sidebar.is-mini .sun15__side-person {justify-content:flex-start;}
+ .secura-user-neo .sun15__sidebar.is-mini .sun15__nav {margin-top:0;}
+ .secura-user-neo .sun15__hero {min-height:198px;}
+}
+/* Prevent a duplicate legacy theme control while the User dashboard is visible. */
+body:has(.secura-user-neo) .secura-bold-theme-switch,
+body:has(.secura-user-neo) .secura-glass-theme-switch,
+body:has(.secura-user-neo) .secura-theme-toggle-floating {display:none!important;}
+/* The matching Admin circular-reveal transition is global only while the User switch is clicked. */
+html.secura-neo-theme-wave::view-transition-old(root),
+html.secura-neo-theme-wave::view-transition-new(root) {
+ animation-duration:610ms!important;animation-timing-function:cubic-bezier(.22,.84,.17,1)!important;
+ animation-fill-mode:both!important;mix-blend-mode:normal!important;
+}
+html.secura-neo-theme-wave::view-transition-old(root) {z-index:1;animation-name:sun15FadeOld!important;}
+html.secura-neo-theme-wave::view-transition-new(root) {z-index:9999;animation-name:sun15GlassWave!important;}
+@keyframes sun15GlassWave {
+ from {clip-path:circle(0 at var(--theme-transition-x) var(--theme-transition-y));}
+ to {clip-path:circle(var(--theme-transition-radius) at var(--theme-transition-x) var(--theme-transition-y));}
+}
+@keyframes sun15FadeOld {from {opacity:1;}to {opacity:1;}}
+@media(prefers-reduced-motion:reduce){
+ .secura-user-neo .sun15__glass-thumb {transition:none!important;}
+}
+
+
+/* ==========================================================
+   SECURA V15.2 — User dashboard usability polish
+   Preserve the approved V15.1 layout and all existing routes.
+   ========================================================== */
+/* Keep collapse control beside brand rather than as a loose row below. */
+.secura-user-neo .sun15__side-top {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:8px; min-height:52px; margin-bottom:32px;
+}
+.secura-user-neo .sun15__side-top .sun15__brand {flex:1; width:auto; min-width:0;}
+.secura-user-neo .sun15__side-top .sun15__collapse-wrap {
+  display:flex; margin:0; flex:0 0 auto; justify-content:center;
+}
+.secura-user-neo .sun15__side-top .sun15__collapse {
+  width:32px; height:32px; border-radius:10px;
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+.secura-user-neo .sun15__side-top .sun15__collapse:hover {transform:translateX(-2px);}
+/* Keep the original four workspace sections and place theme + logout together. */
+.secura-user-neo .sun15__sidebar-bottom {margin-top:auto; padding-top:15px;}
+.secura-user-neo .sun15__bottom-dock {display:flex; align-items:center; gap:8px; min-width:0;}
+.secura-user-neo .sun15__bottom-dock .sun15__glass-toggle {
+  min-width:0; flex:1; min-height:48px; width:auto; padding:8px 9px;
+}
+.secura-user-neo .sun15__bottom-dock .sun15__glass-title {font-size:10px;}
+.secura-user-neo .sun15__bottom-dock .sun15__glass-track {
+  width:56px; min-width:56px; height:27px;
+}
+.secura-user-neo .sun15__bottom-dock .sun15__glass-sun,
+.secura-user-neo .sun15__bottom-dock .sun15__glass-moon {top:6px;}
+.secura-user-neo .sun15__bottom-dock .sun15__glass-thumb {width:21px; height:21px;}
+.secura-user-neo .sun15__bottom-dock .sun15__glass-track.is-dark .sun15__glass-thumb {transform:translateX(28px);}
+.secura-user-neo .sun15__bottom-logout {
+  flex:0 0 43px; height:48px; border:1px solid rgba(194,165,255,.26);
+  border-radius:12px; color:#eee8ff; background:rgba(143,104,246,.14);
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  transition:background 160ms ease,border-color 160ms ease,box-shadow 160ms ease;
+}
+.secura-user-neo .sun15__bottom-logout:hover {
+  background:rgba(232,99,143,.2); border-color:rgba(245,160,181,.5);
+  box-shadow:0 0 18px rgba(218,102,160,.12);
+}
+.secura-user-neo .sun15__bottom-logout span {display:none;}
+/* Collapsed navigation: show shield then the arrow; dock buttons stay accessible. */
+.secura-user-neo .sun15__sidebar.is-mini .sun15__side-top {
+  flex-direction:column; align-items:center; gap:12px; margin-bottom:20px;
+}
+.secura-user-neo .sun15__sidebar.is-mini .sun15__side-top .sun15__brand {
+  width:43px; flex:0 0 43px; justify-content:center;
+}
+.secura-user-neo .sun15__sidebar.is-mini .sun15__bottom-dock {flex-direction:column;}
+.secura-user-neo .sun15__sidebar.is-mini .sun15__bottom-dock .sun15__glass-toggle {
+  width:100%; min-height:46px; padding:7px 0; justify-content:center;
+}
+.secura-user-neo .sun15__sidebar.is-mini .sun15__bottom-logout {width:100%; flex:0 0 43px;}
+/* A single activity card replaces two repeated panels; list selection updates progress. */
+.secura-user-neo .sun15__activity-intro {
+  margin:-6px 0 11px; font-size:10px; line-height:1.55; color:var(--sun-muted);
+}
+.secura-user-neo .sun15__timeline-item {
+  position:relative; align-items:flex-start; border:1px solid transparent;
+  border-radius:10px; padding:10px 7px; transition:background 170ms ease,border-color 170ms ease;
+}
+.secura-user-neo .sun15__timeline-item:hover {background:var(--sun-field);}
+.secura-user-neo .sun15__timeline-item.is-selected {
+  background:var(--sun-field); border-color:rgba(152,119,242,.42);
+}
+.secura-user-neo .sun15__timeline-item .sun15__timeline-chevron {
+  flex-shrink:0; color:var(--sun-muted); margin:13px 0 0 auto;
+}
+.secura-user-neo .sun15__timeline-item.is-selected .sun15__timeline-chevron {color:#9673ee;}
+.secura-user-neo .sun15__request-id {font-weight:650; color:var(--sun-muted); font-size:9px;}
+.secura-user-neo .sun15__activity-progress {
+  border:1px solid var(--sun-line); border-radius:12px; background:var(--sun-field);
+  padding:14px 11px 11px; margin-top:14px;
+}
+.secura-user-neo .sun15__activity-progress-head {
+  display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;
+}
+.secura-user-neo .sun15__activity-progress .sun15__journey-steps {margin-top:15px;}
+.secura-user-neo .sun15__progress-link {
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  margin-top:16px; padding:8px 10px; width:100%; border-radius:9px;
+  background:var(--sun-card); color:#9174e9!important; border:1px solid var(--sun-line);
+  font-size:10px!important; font-weight:800;
+}
+.secura-user-neo .sun15__progress-link:hover {border-color:#a589ed;}
+/* Mobile drawer returns to full navigation width even if desktop was collapsed. */
+@media(max-width:740px){
+  .secura-user-neo .sun15__sidebar.is-mini .sun15__side-top {
+    flex-direction:row; align-items:center; gap:8px; margin-bottom:24px;
+  }
+  .secura-user-neo .sun15__sidebar .sun15__side-top .sun15__collapse-wrap {display:none;}
+  .secura-user-neo .sun15__sidebar .sun15__side-top .sun15__side-close {display:grid;}
+  .secura-user-neo .sun15__sidebar.is-mini .sun15__side-top .sun15__brand {
+    width:auto; flex:1; justify-content:flex-start;
+  }
+  .secura-user-neo .sun15__sidebar.is-mini .sun15__bottom-dock {flex-direction:row;}
+  .secura-user-neo .sun15__sidebar.is-mini .sun15__bottom-dock .sun15__glass-toggle {
+    flex:1; width:auto; padding:8px 9px; justify-content:space-between;
+  }
+  .secura-user-neo .sun15__sidebar.is-mini .sun15__bottom-logout {width:43px; flex:0 0 43px;}
+}
+@media(prefers-reduced-motion:reduce){
+  .secura-user-neo .sun15__timeline-item,
+  .secura-user-neo .sun15__bottom-logout {transition:none!important;}
+}
+
+
+/* ================================================================
+   SECURA NeoFlow V15.2.1 — User Dashboard ONLY
+   Hide the outer viewport scrollbar as well as component scrollbars.
+   The previous rule only targeted descendants of .secura-user-neo,
+   but the rightmost scrollbar belongs to the html/body scrollport.
+   Do NOT change overflow-y: wheel/touch/keyboard scrolling remains.
+   :has() scopes this behavior to the User Dashboard route and restores
+   normal scrollbar behavior automatically when navigating away.
+   ================================================================ */
+html:has(.secura-user-neo),
+body:has(.secura-user-neo) {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none;
+  scrollbar-gutter: auto;
+}
+html:has(.secura-user-neo)::-webkit-scrollbar,
+body:has(.secura-user-neo)::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+}
+
+
+/* ======================================================================
+   SECURA NeoFlow V15.4 — User Sidebar ONLY
+   Custom logo: put frontend/public/secura-logo.png (transparent PNG preferred).
+   Missing asset = clean SECURA wordmark, never the old shield/symbol.
+   Light theme uses Softened Hybrid Security; dark theme remains unchanged.
+   This CSS is scoped to .secura-user-neo so it does not affect Admin/SOC.
+   ====================================================================== */
+.secura-user-neo .sun15__brand-logo {
+  min-width: 0;
+  width: min(100%, 169px);
+  max-width: 169px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+  flex: 1 1 auto;
+}
+.secura-user-neo .sun15__brand-logo img {
+  display: block;
+  width: 100%;
+  max-width: 169px;
+  height: 46px;
+  object-fit: contain;
+  object-position: left center;
+}
+.secura-user-neo .sun15__brand-logo img[hidden] { display: none !important; }
+.secura-user-neo .sun15__brand-fallback {
+  display: none;
+  color: #f8f7ff;
+  font-weight: 900;
+  font-size: 21px;
+  letter-spacing: -.035em;
+  white-space: nowrap;
+  line-height: 1;
+}
+.secura-user-neo .sun15__brand-logo.is-missing .sun15__brand-fallback { display: block; }
+/* The custom mark replaces the old shield and the SECURA. subtitle block. */
+.secura-user-neo .sun15__brand-mark, 
+.secura-user-neo .sun15__brand-copy { display: none !important; }
+.secura-user-neo .sun15__side-top .sun15__brand {
+  min-width: 0;
+  padding: 0 2px;
+  gap: 0;
+  align-items: center;
+}
+/* Collapsed sidebar: fit supplied logo within the compact navigation rail. */
+.secura-user-neo .sun15__sidebar.is-mini .sun15__side-top .sun15__brand {
+  width: 46px;
+  max-width: 46px;
+  flex: 0 0 46px;
+}
+.secura-user-neo .sun15__sidebar.is-mini .sun15__brand-logo {
+  width: 46px;
+  max-width: 46px;
+  height: 42px;
+  justify-content: center;
+}
+.secura-user-neo .sun15__sidebar.is-mini .sun15__brand-logo img {
+  width: 46px;
+  height: 40px;
+  object-position: center;
+}
+.secura-user-neo .sun15__sidebar.is-mini .sun15__brand-fallback { font-size: 12px; letter-spacing: -.03em; }
+
+/* ================================================================
+   SECURA NeoFlow V15.4.3 — identical sidebar for Dark & Light modes.
+   Keep the V15.4.2 dark gradient, radial violet/cyan halo, navigation
+   and button tokens IN BOTH modes. Only page content changes theme.
+   The previous Light Mode-only overrides were removed intentionally.
+   ================================================================ */
+/* In the legacy dark theme, an extra dark-only selector gives the active
+   navigation item lilac text. Mirror that final color in Light Mode too. */
+html[data-theme="light"] .secura-user-neo .sun15__nav-item.is-active,
+html[data-theme="light"] .secura-user-neo .sun15__nav-item.is-active:hover {
+  color: #c3acff !important;
+}
+/* Preserve the full logo when mobile sidebar is open even if the user
+   had previously collapsed the desktop sidebar. */
+@media (max-width: 740px) {
+  .secura-user-neo .sun15__sidebar.is-mini .sun15__side-top .sun15__brand {
+    width: auto;
+    max-width: none;
+    flex: 1 1 auto;
+  }
+  .secura-user-neo .sun15__sidebar.is-mini .sun15__brand-logo {
+    width: min(100%, 169px);
+    max-width: 169px;
+    justify-content: flex-start;
+  }
+  .secura-user-neo .sun15__sidebar.is-mini .sun15__brand-logo img {
+    width: 100%;
+    max-width: 169px;
+    height: 46px;
+    object-position: left center;
+  }
+  .secura-user-neo .sun15__sidebar.is-mini .sun15__brand-fallback { font-size: 21px; }
+}
+
+
+/* ====================================================================
+   SECURA NeoFlow V15.4.2 — User Sidebar Logo Polish
+   The SAME supplied violet SECURA artwork appears in Dark and Light.
+   Expanded = full logo; collapsed = monogram.  No extra assets needed.
+   Preserve navigation, colour tokens, theme toggle, and dashboard layout.
+   ==================================================================== */
+
+/* Provide +10px breathing room below the logo/header, without shifting
+   the logo horizontally relative to the navigation icons. */
+.secura-user-neo .sun15__side-top {
+  min-height: 69px;
+  margin-bottom: 42px; /* was 32px in V15.2 */
+}
+
+.secura-user-neo .sun15__brand-logo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: min(100%, 170px);
+  max-width: 170px;
+  height: 68px;
+  overflow: visible;
+}
+
+/* Only one variant should ever paint at a time. Both theme modes share it. */
+.secura-user-neo .sun15__brand-logo img,
+.secura-user-neo .sun15__brand-logo img[hidden] {
+  display: none !important;
+}
+
+.secura-user-neo .sun15__sidebar:not(.is-mini) .sun15__brand-logo img.sun15__logo-full:not([hidden]) {
+  display: block !important;
+  width: 100%;
+  max-width: 170px;
+  height: 66px;
+  object-fit: contain;
+  object-position: left center;
+  filter: drop-shadow(0 0 9px rgba(179, 95, 255, .13));
+}
+
+.secura-user-neo .sun15__sidebar.is-mini .sun15__brand-logo img.sun15__logo-mark:not([hidden]) {
+  display: block !important;
+  width: 45px;
+  max-width: 45px;
+  height: 45px;
+  object-fit: contain;
+  object-position: center;
+  filter: drop-shadow(0 0 9px rgba(179, 95, 255, .18));
+}
+
+/* The compressed rail uses a centered mark and a little extra space
+   before the first navigation item. */
+.secura-user-neo .sun15__sidebar.is-mini .sun15__side-top {
+  margin-bottom: 28px; /* was 20px */
+}
+.secura-user-neo .sun15__sidebar.is-mini .sun15__brand-logo {
+  flex: 0 0 46px;
+  width: 46px;
+  max-width: 46px;
+  height: 46px;
+  justify-content: center;
+}
+
+/* Resilient text fallback if the user's logo files are missing. */
+.secura-user-neo .sun15__brand-logo.is-full-missing .sun15__brand-fallback,
+.secura-user-neo .sun15__sidebar.is-mini .sun15__brand-logo.is-mark-missing .sun15__brand-fallback {
+  display: block;
+}
+.secura-user-neo .sun15__sidebar.is-mini .sun15__brand-fallback {
+  font-size: 12px;
+}
+
+/* Small purposeful motion: subtle entrance, hover lift and neon halo.
+   No continuous animation in the sidebar, and no layout shifts. */
+.secura-user-neo .sun15__side-top .sun15__brand {
+  transition: transform 180ms ease, filter 180ms ease;
+  transform-origin: left center;
+  animation: securaUserLogoEnter 260ms ease-out both;
+}
+.secura-user-neo .sun15__side-top .sun15__brand:hover {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 0 8px rgba(192, 132, 252, .23));
+}
+.secura-user-neo .sun15__side-top .sun15__brand:focus-visible {
+  outline: 2px solid #C084FC;
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+.secura-user-neo .sun15__nav-item {
+  transition: color 160ms ease, background-color 160ms ease,
+    border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+@keyframes securaUserLogoEnter {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* On phone, the drawer is expanded even when desktop was collapsed.
+   Keep showing the full logo, in BOTH Light and Dark Mode. */
+@media (max-width: 740px) {
+  .secura-user-neo .sun15__sidebar.is-mini .sun15__side-top {
+    margin-bottom: 34px;
+  }
+  .secura-user-neo .sun15__sidebar.is-mini .sun15__brand-logo {
+    flex: 1 1 auto;
+    width: min(100%, 170px);
+    max-width: 170px;
+    height: 68px;
+    justify-content: flex-start;
+  }
+  .secura-user-neo .sun15__sidebar.is-mini .sun15__brand-logo img.sun15__logo-mark {
+    display: none !important;
+  }
+  .secura-user-neo .sun15__sidebar.is-mini .sun15__brand-logo img.sun15__logo-full:not([hidden]) {
+    display: block !important;
+    width: 100%;
+    max-width: 170px;
+    height: 66px;
+    object-fit: contain;
+    object-position: left center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .secura-user-neo .sun15__side-top .sun15__brand,
+  .secura-user-neo .sun15__nav-item { animation: none !important; transition: none !important; }
+}
+
+
+/* ============================================================
+   SECURA NeoFlow V15.5.3 — User Workspace shared topbar polish
+   Fixes missing topbar styles when Anonymize component is absent.
+   Scope: ONLY User Anonymize / Anonymized Library workspace.
+   Sidebar, Dashboard, and all workflows are unchanged.
+   ============================================================ */
+.secura-user-neo .uad15__topbar.uad15__topbar--refined {
+  position: sticky;
+  top: 0;
+  z-index: 21;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  gap: 18px;
+  width: 100%;
+  height: 70px;
+  min-height: 70px;
+  padding: 10px clamp(16px, 2.3vw, 32px);
+  background: var(--sun-side);
+  border-bottom: 1px solid var(--sun-line);
+  box-shadow: 0 2px 20px rgba(10, 14, 35, .035);
+}
+.secura-user-neo .uad15__topbar-brand {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 1 auto;
+  gap: 10px;
+  min-width: 0;
+  white-space: nowrap;
+  color: var(--sun-text);
+}
+.secura-user-neo .uad15__topbar-brand-icon {
+  width: 35px;
+  height: 35px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(158, 135, 255, .23);
+  border-radius: 11px;
+  background: rgba(137, 112, 245, .13);
+  color: #b396ff;
+}
+html[data-theme="light"] .secura-user-neo .uad15__topbar-brand-icon {
+  color: #7962d6;
+}
+.secura-user-neo .uad15__topbar-brand-text {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: .105em;
+  line-height: 1.3;
+}
+.secura-user-neo .uad15__brand-separator {
+  color: #ac8cf7;
+  padding: 0 2px;
+}
+.secura-user-neo .sun15__top-actions.uad15__topbar-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: clamp(10px, 1.5vw, 21px);
+  flex: 0 0 auto;
+  margin: 0 0 0 auto;
+  min-width: 0;
+}
+.secura-user-neo .sun15__today.uad15__topbar-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  white-space: nowrap;
+  color: var(--sun-muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+.secura-user-neo .sun15__today.uad15__topbar-date svg {
+  color: #ad9cfa;
+}
+.secura-user-neo .uad15__profile-link.uad15__profile-chip {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  gap: 10px;
+  min-width: 0;
+  max-width: 240px;
+  min-height: 47px;
+  padding: 5px 10px 5px 6px;
+  border: 1px solid var(--sun-line);
+  border-radius: 14px;
+  background: var(--sun-card);
+  color: var(--sun-text);
+  box-shadow: none;
+  text-decoration: none;
+  text-align: left;
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+.secura-user-neo .uad15__profile-link.uad15__profile-chip:hover {
+  transform: translateY(-1px);
+  border-color: rgba(175, 142, 252, .64);
+  box-shadow: 0 8px 24px rgba(112, 80, 205, .12);
+}
+.secura-user-neo .uad15__profile-link.uad15__profile-chip:focus-visible {
+  outline: 2px solid #9a78ed;
+  outline-offset: 3px;
+}
+.secura-user-neo .uad15__profile-avatar.sun15__account-avatar {
+  display: grid;
+  place-items: center;
+  flex: 0 0 35px;
+  width: 35px !important;
+  height: 35px !important;
+  border-radius: 11px;
+  overflow: hidden;
+  color: #f7f1ff;
+  background: linear-gradient(140deg, #6965df, #a14cde);
+  box-shadow: 0 0 0 1px rgba(190, 161, 252, .24);
+}
+.secura-user-neo .uad15__profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.secura-user-neo .uad15__profile-avatar > span {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  font-size: 12px;
+  font-weight: 900;
+  color: inherit;
+}
+.secura-user-neo .uad15__profile-copy {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+  flex: 1;
+}
+.secura-user-neo .uad15__profile-copy strong {
+  display: block;
+  max-width: 132px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 830;
+  line-height: 1.2;
+}
+.secura-user-neo .uad15__profile-copy small {
+  display: block;
+  font-size: 9px;
+  font-weight: 650;
+  color: var(--sun-muted);
+  line-height: 1.2;
+}
+.secura-user-neo .uad15__profile-arrow {
+  color: var(--sun-muted);
+  flex: 0 0 auto;
+  transition: transform .18s ease;
+}
+.secura-user-neo .uad15__profile-chip:hover .uad15__profile-arrow {
+  transform: translateX(2px);
+  color: #b897ff;
+}
+@media (max-width: 1050px) {
+  .secura-user-neo .sun15__today.uad15__topbar-date { display: none; }
+}
+@media (max-width: 640px) {
+  .secura-user-neo .uad15__topbar.uad15__topbar--refined {
+    height: 64px;
+    min-height: 64px;
+    padding: 8px 14px;
+    gap: 9px;
+  }
+  .secura-user-neo .uad15__topbar-brand-icon { width: 32px; height: 32px; }
+  .secura-user-neo .uad15__topbar-brand-text { font-size: 9px; letter-spacing: .035em; }
+  .secura-user-neo .uad15__brand-separator { padding: 0; }
+  .secura-user-neo .uad15__profile-link.uad15__profile-chip {
+    max-width: 175px;
+    min-height: 39px;
+    padding: 3px 7px 3px 4px;
+    gap: 7px;
+  }
+  .secura-user-neo .uad15__profile-avatar.sun15__account-avatar {
+    flex-basis: 31px;
+    width: 31px !important;
+    height: 31px !important;
+  }
+  .secura-user-neo .uad15__profile-copy strong { max-width: 94px; font-size: 10px; }
+  .secura-user-neo .uad15__profile-copy small { font-size: 8px; }
+  .secura-user-neo .uad15__profile-arrow { display: none; }
+}
+@media (max-width: 430px) {
+  .secura-user-neo .uad15__topbar-brand-text { font-size: 0; width: 0; }
+  .secura-user-neo .uad15__profile-link.uad15__profile-chip { max-width: 155px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .secura-user-neo .uad15__profile-link.uad15__profile-chip,
+  .secura-user-neo .uad15__profile-arrow { transition: none !important; }
+}
+
+
+/* ==============================================================
+  SECURA V15.5.5 — single shared, collision-free User topbar.
+  Exactly the same classes and markup on Anonymize and Library.
+  The existing approved User sidebar/layout remains untouched.
+  ============================================================== */
+.secura-user-neo .suw1555__header,
+.secura-user-neo .suw1555__header * {
+  box-sizing: border-box;
+}
+.secura-user-neo .suw1555__header {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 22;
+  width: 100%;
+  height: 70px;
+  min-height: 70px;
+  max-height: 70px;
+  padding: 0 clamp(16px, 2.1vw, 32px);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  background: var(--sun-side);
+  color: var(--sun-text);
+  border-bottom: 1px solid var(--sun-line);
+  box-shadow: 0 2px 16px rgba(5, 8, 21, .045);
+}
+.secura-user-neo .suw1555__header-left,
+.secura-user-neo .suw1555__header-right,
+.secura-user-neo .suw1555__brand,
+.secura-user-neo .suw1555__profile,
+.secura-user-neo .suw1555__date {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+.secura-user-neo .suw1555__header-left {
+  gap: 10px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.secura-user-neo .suw1555__brand {
+  gap: 10px;
+  min-width: 0;
+  max-width: 100%;
+  white-space: nowrap;
+}
+.secura-user-neo .suw1555__brand-icon {
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(151, 125, 237, .29);
+  border-radius: 10px;
+  background: rgba(137, 107, 234, .12);
+  color: #a98aff;
+}
+html[data-theme="light"] .secura-user-neo .suw1555__brand-icon {
+  color: #7852ca;
+  background: #f1eaff;
+}
+.secura-user-neo .suw1555__brand-name {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 10px;
+  font-weight: 820;
+  letter-spacing: .085em;
+  line-height: 1.3;
+  color: var(--sun-text);
+}
+.secura-user-neo .suw1555__slash {
+  color: #ae8dfa;
+  padding-inline: 3px;
+}
+.secura-user-neo .suw1555__header-right {
+  margin-inline-start: auto;
+  gap: 15px;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  min-width: 0;
+}
+.secura-user-neo .suw1555__date {
+  color: var(--sun-muted);
+  gap: 7px;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 700;
+}
+.secura-user-neo .suw1555__date svg { color: #b19afa; }
+.secura-user-neo button.suw1555__profile {
+  appearance: none;
+  background: var(--sun-card);
+  border: 1px solid var(--sun-line);
+  color: var(--sun-text);
+  border-radius: 13px;
+  min-width: 0;
+  max-width: min(260px, 37vw);
+  min-height: 47px;
+  padding: 5px 10px 5px 6px;
+  gap: 10px;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+.secura-user-neo button.suw1555__profile:hover {
+  border-color: rgba(163, 133, 244, .67);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(128, 90, 204, .13);
+}
+.secura-user-neo button.suw1555__profile:focus-visible {
+  outline: 2px solid #a48af9;
+  outline-offset: 2px;
+}
+.secura-user-neo .suw1555__avatar {
+  flex: 0 0 35px;
+  width: 35px;
+  height: 35px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 11px;
+  background: linear-gradient(135deg,#705add,#a04fd7);
+  color: white;
+  border: 1px solid rgba(192, 173, 255, .3);
+}
+.secura-user-neo .suw1555__avatar img {
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+.secura-user-neo .suw1555__avatar > span {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  font-size: 12px;
+  font-weight: 800;
+}
+.secura-user-neo .suw1555__profile-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+}
+.secura-user-neo .suw1555__profile-label strong,
+.secura-user-neo .suw1555__profile-label small {
+  display: block;
+  max-width: 155px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+.secura-user-neo .suw1555__profile-label strong {
+  font-size: 11px;
+  font-weight: 800;
+}
+.secura-user-neo .suw1555__profile-label small {
+  font-size: 9px;
+  font-weight: 650;
+  color: var(--sun-muted);
+}
+.secura-user-neo .suw1555__profile-arrow {
+  flex: 0 0 auto;
+  color: var(--sun-muted);
+  transition: transform 180ms ease;
+}
+.secura-user-neo .suw1555__profile:hover .suw1555__profile-arrow {
+  transform: translateX(2px);
+}
+.secura-user-neo .suw1555__menu {
+  display: none;
+  flex: 0 0 34px;
+  height: 34px;
+  width: 34px;
+  background: var(--sun-field);
+  border: 1px solid var(--sun-line);
+  border-radius: 10px;
+  color: var(--sun-text);
+  place-items: center;
+}
+@media (max-width: 980px) {
+  .secura-user-neo .suw1555__date { display: none; }
+}
+@media (max-width: 740px) {
+  .secura-user-neo .suw1555__header {
+    height: 66px;
+    min-height: 66px;
+    max-height: 66px;
+    padding: 0 12px;
+    gap: 8px;
+  }
+  .secura-user-neo .suw1555__menu { display: grid; }
+  .secura-user-neo .suw1555__brand { gap: 7px; }
+  .secura-user-neo .suw1555__brand-icon {
+    flex-basis: 29px;
+    width: 29px;
+    height: 29px;
+  }
+  .secura-user-neo .suw1555__brand-name {
+    max-width: min(36vw, 200px);
+    font-size: 9px;
+    letter-spacing: .018em;
+  }
+  .secura-user-neo button.suw1555__profile {
+    min-height: 42px;
+    max-width: 158px;
+    gap: 5px;
+    padding: 4px 6px 4px 4px;
+  }
+  .secura-user-neo .suw1555__avatar {
+    flex-basis: 30px;
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+  }
+  .secura-user-neo .suw1555__profile-label strong { max-width: 85px; font-size: 10px; }
+  .secura-user-neo .suw1555__profile-label small { max-width: 85px; font-size: 8px; }
+  .secura-user-neo .suw1555__profile-arrow { display: none; }
+}
+@media (max-width: 420px) {
+  .secura-user-neo .suw1555__brand-name {
+    max-width: 110px;
+    font-size: 8px;
+  }
+  .secura-user-neo .suw1555__profile-label { display: none; }
+  .secura-user-neo button.suw1555__profile {
+    max-width: 43px;
+    justify-content: center;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .secura-user-neo .suw1555__profile,
+  .secura-user-neo .suw1555__profile-arrow {
+    transition: none !important;
+  }
+}
+
+/* SECURA V15.7 - shared, compact AI progress chip. Sidebar theme stays unchanged. */
+.secura-user-neo .sun157__job{width:100%;margin-top:auto;margin-bottom:10px;display:flex;align-items:center;gap:10px;text-align:left;padding:12px 10px;border:1px solid rgba(164,131,255,.42);border-radius:13px;background:linear-gradient(135deg,rgba(105,72,181,.22),rgba(39,59,91,.7));color:#eee6ff;box-shadow:0 6px 22px rgba(82,48,152,.11);transition:background .2s ease,transform .2s ease,border-color .2s ease;}
+.secura-user-neo .sun157__job:hover{background:linear-gradient(135deg,rgba(120,83,200,.34),rgba(42,62,101,.78));border-color:#b594ff;transform:translateY(-1px);}
+.secura-user-neo .sun157__job-icon{display:grid;place-items:center;width:32px;height:32px;min-width:32px;border-radius:10px;background:rgba(161,111,255,.23);color:#bd91ff;}
+.secura-user-neo .sun157__job-copy{flex:1;min-width:0;display:grid;gap:4px;}
+.secura-user-neo .sun157__job-copy b{font-size:10px;font-weight:900;color:#f6edff;}
+.secura-user-neo .sun157__job-copy small{font-size:9px;color:#c6c1dc;max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.secura-user-neo .sun157__job-copy em{font-size:9px;font-style:normal;line-height:1.4;color:#cdc2ec;}
+.secura-user-neo .sun157__job-track{height:4px;border-radius:20px;overflow:hidden;background:rgba(204,181,255,.2);}
+.secura-user-neo .sun157__job-track i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#8d69ff,#67dfcf);transition:width .5s ease;}
+.secura-user-neo .sun157__job-arrow{min-width:15px;color:#c5afff;}
+.secura-user-neo .sun157__job.is-done .sun157__job-icon{color:#63dfbe;background:rgba(71,215,163,.16);}
+.secura-user-neo .sun15__sidebar.is-mini .sun157__job{justify-content:center;padding:9px 0;min-height:46px;}
+.secura-user-neo .sun15__sidebar.is-mini .sun157__job-copy,.secura-user-neo .sun15__sidebar.is-mini .sun157__job-arrow{display:none;}
+@media(max-width:740px){.secura-user-neo .sun15__sidebar.is-mini .sun157__job-copy{display:grid}.secura-user-neo .sun15__sidebar.is-mini .sun157__job-arrow{display:block}.secura-user-neo .sun15__sidebar.is-mini .sun157__job{padding:12px 10px;justify-content:space-between}}
+@media(prefers-reduced-motion:reduce){.secura-user-neo .sun157__job,.secura-user-neo .sun157__job-track i{transition:none!important;}}
+
+/* ===============================================================
+   SECURA V15.8.1 — Sidebar AI indicator near the theme dock
+   Fix a double-auto-margin gap without changing workflow or pages.
+   The chip only exists in DOM while a job is active (or just done);
+   when absent, the theme/logout controls still anchor to the bottom.
+   =============================================================== */
+.secura-user-neo .sun157__job + .sun15__sidebar-bottom {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+/* Maintain a small, consistent breathing space above theme/logout. */
+.secura-user-neo .sun157__job {
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+/* When space is short on phones, ensure the bottom dock stays usable. */
+@media (max-width: 740px) {
+  .secura-user-neo .sun157__job + .sun15__sidebar-bottom {
+    padding-top: 0;
+  }
+}

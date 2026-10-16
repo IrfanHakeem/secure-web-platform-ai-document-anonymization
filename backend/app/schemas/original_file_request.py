@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class OriginalFileRequestCreate(BaseModel):
@@ -9,17 +9,12 @@ class OriginalFileRequestCreate(BaseModel):
 
 
 class OwnerDecisionRequest(BaseModel):
-    decision: Literal[
-        "APPROVE",
-        "REJECT",
-    ]
+    decision: Literal["APPROVE", "REJECT"]
 
 
 class SecurityDecisionRequest(BaseModel):
-    decision: Literal[
-        "APPROVE",
-        "REJECT",
-    ]
+    decision: Literal["APPROVE", "REJECT"]
+    rejection_reason: str | None = Field(default=None, max_length=500)
 
 
 class OriginalFileRequestResponse(BaseModel):
@@ -39,6 +34,7 @@ class OriginalFileRequestResponse(BaseModel):
     security_officer_username: str | None
 
     reason: str | None
+    rejection_reason: str | None = None
     status: str
 
     requested_at: datetime

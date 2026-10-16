@@ -1,4 +1,6 @@
-﻿from fastapi import FastAPI
+﻿from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.admin_departments import (
@@ -15,6 +17,9 @@ from app.api.ai_report import (
 )
 from app.api.anonymization import (
     router as anonymization_router,
+)
+from app.api.anonymization_jobs import (
+    router as anonymization_jobs_router,
 )
 from app.api.approved_original_access import (
     router as approved_original_access_router,
@@ -40,6 +45,17 @@ from app.api.profile import (
 from app.api.security_monitoring import (
     router as security_monitoring_router,
 )
+from app.services.anonymization_jobs import (
+    init_anonymization_jobs,
+)
+
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    # SECURA V15.6: set up the new AI job table and resume unfinished jobs.
+    # Existing SECURA database tables are not altered here.
+    init_anonymization_jobs()
+    yield
 
 
 app = FastAPI(
@@ -48,6 +64,7 @@ app = FastAPI(
         "AI Document Anonymization"
     ),
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 
@@ -91,6 +108,12 @@ app.include_router(
 
 app.include_router(
     anonymization_router
+)
+
+# SECURA V15.6: new asynchronous job-status endpoints.
+# The existing /anonymization endpoint above is preserved.
+app.include_router(
+    anonymization_jobs_router
 )
 
 app.include_router(

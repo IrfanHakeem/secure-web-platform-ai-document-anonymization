@@ -1,7 +1,14 @@
 import {
+  Check,
+  CirclePause,
+  Radio,
+  ChevronDown,
+  ChevronUp,
+  Copy,
   Download,
   FileText,
   Filter,
+  GripHorizontal,
   Network,
   ShieldAlert,
   X,
@@ -9,22 +16,12 @@ import {
 import {
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react'
 
 import api from '../../api/client'
 import './SecurityLogs.css'
-
-function getApiError(error, fallback) {
-  const detail =
-    error?.response?.data?.detail
-
-  if (typeof detail === 'string') {
-    return detail
-  }
-
-  return fallback
-}
 
 function formatPacketTime(value) {
   if (!value) {
@@ -276,6 +273,63 @@ function SecurityLogs() {
   const [tab, setTab] =
     useState('network')
 
+  // Poll REST APIs every 15 seconds while the tab is visible. This is
+  // periodic refresh, not an SSE/WebSocket stream. ID comparison ensures
+  // the animation never mislabels the first page load as new events.
+  const [autoRefresh, setAutoRefresh] = useState(true)
+  const [freshIds, setFreshIds] = useState({ application: [], network: [] })
+  const seenIdsRef = useRef({ application: null, network: null })
+  const flashTimerRef = useRef(null)
+  const copyFeedbackTimerRef = useRef(null)
+
+  // Adjustable packet details pane. No impact on API requests or saved logs.
+  const [detailsHeight, setDetailsHeight] = useState(230)
+  const [detailsCollapsed, setDetailsCollapsed] = useState(false)
+  const [copied, setCopied] = useState(false)
+  const dragRef = useRef(null)
+
+  const startPaneResize = (event) => {
+    if (event.button !== 0 || event.target.closest('button')) return
+    event.preventDefault()
+    dragRef.current = { y: event.clientY, height: detailsHeight }
+    event.currentTarget.setPointerCapture(event.pointerId)
+  }
+
+  const movePaneResize = (event) => {
+    if (!dragRef.current) return
+    const next = dragRef.current.height + dragRef.current.y - event.clientY
+    setDetailsHeight(Math.max(150, Math.min(460, next)))
+    setDetailsCollapsed(false)
+  }
+
+  const endPaneResize = () => { dragRef.current = null }
+
+  const resizeWithKeyboard = (event) => {
+    if (event.target.closest('button')) return
+    if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+      event.preventDefault()
+      setDetailsCollapsed(false)
+      setDetailsHeight((current) => Math.max(150, Math.min(460,
+        current + (event.key === 'ArrowUp' ? 20 : -20))))
+    } else if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      setDetailsCollapsed((current) => !current)
+    }
+  }
+
+  const copyRawEntry = async () => {
+    if (!selectedEntry) return
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(selectedEntry, null, 2))
+      if (copyFeedbackTimerRef.current) window.clearTimeout(copyFeedbackTimerRef.current)
+      setCopied(true)
+      copyFeedbackTimerRef.current = window.setTimeout(() => setCopied(false), 1450)
+    } catch {
+      setCopied(false)
+    }
+  }
+
+
   const [
     applicationLogs,
     setApplicationLogs,
@@ -314,96 +368,80 @@ function SecurityLogs() {
   ] = useState(null)
 
   useEffect(() => {
-    let cancelled = false
+    const controller = new AbortController()
+    let inFlight = false
+    let pollTimer = null
 
-    const loadLogs =
-      async () => {
-        setLoading(true)
-        setError('')
+    async function fetchLatest() {
+      if (inFlight || controller.signal.aborted) return
+      inFlight = true
+      try {
+        const [logsResponse, eventsResponse, statusResponse] = await Promise.all([
+          api.get('/security-monitoring/recent-logs', {
+            params: { limit: 200 }, signal: controller.signal,
+          }),
+          api.get('/security-monitoring/network-events', {
+            params: { limit: 200 }, signal: controller.signal,
+          }),
+          api.get('/security-monitoring/network-status', {
+            signal: controller.signal,
+          }),
+        ])
+        if (controller.signal.aborted) return
 
-        try {
-          const [
-            logsResponse,
-            eventsResponse,
-            statusResponse,
-          ] =
-            await Promise.all([
-              api.get(
-                '/security-monitoring/recent-logs',
-                {
-                  params: {
-                    limit: 200,
-                  },
-                },
-              ),
-
-              api.get(
-                '/security-monitoring/network-events',
-                {
-                  params: {
-                    limit: 200,
-                  },
-                },
-              ),
-
-              api.get(
-                '/security-monitoring/network-status',
-              ),
-            ])
-
-          if (cancelled) {
-            return
-          }
-
-          const logs =
-            Array.isArray(
-              logsResponse.data,
-            )
-              ? logsResponse.data
-              : []
-
-          const events =
-            Array.isArray(
-              eventsResponse.data,
-            )
-              ? eventsResponse.data
-              : []
-
-          setApplicationLogs(logs)
-          setNetworkEvents(events)
-          setNetworkStatus(
-            statusResponse.data,
-          )
-
-          setSelectedApplicationId(
-            logs[0]?.id ?? null,
-          )
-
-          setSelectedNetworkId(
-            events[0]?.id ?? null,
-          )
-        } catch (loadError) {
-          if (!cancelled) {
-            setError(
-              getApiError(
-                loadError,
-                'Unable to load security logs.',
-              ),
-            )
-          }
-        } finally {
-          if (!cancelled) {
-            setLoading(false)
-          }
+        const logs = Array.isArray(logsResponse.data) ? logsResponse.data : []
+        const events = Array.isArray(eventsResponse.data) ? eventsResponse.data : []
+        const nextIds = {
+          application: new Set(logs.map((log) => String(log.id))),
+          network: new Set(events.map((event) => String(event.id))),
         }
+        const fresh = {
+          application: seenIdsRef.current.application === null ? [] :
+            logs.filter((log) => !seenIdsRef.current.application.has(String(log.id)))
+              .slice(0, 12).map((log) => String(log.id)),
+          network: seenIdsRef.current.network === null ? [] :
+            events.filter((event) => !seenIdsRef.current.network.has(String(event.id)))
+              .slice(0, 12).map((event) => String(event.id)),
+        }
+        seenIdsRef.current = nextIds
+        setApplicationLogs(logs)
+        setNetworkEvents(events)
+        setNetworkStatus(statusResponse.data)
+        setError('')
+        if (fresh.application.length || fresh.network.length) {
+          setFreshIds(fresh)
+          if (flashTimerRef.current) window.clearTimeout(flashTimerRef.current)
+          flashTimerRef.current = window.setTimeout(() => {
+            setFreshIds({ application: [], network: [] })
+          }, 1450)
+        }
+      } catch (loadError) {
+        if (!controller.signal.aborted && loadError?.code !== 'ERR_CANCELED') {
+          setError('Unable to refresh security logs. Existing records remain visible.')
+        }
+      } finally {
+        if (!controller.signal.aborted) setLoading(false)
+        inFlight = false
       }
-
-    loadLogs()
-
-    return () => {
-      cancelled = true
     }
-  }, [])
+
+    // Initial request and timed refreshes only; hidden tabs do not poll.
+    // Avoid synchronous state setters in the effect body (React Compiler).
+    // Pause stops fetching; resuming performs one immediate catch-up.
+    // The very first mount always needs its initial data, even if paused.
+    if (seenIdsRef.current.application === null || autoRefresh) void fetchLatest()
+    if (autoRefresh) {
+      pollTimer = window.setInterval(() => {
+        if (document.visibilityState === 'visible') void fetchLatest()
+      }, 15000)
+    }
+    return () => {
+      controller.abort()
+      if (pollTimer !== null) window.clearInterval(pollTimer)
+      if (flashTimerRef.current) window.clearTimeout(flashTimerRef.current)
+      if (copyFeedbackTimerRef.current) window.clearTimeout(copyFeedbackTimerRef.current)
+    }
+  }, [autoRefresh])
 
   const networkProtocols =
     useMemo(() => {
@@ -597,12 +635,12 @@ function SecurityLogs() {
       networkStatus?.status,
     )
 
-  const changeTab =
-    (nextTab) => {
-      setTab(nextTab)
-      setQuery('')
-      setFilter('ALL')
-    }
+  const changeTab = (nextTab) => {
+    setTab(nextTab)
+    setQuery('')
+    setFilter('ALL')
+    setCopied(false)
+  }
 
   const exportCurrentView =
     () => {
@@ -853,8 +891,8 @@ function SecurityLogs() {
     ])
 
   return (
-    <section className="security-ws page-enter">
-      <div className="security-ws__window">
+    <section className="security-ws security-ws--v138 security-ws--v139 page-enter">
+      <div className="security-ws__window" style={{ '--secura-log-detail-height': detailsCollapsed ? '0px' : `${detailsHeight}px` }}>
         <header className="security-ws__topbar">
           <div>
             <h1>
@@ -869,7 +907,7 @@ function SecurityLogs() {
           </div>
 
           <div className="security-ws__top-actions">
-            <div className="security-ws__view-switch">
+            <div className={`security-ws__view-switch${tab === 'network' ? ' is-network' : ' is-application'}`}>
               <button
                 type="button"
                 className={
@@ -904,6 +942,21 @@ function SecurityLogs() {
                 Network Events
               </button>
             </div>
+
+            <button
+              type="button"
+              className={`security-ws__live${autoRefresh ? ' is-live' : ' is-paused'}`}
+              onClick={() => {
+                setAutoRefresh((current) => !current)
+                setFreshIds({ application: [], network: [] })
+                setCopied(false)
+              }}
+              aria-pressed={autoRefresh}
+              title={autoRefresh ? 'Pause 15-second automatic refresh' : 'Resume 15-second automatic refresh'}
+            >
+              {autoRefresh ? <Radio size={13} /> : <CirclePause size={13} />}
+              <span>{autoRefresh ? 'Live · 15s' : 'Paused'}</span>
+            </button>
 
             <button
               type="button"
@@ -1076,7 +1129,7 @@ function SecurityLogs() {
                   </tr>
                 </thead>
 
-                <tbody>
+                <tbody key={`network-${filter}`}>
                   {loading ? (
                     <tr>
                       <td colSpan="8">
@@ -1135,17 +1188,15 @@ function SecurityLogs() {
                             }}
                             className={[
                               `tone-${tone}`,
-                              selected
-                                ? 'is-selected'
-                                : '',
+                              freshIds.network.includes(String(event.id)) ? 'is-new' : '',
+                              selected ? 'is-selected' : '',
                             ]
                               .filter(Boolean)
                               .join(' ')}
-                            onClick={() =>
-                              setSelectedNetworkId(
-                                event.id,
-                              )
-                            }
+                            onClick={() => {
+                              setSelectedNetworkId(event.id)
+                              setCopied(false)
+                            }}
                           >
                             <td className="is-number">
                               {event.id}
@@ -1166,17 +1217,15 @@ function SecurityLogs() {
                             </td>
 
                             <td className="is-strong">
-                              {String(
-                                event.protocol ||
-                                  '—',
-                              ).toUpperCase()}
+                              <span className="security-ws__protocol-tag">
+                                {String(event.protocol || '—').toUpperCase()}
+                              </span>
                             </td>
 
                             <td className="is-strong">
-                              {String(
-                                event.severity ||
-                                  'UNKNOWN',
-                              ).toUpperCase()}
+                              <span className={`security-ws__severity-tag tone-${tone}`}>
+                                {String(event.severity || 'UNKNOWN').toUpperCase()}
+                              </span>
                             </td>
 
                             <td className="is-strong">
@@ -1184,7 +1233,7 @@ function SecurityLogs() {
                                 'Unknown'}
                             </td>
 
-                            <td className="is-info">
+                            <td className="is-info" title={info}>
                               {info}
                             </td>
                           </tr>
@@ -1231,7 +1280,7 @@ function SecurityLogs() {
                   </tr>
                 </thead>
 
-                <tbody>
+                <tbody key={`application-${filter}`}>
                   {loading ? (
                     <tr>
                       <td colSpan="8">
@@ -1271,17 +1320,15 @@ function SecurityLogs() {
                             }}
                             className={[
                               `tone-${tone}`,
-                              selected
-                                ? 'is-selected'
-                                : '',
+                              freshIds.application.includes(String(log.id)) ? 'is-new' : '',
+                              selected ? 'is-selected' : '',
                             ]
                               .filter(Boolean)
                               .join(' ')}
-                            onClick={() =>
-                              setSelectedApplicationId(
-                                log.id,
-                              )
-                            }
+                            onClick={() => {
+                              setSelectedApplicationId(log.id)
+                              setCopied(false)
+                            }}
                           >
                             <td className="is-number">
                               {log.id}
@@ -1315,12 +1362,13 @@ function SecurityLogs() {
                             </td>
 
                             <td className="is-strong">
-                              {result}
+                              <span className={`security-ws__severity-tag tone-${tone}`}>
+                                {result}
+                              </span>
                             </td>
 
-                            <td className="is-info">
-                              {log.details ||
-                                'No additional details recorded.'}
+                            <td className="is-info" title={log.details || ''}>
+                              {log.details || 'No additional details recorded.'}
                             </td>
                           </tr>
                         )
@@ -1340,10 +1388,41 @@ function SecurityLogs() {
             )}
           </div>
 
-          <div className="security-ws__details">
+          <div
+            className="security-ws__splitter"
+            role="separator"
+            aria-label="Resize or collapse event details pane"
+            aria-orientation="horizontal"
+            aria-valuemin={0}
+            aria-valuemax={460}
+            aria-valuenow={detailsCollapsed ? 0 : detailsHeight}
+            tabIndex={0}
+            onPointerDown={startPaneResize}
+            onPointerMove={movePaneResize}
+            onPointerUp={endPaneResize}
+            onPointerCancel={endPaneResize}
+            onKeyDown={resizeWithKeyboard}
+          >
+            <span className="security-ws__splitter-label">
+              <GripHorizontal size={17} aria-hidden="true" />
+              <span>Drag to resize · ↑/↓ keyboard</span>
+            </span>
+            <button
+              type="button"
+              onClick={() => setDetailsCollapsed((current) => !current)}
+              aria-label={detailsCollapsed ? 'Expand event details' : 'Collapse event details'}
+              aria-expanded={!detailsCollapsed}
+              title={detailsCollapsed ? 'Show details' : 'Hide details for more table space'}
+            >
+              {detailsCollapsed ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+              <span>{detailsCollapsed ? 'Show details' : 'Hide details'}</span>
+            </button>
+          </div>
+
+          <div className={`security-ws__details${detailsCollapsed ? ' is-collapsed' : ''}`}>
             {selectedEntry ? (
               <>
-                <div className="security-ws__details-head">
+                <div key={`${tab}-${selectedEntry.id}-head`} className="security-ws__details-head">
                   <div>
                     <b>
                       {tab === 'network'
@@ -1373,7 +1452,7 @@ function SecurityLogs() {
                   </span>
                 </div>
 
-                <div className="security-ws__details-grid">
+                <div key={`${tab}-${selectedEntry.id}-content`} className="security-ws__details-grid">
                   <div className="security-ws__tree">
                     {detailRows.map(
                       (row) => (
@@ -1394,8 +1473,17 @@ function SecurityLogs() {
                   </div>
 
                   <div className="security-ws__raw">
-                    <div>
-                      RAW EVENT
+                    <div className="security-ws__raw-title">
+                      <span>RAW EVENT · JSON</span>
+                      <button
+                        type="button"
+                        className={`security-ws__copy${copied ? ' is-copied' : ''}`}
+                        onClick={copyRawEntry}
+                        aria-label="Copy selected raw event JSON"
+                      >
+                        {copied ? <Check size={13} /> : <Copy size={13} />}
+                        {copied ? 'Copied!' : 'Copy JSON'}
+                      </button>
                     </div>
 
                     <pre>

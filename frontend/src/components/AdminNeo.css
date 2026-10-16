@@ -1,0 +1,680 @@
+/* SECURA NeoFlow V11.0.2: Admin sidebar, dashboard and workspace. Scoped to .secura-neo-* */
+
+/* ===== AdminNeoSidebar.css ===== */
+/* SECURA NeoFlow V11.0 — isolated Admin navigation */
+.secura-neo-layout {
+  --neo-purple: #8b5cf6;
+  --neo-pink: #e45adf;
+  --neo-aqua: #39dccc;
+  --neo-orange: #ffb15b;
+  --neo-empty: rgba(144,150,183,.18);
+  display: flex;
+  min-height: 100vh;
+  min-width: 0;
+  position: relative;
+  color: var(--neo-ink);
+  background: var(--neo-canvas);
+}
+html[data-theme="dark"] .secura-neo-layout,
+.secura-neo-layout {
+  --neo-canvas: #0c101d;
+  --neo-surface: #151a2d;
+  --neo-surface-raised: #1b2140;
+  --neo-ink: #f6f5ff;
+  --neo-muted: #a4adc6;
+  --neo-border: rgba(161,154,233,.16);
+  --neo-shadow: 0 18px 50px rgba(1,3,13,.30);
+}
+html[data-theme="light"] .secura-neo-layout {
+  --neo-canvas: #f3f3fb;
+  --neo-surface: #fff;
+  --neo-surface-raised: #f0edff;
+  --neo-ink: #22233b;
+  --neo-muted: #6c718c;
+  --neo-border: rgba(91,82,154,.16);
+  --neo-shadow: 0 18px 50px rgba(76,69,125,.09);
+}
+.secura-neo-layout, .secura-neo-layout *, .secura-neo-layout *::before, .secura-neo-layout *::after { box-sizing: border-box; }
+.secura-neo-nav {
+  width: 260px;
+  flex: 0 0 260px;
+  position: sticky;
+  top: 0;
+  z-index: 34;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 25px 14px 17px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  color: #f6f2ff;
+  background: linear-gradient(171deg, #24213e 0%, #1c1c36 40%, #15182c 100%);
+  border-right: 1px solid rgba(176,145,255,.15);
+  box-shadow: 12px 0 40px rgba(2,4,18,.15);
+  transition: width .28s cubic-bezier(.2,.78,.15,1),flex-basis .28s cubic-bezier(.2,.78,.15,1);
+}
+.secura-neo-nav.is-mini { width: 80px; flex-basis: 80px; padding-left: 11px; padding-right: 11px; }
+.secura-neo-nav__ambient { pointer-events: none; position: absolute; inset: 0; opacity: .9; background: radial-gradient(circle at 95% 0,rgba(189,70,255,.28),transparent 24%),radial-gradient(circle at -15% 75%,rgba(61,204,229,.12),transparent 28%); }
+.secura-neo-nav__top, .secura-neo-nav__collapse-wrap, .secura-neo-nav__group-name, .secura-neo-nav__links, .secura-neo-nav__bottom { position: relative; z-index: 1; }
+.secura-neo-nav__top { display: flex; align-items: center; justify-content: space-between; min-height: 52px; margin-bottom: 6px; }
+.secura-neo-nav__brand { text-decoration: none; color: #fff; display: flex; align-items: center; gap: 11px; white-space: nowrap; min-width: 0; }
+.secura-neo-nav__logo { width: 43px; height: 43px; flex: 0 0 43px; display: grid; place-items: center; border-radius: 14px; color: white; background: linear-gradient(135deg,#a83bfe,#7354fa 65%,#b743f2); box-shadow: 0 0 23px rgba(146,74,255,.33),inset 0 1px 0 rgba(255,255,255,.37); }
+.secura-neo-nav__brand-copy { display: flex; flex-direction: column; gap: 5px; overflow: hidden; transition:opacity .14s ease; }
+.secura-neo-nav__brand-copy b { color:#fff; font-size: 20px; font-weight: 850; letter-spacing: -.8px; }
+.secura-neo-nav__brand-copy b span { color: #c565ff; }
+.secura-neo-nav__brand-copy small { color: #989dbf; font-size: 8px; letter-spacing: 1.15px; font-weight: 780; }
+.secura-neo-nav__close-mobile { display:none; border:0; background:transparent; color:#fff; padding:9px; cursor:pointer; }
+.secura-neo-nav__collapse-wrap { display: flex; justify-content: flex-end; margin: 5px 1px 31px; }
+.secura-neo-nav__collapse { display: grid; place-items: center; border: 1px solid rgba(188,170,255,.17); border-radius: 9px; background: rgba(255,255,255,.045); color: #d5d1ff; width: 31px; height: 31px; cursor: pointer; transition: background .18s ease,transform .18s ease; }
+.secura-neo-nav__collapse:hover { background: rgba(160,108,255,.22); transform:scale(1.05); }
+.secura-neo-nav__group-name { margin: 0 12px 12px; color: #858bae; font-size: 10px; font-weight: 820; letter-spacing: 1.55px; white-space: nowrap; }
+.secura-neo-nav__group-name--account { margin-top: 31px; }
+.secura-neo-nav__links { display: grid; gap: 7px; }
+.secura-neo-nav__link { width:100%; min-height: 49px; text-decoration:none; display:flex; align-items:center; gap: 13px; border: 1px solid transparent; border-radius: 12px; padding: 7px 12px; position:relative; overflow:hidden; color: #aeb3d2; background: transparent; transition:color .2s,background .2s, transform .2s,border-color .2s; }
+.secura-neo-nav__link:hover { color:#fff; background:rgba(154,113,255,.13); transform:translateX(3px); }
+.secura-neo-nav__link.is-active { color:#fff; background:linear-gradient(95deg,rgba(118,78,243,.42),rgba(121,65,205,.20)); border-color:rgba(190,141,255,.24); box-shadow:inset 3px 0 #aa5cff,0 7px 25px rgba(110,54,218,.14); }
+.secura-neo-nav__link.is-active:before { content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(90deg,transparent,rgba(255,255,255,.04),transparent); }
+.secura-neo-nav__icon { position:relative; flex:0 0 23px; display:grid; place-items:center; color:inherit; }
+.secura-neo-nav__label { position:relative; min-width:0; white-space:nowrap; font-weight:690; font-size:12.5px; }
+.secura-neo-nav__arrow { margin-left:auto; opacity:0; transform:translateX(-4px); transition:opacity .2s,transform .2s; }
+.secura-neo-nav__link:hover .secura-neo-nav__arrow,.secura-neo-nav__link.is-active .secura-neo-nav__arrow { opacity:1; transform:translateX(0); }
+.secura-neo-nav__bottom { margin-top:auto; padding-top:30px; }
+.secura-neo-nav__tip { padding:18px; border:1px solid rgba(175,139,255,.30); border-radius:19px; background:radial-gradient(circle at 100% 0%,rgba(171,98,255,.38),transparent 55%),linear-gradient(150deg,rgba(96,73,195,.55),rgba(64,50,122,.40)); box-shadow:0 10px 28px rgba(30,15,79,.22); }
+.secura-neo-nav__tip-icon { display:grid; place-items:center; width:34px; height:34px; margin-bottom:12px; background:rgba(255,255,255,.14); border-radius:11px; color:#fff; }
+.secura-neo-nav__tip b { display:block; font-size:13px; letter-spacing:-.1px; }
+.secura-neo-nav__tip p { color:#ccc8ec; font-size:11px; line-height:1.55; margin:7px 0 14px; }
+.secura-neo-nav__tip a { display:inline-flex; align-items:center; gap:7px; color:#fff; font-size:11px; font-weight:800; text-decoration:none; }
+.secura-neo-nav__tip a:hover { color:#70f3e3; }
+.secura-neo-nav__help { display:flex; align-items:center; gap:9px; color:#979ebe; font-size:10.5px; margin:24px 8px 15px; white-space:nowrap; }
+.secura-neo-nav__identity { display:flex; align-items:center; gap:5px; border-top:1px solid rgba(184,164,240,.15); padding-top:15px; }
+.secura-neo-nav__profile { min-width:0; flex:1; border:0; background:transparent; color:white; display:flex; align-items:center; gap:9px; text-align:left; cursor:pointer; border-radius:11px; padding:5px 3px; }
+.secura-neo-nav__profile:hover { background:rgba(255,255,255,.055); }
+.secura-neo-nav__avatar { width:35px!important; height:35px!important; border-radius:11px!important; flex-shrink:0; }
+.secura-neo-nav__profile-copy { overflow:hidden; display:grid; gap:4px; }
+.secura-neo-nav__profile-copy b { font-size:11px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.secura-neo-nav__profile-copy small { font-size:9.5px; color:#a9aecd; }
+.secura-neo-nav__logout { border:1px solid rgba(255,255,255,.08); color:#d1cde4; background:rgba(255,255,255,.035); width:34px; height:34px; border-radius:10px; flex:0 0 34px; display:grid; place-items:center; cursor:pointer; }
+.secura-neo-nav__logout:hover { background:rgba(238,91,136,.2); color:#ffd3e2; }
+.secura-neo-nav.is-mini .secura-neo-nav__brand-copy,.secura-neo-nav.is-mini .secura-neo-nav__label,.secura-neo-nav.is-mini .secura-neo-nav__arrow,.secura-neo-nav.is-mini .secura-neo-nav__group-name,.secura-neo-nav.is-mini .secura-neo-nav__tip,.secura-neo-nav.is-mini .secura-neo-nav__help,.secura-neo-nav.is-mini .secura-neo-nav__profile-copy,.secura-neo-nav.is-mini .secura-neo-nav__logout { display:none; }
+.secura-neo-nav.is-mini .secura-neo-nav__top { justify-content:center; }
+.secura-neo-nav.is-mini .secura-neo-nav__collapse-wrap { justify-content:center; }
+.secura-neo-nav.is-mini .secura-neo-nav__links { margin-top:14px; }
+.secura-neo-nav.is-mini .secura-neo-nav__link { justify-content:center; padding:8px 0; }
+.secura-neo-nav.is-mini .secura-neo-nav__profile { justify-content:center; }
+.secura-neo-nav.is-mini .secura-neo-nav__identity { justify-content:center; }
+.secura-neo-nav__mobile-trigger, .secura-neo-nav__overlay { display: none; }
+.secura-neo-nav button:focus-visible,.secura-neo-nav a:focus-visible,.secura-neo-nav__mobile-trigger:focus-visible { outline:3px solid #7aebff; outline-offset:3px; }
+@media(max-width:850px){
+  .secura-neo-nav { position:fixed; left:0; top:0; width:260px!important; flex-basis:260px!important; transform:translateX(-105%); transition:transform .26s ease; z-index:90; }
+  .secura-neo-nav.is-open { transform:translateX(0); }
+  .secura-neo-nav.is-mini .secura-neo-nav__brand-copy,.secura-neo-nav.is-mini .secura-neo-nav__label,.secura-neo-nav.is-mini .secura-neo-nav__group-name,.secura-neo-nav.is-mini .secura-neo-nav__tip,.secura-neo-nav.is-mini .secura-neo-nav__help,.secura-neo-nav.is-mini .secura-neo-nav__profile-copy,.secura-neo-nav.is-mini .secura-neo-nav__logout { display:revert; }
+  .secura-neo-nav.is-mini .secura-neo-nav__link { justify-content:flex-start; padding:7px 12px; }
+  .secura-neo-nav.is-mini .secura-neo-nav__top { justify-content:space-between; }
+  .secura-neo-nav.is-mini .secura-neo-nav__identity { justify-content:space-between; }
+  .secura-neo-nav__collapse-wrap { display:none; }
+  .secura-neo-nav__close-mobile { display:grid; place-items:center; }
+  .secura-neo-nav__overlay { display:block; position:fixed; inset:0; z-index:89; border:0; background:rgba(7,9,20,.72); cursor:pointer; }
+  .secura-neo-nav__mobile-trigger { position:fixed; top:12px; left:12px; z-index:60; display:inline-flex; align-items:center; gap:8px; padding:10px 13px; background:#292549; border:1px solid rgba(183,155,255,.4); border-radius:12px; box-shadow:0 5px 20px rgba(0,0,0,.18); color:#fff; font-weight:800; cursor:pointer; }
+}
+@media(prefers-reduced-motion:reduce){
+  .secura-neo-nav,.secura-neo-nav__link,.secura-neo-nav__arrow,.secura-neo-nav__collapse { transition:none!important; }
+}
+
+
+/* ===== AdminWorkspaceLayoutNeo.css ===== */
+/* Keeps existing User/Department functionality while applying the new Admin navigation. */
+.secura-neo-layout--management {
+  min-height:100vh;
+  align-items:stretch;
+  background:
+    radial-gradient(ellipse at 96% 4%,rgba(138,83,245,.12),transparent 38%),
+    radial-gradient(ellipse at 16% 82%,rgba(45,189,215,.08),transparent 37%),
+    var(--neo-canvas);
+}
+.secura-neo-layout--management .secura-neo-management-main {
+  flex:1;
+  min-width:0;
+  padding:32px clamp(20px,3.5vw,60px) 80px;
+  background:transparent;
+}
+@media(max-width:850px){ .secura-neo-layout--management .secura-neo-management-main { padding:72px 16px 80px; width:100%; } }
+
+
+/* V11.0.1: Nested Admin Dashboard gets the same full-bleed canvas as standalone. */
+.secura-neo-layout--management .secura-neo-management-main--dashboard {
+  padding: 0;
+  min-height: 100vh;
+}
+.secura-neo-dashboard-embedded {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  min-height: 100vh;
+}
+.secura-neo-dashboard-embedded > .secura-neo-dash { width: 100%; }
+
+
+/* ===== AdminDashboardNeo.css ===== */
+/* SECURA NeoFlow V11.0 Admin Dashboard: isolated from v10 dashboard CSS */
+.secura-neo-dash {
+  min-width: 0;
+  flex: 1;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  color: var(--neo-ink);
+  background:
+    radial-gradient(ellipse at 83% -4%,rgba(147,61,236,.23),transparent 33%),
+    radial-gradient(ellipse at 5% 78%,rgba(17,195,222,.09),transparent 36%),
+    linear-gradient(165deg,rgba(34,30,65,.25),transparent 35%),
+    var(--neo-canvas);
+}
+html[data-theme="light"] .secura-neo-dash {
+  background:
+    radial-gradient(ellipse at 90% -8%,rgba(163,103,255,.19),transparent 38%),
+    radial-gradient(ellipse at 4% 79%,rgba(76,191,225,.13),transparent 33%),
+    var(--neo-canvas);
+}
+.secura-neo-dash:before { content:""; position:absolute; z-index:0; inset:0 0 auto; height:520px; pointer-events:none; opacity:.20; background-image:radial-gradient(rgba(177,150,255,.43) .7px,transparent .7px); background-size:19px 19px; mask-image:linear-gradient(180deg,#000,transparent); }
+.secura-neo-dash__inner { position:relative; max-width:1490px; margin:0 auto; padding:32px clamp(20px,3.5vw,62px) 42px; }
+.secura-neo-dash__topline { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:27px; }
+.secura-neo-dash__breadcrumb { display:inline-flex; align-items:center; gap:9px; font-size:12px; font-weight:800; color:var(--neo-ink); }
+.secura-neo-dash__breadcrumb span { color:var(--neo-muted); font-weight:650; }
+.secura-neo-dash__top-actions { display:flex; align-items:center; gap:17px; }
+.secura-neo-dash__date { display:inline-flex; gap:8px; align-items:center; font-size:12px; color:var(--neo-muted); }
+.secura-neo-dash__refresh { display:inline-flex; align-items:center; gap:8px; padding:10px 14px; background:var(--neo-surface); border:1px solid var(--neo-border); color:var(--neo-ink); border-radius:11px; font-size:12px; font-weight:790; cursor:pointer; transition:transform .2s,border-color .2s,box-shadow .2s; }
+.secura-neo-dash__refresh:hover:not(:disabled) { transform:translateY(-2px); border-color:rgba(137,95,246,.55); box-shadow:0 5px 25px rgba(131,67,229,.17); }
+.secura-neo-dash__refresh:disabled { opacity:.62; cursor:wait; }
+.secura-neo-dash__rotating { animation:securaNeoRotate 1.3s linear infinite; }
+.secura-neo-dash__hero { position:relative; min-height:300px; display:flex; align-items:center; justify-content:space-between; overflow:hidden; gap:12px; padding:37px clamp(25px,4vw,64px); border:1px solid rgba(191,153,255,.28); border-radius:28px; background:radial-gradient(ellipse at 84% 22%,rgba(158,75,234,.38),transparent 46%),linear-gradient(120deg,#28274f 0%,#302853 51%,#22294a 100%); box-shadow:0 22px 60px rgba(13,7,38,.19),inset 0 1px 0 rgba(255,255,255,.10); isolation:isolate; }
+html[data-theme="light"] .secura-neo-dash__hero { background:radial-gradient(ellipse at 84% 22%,rgba(147,75,229,.30),transparent 52%),linear-gradient(110deg,#2c315c,#423169 68%,#313354); }
+.secura-neo-dash__hero-grid { position:absolute; inset:0; z-index:-1; pointer-events:none; opacity:.25; background-image:linear-gradient(rgba(208,193,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(208,193,255,.07) 1px,transparent 1px); background-size:32px 32px; mask-image:linear-gradient(to right,#000,transparent 85%); }
+.secura-neo-dash__hero:after { content:""; position:absolute; top:-220px; right:-170px; width:510px; height:510px; border:1px solid rgba(216,183,255,.14); border-radius:50%; box-shadow:0 0 0 75px rgba(194,156,255,.035),0 0 0 150px rgba(194,156,255,.027); z-index:-1; }
+.secura-neo-dash__hero-content { position:relative; z-index:2; max-width:700px; }
+.secura-neo-dash__eyebrow { display:inline-flex; gap:8px; align-items:center; color:#d4c2ff; font-size:11px; font-weight:900; letter-spacing:1.7px; }
+.secura-neo-dash__hero h1 { margin:16px 0 13px; color:#fff; font-size:clamp(30px,3.15vw,48px); font-weight:870; letter-spacing:-1.8px; line-height:1.09; }
+/* Animated gradient wave across the Administrator name (without moving the heading). */
+.secura-neo-dash__hero h1 span {
+  background-image: linear-gradient(
+    100deg,
+    #9bf8ed 0%,
+    #98c9ff 13%,
+    #bca0ff 27%,
+    #fda1e9 41%,
+    #baadff 55%,
+    #83e6ef 70%,
+    #ffc1ec 85%,
+    #9bf8ed 100%
+  );
+  background-size: 275% 100%;
+  background-position: 0% 50%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: securaNeoNameColorWave 6.8s ease-in-out infinite alternate;
+}
+@keyframes securaNeoNameColorWave {
+  from { background-position: 0% 50%; }
+  to { background-position: 100% 50%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .secura-neo-dash__hero h1 span {
+    animation: none !important;
+    background-position: 50% 50%;
+  }
+}
+.secura-neo-dash__hero-content > p { max-width:510px; color:#c9c9e8; font-size:14px; line-height:1.7; margin:0 0 27px; }
+.secura-neo-dash__hero-actions { display:flex; flex-wrap:wrap; gap:12px; }
+.secura-neo-dash__primary,.secura-neo-dash__secondary { min-height:45px; display:inline-flex; align-items:center; justify-content:center; gap:11px; padding:10px 18px; border-radius:12px; font-size:12px; font-weight:850; cursor:pointer; transition:transform .2s ease,box-shadow .25s ease,border-color .2s ease; }
+.secura-neo-dash__primary { border:1px solid #bb91ff; background:linear-gradient(110deg,#8f56ff,#b13fe5); color:#fff; box-shadow:0 0 24px rgba(151,75,248,.4),inset 0 1px rgba(255,255,255,.24); }
+.secura-neo-dash__primary:hover { transform:translateY(-3px); box-shadow:0 0 36px rgba(161,82,252,.67),0 8px 27px rgba(118,60,210,.35); }
+.secura-neo-dash__secondary { border:1px solid rgba(220,207,255,.31); background:rgba(255,255,255,.055); color:#fff; }
+.secura-neo-dash__secondary:hover { transform:translateY(-3px); border-color:rgba(217,190,255,.8); background:rgba(255,255,255,.1); }
+.secura-neo-dash__hero-art { position:relative; display:grid; place-items:center; flex:0 0 285px; height:250px; margin-right:8px; }
+.secura-neo-dash__halo { position:absolute; border-radius:50%; border:1px solid rgba(195,159,255,.27); }
+.secura-neo-dash__halo--outer { width:250px; height:250px; box-shadow:0 0 0 20px rgba(174,100,245,.04),inset 0 0 54px rgba(149,76,240,.12); animation:securaNeoBreath 7s ease-in-out infinite; }
+.secura-neo-dash__halo--inner { width:177px; height:177px; border-style:dashed; border-color:rgba(159,230,250,.29); animation:securaNeoRotate 34s linear infinite; }
+.secura-neo-dash__art-core { width:130px; height:130px; display:grid; place-items:center; color:#f8f3ff; border-radius:36px; background:linear-gradient(145deg,rgba(160,95,255,.75),rgba(73,59,166,.76)); border:1px solid rgba(226,200,255,.44); box-shadow:0 0 36px rgba(167,79,255,.31),inset 0 0 32px rgba(255,255,255,.10); transform:rotate(-5deg); }
+.secura-neo-dash__art-core svg { filter:drop-shadow(0 0 12px rgba(240,226,255,.7)); }
+.secura-neo-dash__art-float { position:absolute; width:43px; height:43px; border:1px solid rgba(214,187,255,.36); display:grid; place-items:center; border-radius:15px; color:#e9d5ff; background:rgba(49,42,98,.9); box-shadow:0 8px 25px rgba(15,7,38,.28); animation:securaNeoFloat 5s ease-in-out infinite; }
+.secura-neo-dash__art-float--a { top:0; right:47px; }.secura-neo-dash__art-float--b { left:1px; bottom:40px; color:#7cf9da; animation-delay:-2s; }.secura-neo-dash__art-float--c { right:12px; bottom:12px; animation-delay:-3s; }
+.secura-neo-dash__error { margin-top:20px; display:flex; align-items:center; gap:12px; padding:14px 16px; background:rgba(239,92,130,.11); border:1px solid rgba(239,92,130,.34); border-radius:13px; font-size:12px; }
+.secura-neo-dash__error > span { flex:1; }.secura-neo-dash__error button { cursor:pointer; border:1px solid currentColor; color:inherit; background:transparent; padding:7px 12px; border-radius:9px; }
+.secura-neo-dash__section-head { margin:34px 0 16px; display:flex; align-items:flex-end; justify-content:space-between; gap:12px; }
+.secura-neo-dash__section-tag { margin:0 0 7px; color:#b995ff; letter-spacing:1.55px; font-size:10px; font-weight:880; }
+html[data-theme="light"] .secura-neo-dash__section-tag { color:#7840ba; }
+.secura-neo-dash__section-head h2, .secura-neo-dash__panel-head h2 { color:var(--neo-ink); margin:0; font-size:22px; letter-spacing:-.55px; line-height:1.23; }
+.secura-neo-dash__section-head > div > span { display:block; color:var(--neo-muted); font-size:12px; margin-top:6px; line-height:1.5; }
+.secura-neo-dash__live { display:inline-flex; align-items:center; gap:8px; white-space:nowrap; background:rgba(53,221,187,.08); border:1px solid rgba(53,221,187,.22); border-radius:99px; color:var(--neo-muted); font-size:11px; font-weight:750; padding:7px 12px; }
+.secura-neo-dash__live > span { width:7px; height:7px; background:#46dfbb; border-radius:50%; box-shadow:0 0 10px rgba(75,233,184,.50); }
+.secura-neo-dash__metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:15px; }
+.secura-neo-dash__metric { position:relative; min-height:167px; min-width:0; text-align:left; overflow:hidden; padding:18px 19px 18px; display:flex; flex-direction:column; align-items:flex-start; border:1px solid var(--neo-border); border-radius:19px; background:var(--neo-surface); box-shadow:var(--neo-shadow); color:var(--neo-ink); cursor:pointer; transition:transform .22s,box-shadow .22s,border-color .22s; }
+.secura-neo-dash__metric:before { content:""; position:absolute; top:0; left:0; right:0; height:3px; background:var(--accent); }
+.secura-neo-dash__metric:after { content:""; position:absolute; width:155px; height:155px; top:-100px; right:-85px; border-radius:50%; background:var(--accent); opacity:.17; filter:blur(7px); transition:transform .25s,opacity .25s; }
+.secura-neo-dash__metric:hover { transform:translateY(-5px); border-color:var(--accent); box-shadow:0 18px 40px rgba(17,10,43,.24),0 0 23px var(--glow); }
+.secura-neo-dash__metric:hover:after { transform:scale(1.3); opacity:.23; }
+.secura-neo-dash__metric--purple { --accent:#a665ff;--glow:rgba(159,90,254,.18); }.secura-neo-dash__metric--aqua { --accent:#37d7c6;--glow:rgba(55,215,198,.13); }.secura-neo-dash__metric--pink { --accent:#f279bd;--glow:rgba(242,121,189,.14); }.secura-neo-dash__metric--orange { --accent:#fbaa65;--glow:rgba(251,170,101,.14); }
+.secura-neo-dash__metric-top { display:flex; width:100%; justify-content:space-between; align-items:center; margin-bottom:15px; }
+.secura-neo-dash__metric-icon { width:41px; height:41px; display:grid; place-items:center; border-radius:13px; background:var(--glow); color:var(--accent); }
+.secura-neo-dash__metric-arrow { color:var(--neo-muted); opacity:.65; transition:transform .2s; }.secura-neo-dash__metric:hover .secura-neo-dash__metric-arrow { transform:translate(3px,-3px); }
+.secura-neo-dash__metric strong { color:var(--neo-ink); font-size:32px; font-weight:900; line-height:1; letter-spacing:-1px; }
+.secura-neo-dash__metric b { color:var(--neo-ink); font-size:13px; font-weight:820; margin-top:8px; }
+.secura-neo-dash__metric small { color:var(--neo-muted); font-size:11px; line-height:1.45; margin-top:4px; }
+.secura-neo-dash__main-grid { display:grid; grid-template-columns:minmax(0,1.18fr) minmax(330px,.85fr); gap:17px; margin-top:20px; align-items:stretch; }
+.secura-neo-dash__panel { min-width:0; border:1px solid var(--neo-border); border-radius:20px; padding:24px; background:var(--neo-surface); color:var(--neo-ink); box-shadow:var(--neo-shadow); }
+.secura-neo-dash__panel-head { display:flex; justify-content:space-between; gap:15px; align-items:flex-start; }
+.secura-neo-dash__panel-head > svg { color:var(--neo-purple); flex:0 0 auto; }
+.secura-neo-dash__panel-head h2 { font-size:19px; }
+.secura-neo-dash__panel-head p:not(.secura-neo-dash__section-tag) { font-size:12px; line-height:1.5; color:var(--neo-muted); margin:7px 0 0; }
+.secura-neo-dash__tabs { margin:20px 0 23px; display:inline-flex; gap:4px; padding:4px; background:rgba(126,111,202,.09); border:1px solid var(--neo-border); border-radius:12px; }
+.secura-neo-dash__tabs button { padding:9px 13px; border:0; border-radius:9px; color:var(--neo-muted); background:transparent; font-size:11px; font-weight:780; cursor:pointer; transition:background .16s,color .16s,box-shadow .16s; }
+.secura-neo-dash__tabs button.is-selected { color:#fff; background:linear-gradient(110deg,#7549ce,#9c4bdb); box-shadow:0 4px 15px rgba(120,60,211,.27); }
+.secura-neo-dash__chart-area { display:flex; align-items:center; justify-content:space-around; gap:28px; padding:6px 0 15px; }
+.secura-neo-dash__donut { position:relative; width:202px; height:202px; border-radius:50%; flex:0 0 202px; box-shadow:0 0 26px rgba(135,85,243,.09); transition:background .25s; }
+.secura-neo-dash__donut:after { content:""; position:absolute; inset:19px; border-radius:50%; background:var(--neo-surface); }
+.secura-neo-dash__donut-center { position:absolute; z-index:1; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.secura-neo-dash__donut-center b { font-size:39px; font-weight:920; letter-spacing:-1.6px; color:var(--neo-ink); line-height:1.1; }
+.secura-neo-dash__donut-center span { color:var(--neo-muted); font-size:12px; }
+.secura-neo-dash__legend { flex:1; min-width:170px; max-width:245px; }
+.secura-neo-dash__legend-row { display:flex; gap:12px; align-items:center; justify-content:space-between; padding:13px 0; border-bottom:1px solid var(--neo-border); font-size:12px; }
+.secura-neo-dash__legend-row > span { display:flex; gap:10px; align-items:center; color:var(--neo-muted); }.secura-neo-dash__legend-row i { display:block; width:10px; height:10px; border-radius:3px; flex:0 0 10px; }
+.secura-neo-dash__legend-row b { color:var(--neo-ink); font-size:14px; }
+.secura-neo-dash__insight-note { display:flex; align-items:start; gap:9px; color:var(--neo-muted); background:rgba(139,92,246,.075); padding:12px; margin-top:17px; border-radius:11px; font-size:11px; line-height:1.5; }.secura-neo-dash__insight-note svg { flex:0 0 auto; color:var(--neo-purple); }
+.secura-neo-dash__actions { display:flex; flex-direction:column; }
+.secura-neo-dash__actions .secura-neo-dash__panel-head { margin-bottom:16px; }
+.secura-neo-dash__action-card { display:flex; align-items:center; width:100%; gap:14px; min-height:89px; padding:15px; margin-top:10px; text-align:left; border:1px solid var(--neo-border); border-radius:15px; color:var(--neo-ink); background:linear-gradient(100deg,rgba(136,103,216,.07),transparent); cursor:pointer; transition:transform .18s,border-color .18s,background .18s,box-shadow .18s; }
+.secura-neo-dash__action-card:hover { transform:translateX(4px); border-color:rgba(160,104,255,.52); box-shadow:0 4px 24px rgba(137,84,233,.13); }
+.secura-neo-dash__action-icon { flex:0 0 45px; display:grid; place-items:center; width:45px; height:45px; border-radius:13px; }
+.secura-neo-dash__action-icon.is-purple { background:rgba(150,104,251,.16); color:#ae7aff; }.secura-neo-dash__action-icon.is-aqua { background:rgba(50,220,199,.13); color:#39dccc; }.secura-neo-dash__action-icon.is-orange { background:rgba(255,172,94,.13); color:#ffaf61; }
+.secura-neo-dash__action-card > span:nth-child(2) { display:grid; gap:5px; flex:1; }.secura-neo-dash__action-card b { color:var(--neo-ink); font-size:13px; }.secura-neo-dash__action-card small { color:var(--neo-muted); font-size:11px; line-height:1.5; }.secura-neo-dash__action-card > svg { flex:0 0 auto; color:var(--neo-muted); }
+.secura-neo-dash__departments { margin-top:18px; }
+.secura-neo-dash__text-link { display:inline-flex; align-items:center; gap:7px; font-size:12px; font-weight:850; color:var(--neo-purple); border:1px solid var(--neo-border); background:transparent; cursor:pointer; border-radius:9px; padding:9px 12px; white-space:nowrap; }
+.secura-neo-dash__text-link:hover { background:rgba(145,95,250,.1); }
+.secura-neo-dash__department-grid { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(220px,.8fr); gap:25px; margin-top:24px; }
+.secura-neo-dash__department-list { display:grid; gap:16px; align-content:center; }
+.secura-neo-dash__department-row { display:grid; grid-template-columns:minmax(125px,.65fr) minmax(70px,1fr); align-items:center; gap:15px; }
+.secura-neo-dash__department-row > div:first-child { display:flex; flex-direction:column; gap:5px; overflow:hidden; }.secura-neo-dash__department-row b { font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }.secura-neo-dash__department-row small { font-size:10px; color:var(--neo-muted); }
+.secura-neo-dash__bar { height:9px; background:rgba(123,111,173,.13); border-radius:99px; overflow:hidden; }.secura-neo-dash__bar > span { display:block; height:100%; border-radius:99px; background:linear-gradient(90deg,#805af4,#b25dec,#31d8d0); transition:width .6s ease; }
+.secura-neo-dash__empty { font-size:12px; color:var(--neo-muted); }
+.secura-neo-dash__coverage-summary { display:flex; flex-direction:column; align-items:start; justify-content:center; border-radius:17px; padding:22px; background:linear-gradient(140deg,rgba(126,75,223,.16),rgba(54,198,200,.06)); border:1px solid rgba(159,130,244,.19); }
+.secura-neo-dash__coverage-icon { background:rgba(144,99,245,.13); color:var(--neo-purple); border-radius:11px; width:42px; height:42px; display:grid; place-items:center; margin-bottom:16px; }
+.secura-neo-dash__coverage-summary small { color:var(--neo-muted); font-size:11px; }.secura-neo-dash__coverage-summary strong { margin:7px 0; color:var(--neo-ink); font-size:35px; letter-spacing:-1px; }.secura-neo-dash__coverage-summary strong span { color:var(--neo-muted); font-size:22px; }.secura-neo-dash__coverage-summary p { color:var(--neo-muted); font-size:11px; margin:0 0 15px; line-height:1.5; }.secura-neo-dash__coverage-summary button { background:none; padding:0; border:0; color:var(--neo-purple); font-size:11px; display:flex; align-items:center; gap:7px; font-weight:850; cursor:pointer; }
+.secura-neo-dash__footer { display:flex; gap:12px; justify-content:space-between; align-items:center; padding:21px 1px 0; color:var(--neo-muted); font-size:11px; }.secura-neo-dash__footer > span:first-child { display:flex; align-items:center; gap:7px; }
+.secura-neo-dash button:focus-visible { outline:3px solid #5dcbfa; outline-offset:3px; }
+.neo-entrance { animation:securaNeoAppear .6s both; }.secura-neo-dash__metrics > :nth-child(2) { animation-delay:.07s; }.secura-neo-dash__metrics > :nth-child(3) { animation-delay:.14s; }.secura-neo-dash__metrics > :nth-child(4) { animation-delay:.21s; }
+@keyframes securaNeoAppear { from { opacity:0; transform:translateY(13px); } to { opacity:1; transform:translateY(0); } }
+@keyframes securaNeoFloat { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-10px); } }
+@keyframes securaNeoRotate { to { transform:rotate(360deg); } }
+@keyframes securaNeoBreath { 0%,100% { transform:scale(1); opacity:.7; } 50% { transform:scale(1.055); opacity:1; } }
+@media(min-width:1600px){ .secura-neo-dash__hero { min-height:318px; } .secura-neo-dash__metric { min-height:182px; } }
+@media(max-width:1200px){ .secura-neo-dash__main-grid { grid-template-columns:1fr; }.secura-neo-dash__chart-area { justify-content:flex-start; gap:60px; } .secura-neo-dash__hero-art { flex-basis:240px; } }
+@media(max-width:1050px){ .secura-neo-dash__metrics { grid-template-columns:repeat(2,minmax(0,1fr)); }.secura-neo-dash__hero-art { display:none; } }
+@media(max-width:850px){ .secura-neo-dash__inner { padding:76px 17px 35px; }.secura-neo-dash__hero { padding:30px 25px; min-height:265px; } .secura-neo-dash__topline { margin-bottom:17px; } }
+@media(max-width:650px){ .secura-neo-dash__metrics { gap:11px; }.secura-neo-dash__metric { padding:15px; min-height:154px; }.secura-neo-dash__metric small { font-size:10px; }.secura-neo-dash__department-grid { grid-template-columns:1fr; }.secura-neo-dash__chart-area { gap:18px; }.secura-neo-dash__donut { width:156px; height:156px; flex-basis:156px; }.secura-neo-dash__donut:after { inset:16px; }.secura-neo-dash__donut-center b { font-size:30px; }.secura-neo-dash__panel { padding:18px; } .secura-neo-dash__legend { min-width:0; }.secura-neo-dash__hero h1 { font-size:31px; } .secura-neo-dash__top-actions { gap:8px; }.secura-neo-dash__date { display:none; } }
+@media(max-width:430px){ .secura-neo-dash__metrics { grid-template-columns:1fr 1fr; }.secura-neo-dash__metric strong { font-size:28px; }.secura-neo-dash__metric b { font-size:11.5px; }.secura-neo-dash__metric-icon { width:35px; height:35px; }.secura-neo-dash__chart-area { flex-direction:column; }.secura-neo-dash__legend { width:100%; max-width:unset; }.secura-neo-dash__department-row { grid-template-columns:minmax(95px,.7fr) minmax(65px,1fr); }.secura-neo-dash__footer { flex-direction:column; align-items:flex-start; } }
+@media(prefers-reduced-motion:reduce){ .secura-neo-dash *, .secura-neo-dash *::before, .secura-neo-dash *::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
+
+
+/* ===== Dark / light mode switch ===== */
+.secura-neo-nav__theme { width:100%; display:flex; align-items:center; gap:11px; padding:11px 12px; margin-top:14px; border:1px solid rgba(190,157,255,.18); border-radius:12px; color:#e8e7fb; background:rgba(145,96,247,.11); cursor:pointer; font-size:12px; font-weight:750; transition:background .2s,transform .2s,box-shadow .2s; }
+.secura-neo-nav__theme:hover { background:rgba(145,96,247,.23); transform:translateY(-1px); box-shadow:0 0 19px rgba(145,96,247,.15); }
+.secura-neo-nav__theme svg { flex-shrink:0; }
+.secura-neo-nav__theme-label { white-space:nowrap; }
+.secura-neo-nav.is-mini .secura-neo-nav__theme { justify-content:center; padding:11px 0; }
+.secura-neo-nav.is-mini .secura-neo-nav__theme-label { display:none; }
+@media(max-width:850px){ .secura-neo-nav.is-mini .secura-neo-nav__theme { justify-content:flex-start; padding:11px 12px; } .secura-neo-nav.is-mini .secura-neo-nav__theme-label { display:inline; } }
+@media(prefers-reduced-motion:reduce){ .secura-neo-nav__theme { transition:none!important; } }
+
+
+/* =======================================================
+   SECURA NeoFlow V11.0.3-compatible sidebar theme switch
+   Retained because the sidebar is already in use locally.
+   ======================================================= */
+.secura-neo-nav__theme-switch { width:100%; display:flex; align-items:center; justify-content:space-between; gap:10px; min-height:48px; padding:9px 12px; border:1px solid rgba(179,151,248,.23); border-radius:13px; background:rgba(149,102,247,.10); color:#f1ecff; cursor:pointer; transition:background .2s,border-color .2s,box-shadow .2s; }
+.secura-neo-nav__theme-switch:hover { background:rgba(149,102,247,.19); border-color:rgba(180,144,245,.42); box-shadow:0 0 20px rgba(145,96,247,.16); }
+.secura-neo-nav__theme-switch-label { display:flex; align-items:center; gap:9px; font-size:12px; font-weight:800; }
+.secura-neo-nav__theme-switch-icon { display:grid; place-items:center; color:#dbccff; }
+.secura-neo-nav__theme-track { display:flex; align-items:center; flex:0 0 42px; width:42px; height:24px; padding:3px; background:linear-gradient(120deg,#483778,#7352c0); border-radius:999px; transition:background .25s; }
+.secura-neo-nav__theme-track.is-light { background:linear-gradient(120deg,#8870eb,#a76afd); }
+.secura-neo-nav__theme-thumb { display:block; width:18px; height:18px; border-radius:50%; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.18); transform:translateX(18px); transition:transform .3s cubic-bezier(.2,.8,.2,1); }
+.secura-neo-nav__theme-track.is-light .secura-neo-nav__theme-thumb { transform:translateX(0); }
+.secura-neo-nav.is-mini .secura-neo-nav__theme-switch { justify-content:center; }
+.secura-neo-nav.is-mini .secura-neo-nav__theme-switch-label { display:none; }
+.secura-neo-nav.is-mini .secura-neo-nav__theme-track { flex:0 0 38px; width:38px; }
+.secura-neo-nav.is-mini .secura-neo-nav__theme-thumb { transform:translateX(14px); }
+.secura-neo-nav.is-mini .secura-neo-nav__theme-track.is-light .secura-neo-nav__theme-thumb { transform:translateX(0); }
+@media(max-width:850px) { .secura-neo-nav.is-mini .secura-neo-nav__theme-switch { justify-content:space-between; } .secura-neo-nav.is-mini .secura-neo-nav__theme-switch-label { display:flex; } }
+
+/* =======================================================
+   SECURA NeoFlow V11.0.4 — Dashboard polish
+   Only V11 Admin pages: no global theme change.
+   ======================================================= */
+
+/* Suppress legacy V10 floating controls while the V11 Admin shell is active.
+   The sidebar retains a working dark/light toggle. */
+body:has(.secura-neo-layout) .secura-bold-theme-switch,
+body:has(.secura-neo-layout) .secura-glass-theme-switch,
+body:has(.secura-neo-layout) .secura-theme-toggle-floating {
+  display: none !important;
+}
+
+/* Welcome hero: no duplicate quick-action buttons. */
+.secura-neo-dash__hero-content > p { margin-bottom:21px; }
+.secura-neo-dash__hero-caption { display:inline-flex; align-items:center; gap:10px; padding:9px 13px; border-radius:999px; background:rgba(159,118,255,.10); border:1px solid rgba(211,188,255,.20); font-size:12px; color:#e9defa; letter-spacing:.05px; }
+.secura-neo-dash__hero-caption-dot { display:block; width:7px; height:7px; flex:0 0 7px; border-radius:50%; background:#43e4c9; box-shadow:0 0 12px rgba(67,228,201,.6); }
+.secura-neo-dash__hero-art { animation:neoArtHover 8s ease-in-out infinite; }
+@keyframes neoArtHover { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+
+/* Display-only KPI cards: not buttons and no navigation arrows. */
+.secura-neo-dash__metric { cursor:default; transition:box-shadow .35s ease,border-color .35s ease; }
+.secura-neo-dash__metric:hover { transform:none; border-color:var(--neo-border); box-shadow:var(--neo-shadow); }
+.secura-neo-dash__metric:hover:after { transform:none; opacity:.17; }
+.secura-neo-dash__metric-deco { width:6px; height:6px; display:block; border-radius:50%; background:var(--accent); opacity:.75; box-shadow:0 0 14px var(--accent); }
+.secura-neo-dash__metric-icon { transition:transform .35s ease; }
+.secura-neo-dash__metric:hover .secura-neo-dash__metric-icon { transform:scale(1.07); }
+
+/* Interactive Account Insights: spin when switching the tab. */
+.secura-neo-dash__tabs { position:relative; }
+.secura-neo-dash__tabs button { transition:background .26s,color .26s,box-shadow .26s,transform .26s; }
+.secura-neo-dash__tabs button:hover:not(.is-selected) { color:var(--neo-ink); background:rgba(151,119,238,.13); }
+.secura-neo-dash__tabs button.is-selected { transform:translateY(-1px); }
+.secura-neo-dash__donut { will-change:transform; }
+.secura-neo-dash__donut--animated { animation:neoDonutTurn .75s cubic-bezier(.16,.8,.2,1) both; }
+.secura-neo-dash__donut:before { content:""; position:absolute; inset:-7px; border-radius:50%; box-shadow:0 0 26px rgba(134,86,244,.12); opacity:.65; pointer-events:none; }
+.secura-neo-dash__legend--animated .secura-neo-dash__legend-row { animation:neoLegendEnter .48s both; }
+.secura-neo-dash__legend--animated .secura-neo-dash__legend-row:nth-child(2) { animation-delay:.08s; }
+@keyframes neoDonutTurn { 0%{transform:rotate(-135deg) scale(.88);opacity:.4;filter:saturate(.7)} 72%{transform:rotate(9deg) scale(1.025);opacity:1;filter:saturate(1.1)} 100%{transform:rotate(0deg) scale(1);opacity:1;filter:saturate(1)} }
+@keyframes neoLegendEnter { 0%{transform:translateX(12px);opacity:0}100%{transform:translateX(0);opacity:1} }
+
+/* Replace duplicated navigation shortcuts with informative live statistics. */
+.secura-neo-dash__pulse { display:flex; flex-direction:column; }
+.secura-neo-dash__pulse-list { display:grid; gap:12px; margin-top:24px; flex:1; align-content:center; }
+.secura-neo-dash__pulse-card { padding:16px 16px 15px; border:1px solid var(--neo-border); border-radius:15px; background:linear-gradient(110deg,rgba(128,91,212,.07),rgba(43,188,190,.025)); transition:border-color .25s, background .25s; }
+.secura-neo-dash__pulse-card:hover { border-color:rgba(155,117,245,.36); }
+.secura-neo-dash__pulse-row { display:flex; align-items:center; gap:12px; }
+.secura-neo-dash__pulse-icon { flex:0 0 38px; width:38px; height:38px; display:grid; place-items:center; border-radius:11px; }
+.secura-neo-dash__pulse-icon.pulse-purple { background:rgba(153,106,245,.14); color:#b389ff; }
+.secura-neo-dash__pulse-icon.pulse-cyan { background:rgba(42,214,197,.11); color:#31d4c3; }
+.secura-neo-dash__pulse-icon.pulse-orange { background:rgba(255,168,92,.12); color:#ffb46d; }
+.secura-neo-dash__pulse-copy { flex:1; display:grid; gap:4px; min-width:0; }
+.secura-neo-dash__pulse-copy b { font-size:12px; color:var(--neo-ink); }
+.secura-neo-dash__pulse-copy small { font-size:10.5px; color:var(--neo-muted); line-height:1.45; }
+.secura-neo-dash__pulse-row > strong { font-size:22px; color:var(--neo-ink); font-weight:850; letter-spacing:-.5px; }
+.secura-neo-dash__pulse-track { margin:13px 0 0 50px; height:5px; border-radius:99px; background:rgba(131,119,177,.15); overflow:hidden; }
+.secura-neo-dash__pulse-track span { display:block; height:100%; border-radius:99px; transform-origin:left; background:linear-gradient(90deg,#8d60fb,#3ce0cf); animation:neoPulseBar 1.1s cubic-bezier(.2,.7,.2,1) both; }
+.secura-neo-dash__pulse-card--reviewers { background:linear-gradient(110deg,rgba(246,175,95,.055),rgba(167,95,251,.03)); }
+@keyframes neoPulseBar { from { transform:scaleX(.04) } to { transform:scaleX(1) } }
+
+/* Department coverage bars animate once on entrance. */
+.secura-neo-dash__bar > span { transform-origin:left; animation:neoPulseBar .9s .1s both; }
+.secura-neo-dash__coverage-summary p { margin-bottom:0; }
+
+@media(max-width:650px){
+  .secura-neo-dash__hero-caption { font-size:10.5px; }
+  .secura-neo-dash__pulse-list { margin-top:18px; }
+  .secura-neo-dash__pulse-card { padding:13px; }
+}
+@media(prefers-reduced-motion:reduce){
+  .secura-neo-dash__hero-art,.secura-neo-dash__donut--animated,.secura-neo-dash__legend--animated .secura-neo-dash__legend-row,.secura-neo-dash__pulse-track span,.secura-neo-dash__bar>span{animation:none!important;transform:none!important;filter:none!important;}
+}
+
+/* ================================================================
+   SECURA NeoFlow V11.0.7 — verified ring markup + glass switch
+   No percentage text, masks, or rotating duplicate donuts.
+   ================================================================ */
+
+/* V11.0.8 keeps one circular-gradient ring in one DOM element. */
+@property --secura-ring-fill {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 1;
+}
+.secura-neo-dash__distribution {
+  overflow: hidden;
+}
+.secura-neo-dash__distribution .secura-neo-dash__chart-area {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-around;
+  gap: 26px;
+  min-width: 0;
+  max-width: 100%;
+}
+.secura-v1108-donut {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 202px;
+  height: 202px;
+  flex: 0 0 202px;
+  overflow: hidden;
+  border-radius: 50%;
+  isolation: isolate;
+  box-shadow: 0 0 26px rgba(133, 89, 245, .10);
+}
+.secura-v1108-donut::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  --secura-ring-fill: 1;
+  background: conic-gradient(
+    from -90deg,
+    var(--donut-first-color) 0 calc(var(--donut-first) * var(--secura-ring-fill)),
+    var(--donut-second-color) calc(var(--donut-first) * var(--secura-ring-fill)) calc(100% * var(--secura-ring-fill)),
+    rgba(132, 137, 174, .25) calc(100% * var(--secura-ring-fill)) 100%
+  );
+  animation: securaV1108FillRing 800ms cubic-bezier(.2,.75,.2,1) both;
+}
+.secura-v1108-donut::after {
+  content: '';
+  position: absolute;
+  inset: 19px;
+  border-radius: 50%;
+  background: var(--neo-surface);
+}
+.secura-v1108-donut__center {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 3px;
+  text-align: center;
+  pointer-events: none;
+}
+.secura-v1108-donut__center b {
+  font-size: 39px;
+  font-weight: 900;
+  line-height: 1.1;
+  color: var(--neo-ink);
+}
+.secura-v1108-donut__center span {
+  font-size: 12px;
+  color: var(--neo-muted);
+}
+@keyframes securaV1108FillRing {
+  from { --secura-ring-fill: 0; }
+  to { --secura-ring-fill: 1; }
+}
+@media (max-width: 650px) {
+  .secura-v1108-donut {
+    width: 165px;
+    height: 165px;
+    flex-basis: 165px;
+  }
+  .secura-v1108-donut__center b { font-size: 32px; }
+  .secura-v1108-donut::after { inset: 16px; }
+}
+@media (max-width: 430px) {
+  .secura-neo-dash__distribution .secura-neo-dash__chart-area { flex-direction: column; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .secura-v1108-donut::before { animation: none !important; }
+}
+
+/* Glassmorphism-inspired sidebar switch: tactile slider, sun/moon icons. */
+.secura-neo-nav__glass-toggle {
+  width: 100%;
+  min-height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px 10px 15px;
+  border: 1px solid rgba(206, 182, 255, .25);
+  border-radius: 18px;
+  background: linear-gradient(125deg, rgba(158, 126, 241, .19), rgba(100, 93, 166, .10));
+  -webkit-backdrop-filter: blur(18px) saturate(145%);
+  backdrop-filter: blur(18px) saturate(145%);
+  box-shadow: inset 0 1px rgba(255,255,255,.15), 0 10px 28px rgba(8,5,32,.15);
+  color: #f3efff;
+  cursor: pointer;
+  transition: transform .24s ease, border-color .24s ease, box-shadow .24s ease;
+}
+.secura-neo-nav__glass-toggle:hover {
+  transform: translateY(-2px);
+  border-color: rgba(213, 189, 255, .55);
+  box-shadow: inset 0 1px rgba(255,255,255,.2), 0 0 25px rgba(155,95,255,.22);
+}
+.secura-neo-nav__glass-title {
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 790;
+  letter-spacing: .1px;
+}
+.secura-neo-nav__glass-track {
+  position: relative;
+  width: 99px;
+  height: 39px;
+  flex: 0 0 99px;
+  display: block;
+  border-radius: 999px;
+  border: 1px solid rgba(231, 213, 255, .18);
+  background: linear-gradient(125deg, rgba(44, 38, 89, .95), rgba(77, 56, 131, .82));
+  box-shadow: inset 0 2px 7px rgba(6,4,32,.36), 0 0 15px rgba(140,92,246,.09);
+  transition: background .35s ease;
+}
+.secura-neo-nav__glass-track.is-light {
+  background: linear-gradient(125deg, rgba(103,86,157,.72), rgba(195,165,255,.57));
+}
+.secura-neo-nav__glass-icon {
+  position: absolute;
+  top: 10px;
+  color: #ddd3ff;
+  opacity: .55;
+  transition: opacity .3s ease;
+}
+.secura-neo-nav__glass-icon--sun { left: 14px; }
+.secura-neo-nav__glass-icon--moon { right: 14px; }
+.secura-neo-nav__glass-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  display: grid;
+  place-items: center;
+  width: 31px;
+  height: 31px;
+  border-radius: 50%;
+  color: #7148cf;
+  background: linear-gradient(135deg, #fff, #ece3ff);
+  box-shadow: 0 3px 11px rgba(15,9,45,.37), inset 0 1px #fff;
+  transition: transform .42s cubic-bezier(.2,1.35,.32,1), background .25s ease;
+}
+.secura-neo-nav__glass-track.is-dark .secura-neo-nav__glass-thumb {
+  transform: translateX(60px);
+  color: #5940a0;
+  background: linear-gradient(135deg,#fff,#c5b5ff);
+}
+.secura-neo-nav__glass-toggle:focus-visible {
+  outline: 3px solid #6aeae4;
+  outline-offset: 3px;
+}
+/* Restore the same theme wave, scoped to an active theme switch only. */
+html.secura-neo-theme-wave::view-transition-old(root),
+html.secura-neo-theme-wave::view-transition-new(root) {
+  animation-duration: 610ms !important;
+  animation-timing-function: cubic-bezier(.22,.84,.17,1) !important;
+  animation-fill-mode: both !important;
+  mix-blend-mode: normal !important;
+}
+html.secura-neo-theme-wave::view-transition-old(root) {
+  z-index: 1;
+  animation-name: securaNeoFadeOld !important;
+}
+html.secura-neo-theme-wave::view-transition-new(root) {
+  z-index: 9999;
+  animation-name: securaNeoGlassWave !important;
+}
+@keyframes securaNeoGlassWave {
+  from { clip-path: circle(0 at var(--theme-transition-x) var(--theme-transition-y)); }
+  to { clip-path: circle(var(--theme-transition-radius) at var(--theme-transition-x) var(--theme-transition-y)); }
+}
+@keyframes securaNeoFadeOld { from {opacity:1;} to {opacity:1;} }
+html.secura-theme-transitioning *,
+html.secura-theme-transitioning *::before,
+html.secura-theme-transitioning *::after { transition:none !important; }
+
+/* Profile at bottom is informational only; My profile link remains active. */
+.secura-neo-nav__profile--static { cursor: default !important; pointer-events: none; }
+.secura-neo-nav__profile--static:hover { background: transparent !important; }
+
+@media(max-width: 650px) {
+}
+@media(max-width: 850px) {
+  .secura-neo-nav.is-mini .secura-neo-nav__glass-toggle { justify-content: space-between; }
+  .secura-neo-nav.is-mini .secura-neo-nav__glass-title { display: inline; }
+}
+@media(min-width: 851px) {
+  .secura-neo-nav.is-mini .secura-neo-nav__glass-toggle { justify-content:center; padding:8px 2px; }
+  .secura-neo-nav.is-mini .secura-neo-nav__glass-title { display:none; }
+  .secura-neo-nav.is-mini .secura-neo-nav__glass-track { transform: scale(.54); margin-left:-23px; margin-right:-23px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .secura-neo-nav__glass-thumb,
+  .secura-neo-nav__glass-toggle,
+  .secura-neo-nav__glass-track { animation:none !important; transition:none !important; }
+  html.secura-neo-theme-wave::view-transition-old(root),
+  html.secura-neo-theme-wave::view-transition-new(root) { animation-duration: 0s !important; }
+}
+
+/* SECURA NeoFlow V11.0.8: compact accessible theme control */
+.secura-neo-nav__glass-toggle {
+  min-height: 49px;
+  padding: 7px 10px 7px 12px;
+  gap: 9px;
+  border-radius: 13px;
+}
+.secura-neo-nav__glass-title {
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+.secura-neo-nav__glass-track {
+  width: 68px;
+  height: 30px;
+  flex-basis: 68px;
+}
+.secura-neo-nav__glass-icon { top: 8px; width: 12px; height: 12px; }
+.secura-neo-nav__glass-icon--sun { left: 9px; }
+.secura-neo-nav__glass-icon--moon { right: 9px; }
+.secura-neo-nav__glass-thumb {
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+}
+.secura-neo-nav__glass-thumb svg { width: 14px; height: 14px; }
+.secura-neo-nav__glass-track.is-dark .secura-neo-nav__glass-thumb {
+  transform: translateX(38px);
+}
+@media (min-width: 851px) {
+  .secura-neo-nav.is-mini .secura-neo-nav__glass-track {
+    transform: scale(.75);
+    margin-left: -8px;
+    margin-right: -8px;
+  }
+}

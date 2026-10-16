@@ -1,0 +1,837 @@
+/*
+ * SECURA NeoFlow V13.3 — Security Officer / Original Access Review
+ * Banking-style visual hierarchy, SECURA's existing palette.
+ * Strictly scoped: does not restyle the Dashboard, Alerts, Logs or Profile.
+ * No API, verification, approval or rejection flow is modified.
+ */
+.secura-soc-review-main {
+  --rv-bg: #0e1120;
+  --rv-panel: #191e32;
+  --rv-panel-raised: #20263d;
+  --rv-panel-soft: #151a2d;
+  --rv-ink: #f4f4ff;
+  --rv-muted: #aab3cd;
+  --rv-line: rgba(165, 165, 227, .19);
+  --rv-purple: #bd91ff;
+  --rv-cyan: #66e6df;
+  --rv-amber: #ffc576;
+  --rv-green: #61d9ad;
+  --rv-danger: #ff96aa;
+  --rv-shadow: 0 15px 42px rgba(1, 4, 15, .22);
+  isolation: isolate;
+  color: var(--rv-ink);
+  min-height: calc(100vh - 78px);
+  padding-top: 26px !important;
+}
+html[data-theme="light"] .secura-soc-review-main {
+  --rv-bg: #f4f4fc;
+  --rv-panel: #fff;
+  --rv-panel-raised: #f1effb;
+  --rv-panel-soft: #f7f5ff;
+  --rv-ink: #24253e;
+  --rv-muted: #737b95;
+  --rv-line: rgba(109, 93, 170, .18);
+  --rv-purple: #8c4bd9;
+  --rv-cyan: #148c93;
+  --rv-amber: #b26b1e;
+  --rv-green: #21876a;
+  --rv-danger: #bf4d68;
+  --rv-shadow: 0 17px 40px rgba(60, 49, 101, .075);
+}
+.secura-soc-review-main, .secura-soc-review-main *,
+.secura-soc-review-main *::before, .secura-soc-review-main *::after { box-sizing: border-box; }
+.secura-soc-review-main :is(button, a, input):focus-visible {
+  outline: 2px solid var(--rv-cyan) !important;
+  outline-offset: 3px;
+}
+.secura-soc-review-main :is(button, input) { font-family: inherit; }
+.secura-soc-review-main :is(button:disabled) { cursor: not-allowed; }
+.secura-soc-review-main button:not(:disabled) { cursor: pointer; }
+.secura-soc-review-main > :is(.security-review-figma-header, .security-review-figma-summary, .security-review-figma-workspace, .security-review-figma-success, .security-review-figma-error) {
+  width: 100%; max-width: none;
+}
+
+/* A banking-dashboard-inspired overview header, without imitating its branding. */
+.secura-soc-review-main .security-review-figma-header {
+  position: relative;
+  width: 100%;
+  min-height: 178px;
+  padding: 31px 35px 30px;
+  margin: 0 0 17px;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgba(181, 145, 253, .27);
+  border-radius: 22px;
+  background: linear-gradient(110deg,#283259 0%,#282449 47%,#382250 100%);
+  box-shadow: var(--rv-shadow);
+  display: flex; flex-direction: column; justify-content: center;
+  animation: rvEnter .45s both;
+}
+html[data-theme="light"] .secura-soc-review-main .security-review-figma-header {
+  background: linear-gradient(112deg,#fff 0%,#f4efff 47%,#e7dcff 100%);
+  border-color: var(--rv-line);
+}
+.secura-soc-review-main .security-review-figma-header::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(circle at 90% 6%,rgba(184,105,255,.25),transparent 29%),
+    linear-gradient(rgba(255,255,255,.036) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.036) 1px,transparent 1px);
+  background-size: auto,46px 46px,46px 46px;
+  opacity: .94;
+}
+.secura-soc-review-main .security-review-figma-header::after {
+  content: ''; position: absolute; right: 2%; top: -85px; bottom: auto; left: auto;
+  border-radius: 50%; height: 350px; width: 350px;
+  border: 1px solid rgba(212,184,255,.20); box-shadow: 0 0 0 45px rgba(198,150,255,.035), 0 0 0 92px rgba(198,150,255,.025);
+  background: radial-gradient(circle at center,rgba(222,152,255,.09),transparent 69%);
+  pointer-events: none;
+}
+.secura-soc-review-main .security-review-figma-header .secura-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  width: max-content; color: #e5c5ff; font-size: 10px;
+  font-weight: 850; letter-spacing: 1.65px;
+  margin: 0;
+}
+.secura-soc-review-main .security-review-figma-header .secura-eyebrow::before {
+  content: ''; width: 7px; height: 7px; flex: 0 0 7px;
+  border-radius: 50%; background: #65e8d4; box-shadow: 0 0 0 4px rgba(101,232,212,.12);
+}
+.secura-soc-review-main .security-review-figma-header h1 {
+  position: relative; margin: 14px 0 9px; font-size: clamp(29px,3vw,41px);
+  line-height: 1.08; font-weight: 880; letter-spacing: -1.25px; color: #fff;
+}
+html[data-theme="light"] .secura-soc-review-main .security-review-figma-header h1 { color: #25223c; }
+html[data-theme="light"] .secura-soc-review-main .security-review-figma-header .secura-eyebrow { color: #8242c9; }
+.secura-soc-review-main .security-review-figma-header > p:last-child {
+  max-width: 620px; color: #c8d0e7; margin: 0;
+  font-size: 12px; line-height: 1.7;
+}
+html[data-theme="light"] .secura-soc-review-main .security-review-figma-header > p:last-child { color: #69708d; }
+
+/* Four snapshot cards like a banking product row; security semantics intact. */
+.secura-soc-review-main .security-review-figma-summary {
+  display: grid; grid-template-columns: repeat(4,minmax(0,1fr));
+  gap: 14px; margin-bottom: 18px;
+}
+.secura-soc-review-main .security-review-figma-summary article {
+  --rv-accent: #b27cff; --rv-accent-bg: rgba(174,104,244,.12);
+  position: relative; display: flex; flex-direction: column;
+  align-items: flex-start; justify-content: space-between;
+  gap: 8px; min-height: 139px; border: 1px solid var(--rv-line);
+  border-radius: 18px; padding: 18px 19px 16px; overflow: hidden;
+  background: var(--rv-panel); color: var(--rv-ink);
+  box-shadow: var(--rv-shadow); animation: rvEnter .48s both;
+  transition: transform .2s,border-color .2s,box-shadow .2s;
+}
+.secura-soc-review-main .security-review-figma-summary article:nth-child(2) { --rv-accent: var(--rv-amber); --rv-accent-bg: rgba(247,177,79,.10); animation-delay: .05s; }
+.secura-soc-review-main .security-review-figma-summary article:nth-child(3) { --rv-accent: var(--rv-green); --rv-accent-bg: rgba(66,215,162,.09); animation-delay: .09s; }
+.secura-soc-review-main .security-review-figma-summary article:nth-child(4) { --rv-accent: var(--rv-danger); --rv-accent-bg: rgba(255,117,144,.09); animation-delay: .13s; }
+.secura-soc-review-main .security-review-figma-summary article::before {
+  content: ''; position: absolute; top: -65px; right: -30px; width: 170px; height: 160px;
+  border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle,var(--rv-accent-bg) 1%,transparent 70%);
+}
+.secura-soc-review-main .security-review-figma-summary article::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit;
+  background: linear-gradient(110deg,transparent,rgba(255,255,255,.02)); pointer-events: none;
+}
+.secura-soc-review-main .security-review-figma-summary article:hover {
+  transform: translateY(-3px); border-color: rgba(187,143,255,.39);
+}
+.secura-soc-review-main .security-review-figma-summary span {
+  position: relative; color: var(--rv-muted); font-size: 11px; font-weight: 760;
+  letter-spacing: 0; margin: 0;
+}
+.secura-soc-review-main .security-review-figma-summary strong {
+  position: relative; margin-top: 7px; font-size: clamp(30px,3vw,40px);
+  font-weight: 890; color: var(--rv-ink); line-height: 1.05; letter-spacing: -1px;
+}
+.secura-soc-review-main .security-review-figma-summary article::selection { background: var(--rv-purple); }
+.secura-soc-review-main .security-review-figma-summary article strong::after {
+  content: ''; display: block; height: 3px; width: 31px; margin-top: 11px;
+  background: var(--rv-accent); border-radius: 50px; opacity: .78;
+}
+
+/* Main workspace: compact left inbox + 44% decision panel. */
+.secura-soc-review-main .security-review-figma-workspace {
+  display: grid; grid-template-columns: minmax(0,1.12fr) minmax(390px,.88fr);
+  gap: 17px; align-items: start; margin: 0;
+}
+.secura-soc-review-main .security-review-figma-list-panel,
+.secura-soc-review-main .security-review-figma-detail-panel {
+  position: relative; min-width: 0; min-height: 440px;
+  border: 1px solid var(--rv-line); border-radius: 21px;
+  background: var(--rv-panel); box-shadow: var(--rv-shadow);
+  overflow: hidden; animation: rvEnter .52s both;
+}
+.secura-soc-review-main .security-review-figma-list-panel {
+  display: flex; flex-direction: column;
+}
+.secura-soc-review-main .security-review-figma-detail-panel {
+  position: sticky; top: 95px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.secura-soc-review-main .security-review-figma-detail-panel::-webkit-scrollbar { display: none; }
+
+/* Search and selectable tabs: original React search/filter actions retained. */
+.secura-soc-review-main .security-review-figma-tools {
+  display: flex; align-items: stretch; justify-content: space-between;
+  flex-wrap: wrap; gap: 11px; padding: 19px 19px 16px;
+  border-bottom: 1px solid var(--rv-line); background: transparent;
+  min-height: 0;
+}
+.secura-soc-review-main .security-review-figma-tools::before {
+  content: 'ACCESS REQUEST INBOX'; display: block;
+  width: 100%; color: var(--rv-purple); font-size: 10px; font-weight: 900;
+  letter-spacing: 1.3px; margin-bottom: 0;
+}
+.secura-soc-review-main .security-review-figma-search {
+  flex: 1 1 260px; width: auto; max-width: none;
+  display: flex; align-items: center; min-width: 0; min-height: 42px;
+  gap: 10px; padding: 0 12px; border: 1px solid var(--rv-line);
+  border-radius: 11px; background: var(--rv-panel-soft); color: var(--rv-muted);
+  box-shadow: none; transition: border-color .2s, box-shadow .2s;
+}
+.secura-soc-review-main .security-review-figma-search:focus-within {
+  border-color: rgba(180,125,248,.60);
+  box-shadow: 0 0 0 3px rgba(159,99,230,.10);
+}
+.secura-soc-review-main .security-review-figma-search input,
+html[data-theme="dark"] .secura-soc-review-main .security-review-figma-search input {
+  display: block; flex: 1; width: 100%; min-width: 0; height: 40px;
+  margin: 0; padding: 0; border: 0 !important; outline: none !important;
+  box-shadow: none !important; background: transparent !important;
+  color: var(--rv-ink); font-weight: 560; font-size: 12px;
+}
+.secura-soc-review-main .security-review-figma-search input::placeholder { color: var(--rv-muted); opacity: .8; }
+.secura-soc-review-main .security-review-figma-search button { color: var(--rv-muted); }
+.secura-soc-review-main .security-review-figma-tabs {
+  display: flex; flex-wrap: wrap; width: 100%; gap: 7px;
+  padding: 0; background: transparent; border: 0;
+}
+.secura-soc-review-main .security-review-figma-tabs button {
+  min-height: 32px; padding: 7px 11px; border: 1px solid var(--rv-line);
+  border-radius: 9px; background: var(--rv-panel-raised);
+  color: var(--rv-muted); font-size: 10px; font-weight: 760;
+  transition: background .17s,color .17s,transform .17s,border-color .17s;
+}
+.secura-soc-review-main .security-review-figma-tabs button:hover:not(.active) {
+  transform: translateY(-1px); background: rgba(146,99,226,.13);
+  border-color: rgba(184,124,243,.35); color: var(--rv-ink);
+}
+.secura-soc-review-main .security-review-figma-tabs button.active {
+  background: linear-gradient(125deg,#8957e9,#b343dc); border-color: rgba(204,153,255,.56);
+  color: #fff; box-shadow: 0 5px 14px rgba(114,58,180,.24);
+}
+
+/* Vertical request queue = dashboard-style recent transactions list. */
+.secura-soc-review-main .security-review-figma-table-wrap {
+  width: 100%; overflow-x: auto; overflow-y: auto;
+  scrollbar-width: none; flex: 1;
+}
+.secura-soc-review-main .security-review-figma-table-wrap::-webkit-scrollbar { display: none; }
+.secura-soc-review-main .security-review-figma-table { min-width: 0; width: 100%; }
+/* Owner and submitted date remain in the selected request inspector; keep inbox compact. */
+.secura-soc-review-main .security-review-figma-row > :nth-child(3),
+.secura-soc-review-main .security-review-figma-row > :nth-child(5) { display: none; }
+.secura-soc-review-main .security-review-figma-row {
+  display: grid; grid-template-columns: 86px minmax(105px,1.05fr) minmax(130px,1.45fr) minmax(100px,.8fr);
+  align-items: center; gap: 10px; min-height: 74px; padding: 12px 16px;
+}
+.secura-soc-review-main .security-review-figma-heading {
+  min-height: 42px; color: var(--rv-muted); background: var(--rv-panel-soft);
+  font-weight: 830; font-size: 9px; letter-spacing: .65px;
+  border-bottom: 1px solid var(--rv-line);
+}
+.secura-soc-review-main .security-review-figma-data-row {
+  position: relative; width: 100%; text-align: left; color: var(--rv-ink);
+  font-size: 10px; background: transparent; border: 0;
+  border-bottom: 1px solid var(--rv-line);
+  box-shadow: none; animation: rvEnter .27s ease-out both;
+  transition: background .18s ease,border-color .18s ease;
+}
+.secura-soc-review-main .security-review-figma-data-row:hover {
+  background: rgba(160,111,232,.075);
+}
+.secura-soc-review-main .security-review-figma-data-row.selected {
+  background: linear-gradient(90deg,rgba(145,89,236,.17),rgba(102,160,225,.045));
+  box-shadow: inset 3px 0 0 var(--rv-purple);
+}
+.secura-soc-review-main .security-review-figma-data-row.selected::before { display: none; }
+.secura-soc-review-main .security-review-figma-data-row b { color: var(--rv-ink); font-size: 10px; }
+.secura-soc-review-main .security-review-figma-file { font-size: 10px; color: var(--rv-ink); font-weight: 770; overflow-wrap: anywhere; }
+.secura-soc-review-main .security-review-figma-status {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: max-content; min-height: 24px; border-radius: 99px; padding: 4px 9px;
+  font-style: normal; font-weight: 840; font-size: 9px; white-space: nowrap;
+}
+.secura-soc-review-main .security-review-figma-status.pending { color: var(--rv-amber); background: rgba(245,168,58,.13); }
+.secura-soc-review-main .security-review-figma-status.approved { color: var(--rv-green); background: rgba(66,206,152,.12); }
+.secura-soc-review-main .security-review-figma-status.rejected { color: var(--rv-danger); background: rgba(232,81,117,.13); }
+
+/* Secure decision inspector: trustworthy, legible, never invent statuses. */
+.secura-soc-review-main .security-review-figma-detail-content {
+  position: relative; display: flex; flex-direction: column; min-height: 440px;
+  gap: 0; padding: 23px 24px 25px; color: var(--rv-ink);
+  animation: rvEnter .26s both;
+}
+.secura-soc-review-main .security-review-figma-detail-content > .secura-eyebrow {
+  margin: 0; color: var(--rv-purple); font-size: 10px; font-weight: 880; letter-spacing: 1.35px;
+}
+.secura-soc-review-main .security-review-figma-detail-title {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 14px 0 17px; margin: 0 0 5px;
+  border-bottom: 1px solid var(--rv-line);
+}
+.secura-soc-review-main .security-review-figma-detail-title h2 {
+  color: var(--rv-ink); font-size: 24px; font-weight: 850; letter-spacing: -.8px; margin: 0;
+}
+.secura-soc-review-main .security-review-figma-detail-list {
+  display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+  column-gap: 14px; margin: 0 0 13px;
+}
+.secura-soc-review-main .security-review-figma-detail-list > div {
+  min-width: 0; padding: 13px 0; border-bottom: 1px solid var(--rv-line);
+}
+.secura-soc-review-main .security-review-figma-detail-list > div:nth-child(4),
+.secura-soc-review-main .security-review-figma-detail-list > div:nth-child(3) { grid-column: 1 / -1; }
+.secura-soc-review-main .security-review-figma-detail-list dt {
+  color: var(--rv-muted); font-size: 9px; font-weight: 800; letter-spacing: .5px;
+}
+.secura-soc-review-main .security-review-figma-detail-list dd {
+  margin: 7px 0 0; color: var(--rv-ink); font-size: 12px; font-weight: 690;
+  overflow-wrap: anywhere; line-height: 1.52;
+}
+.secura-soc-review-main .security-review-figma-owner-approved { color: var(--rv-green); font-weight: 830; }
+.secura-soc-review-main .security-review-related-link {
+  margin: 13px 0; align-self: flex-start; color: var(--rv-purple);
+  font-size: 11px; font-weight: 790; padding: 0; border: 0; background: transparent;
+}
+.secura-soc-review-main .security-review-related-link:hover { color: var(--rv-cyan); }
+
+/* SHA-256 gate and evidence steps (existing backend verification unchanged). */
+.secura-soc-review-main .security-review-file-inspection {
+  padding: 16px; margin: 15px 0 5px;
+  border-radius: 16px; border: 1px solid rgba(102,214,203,.22);
+  background: linear-gradient(135deg,rgba(75,201,194,.065),rgba(160,107,239,.045));
+}
+.secura-soc-review-main .security-review-file-inspection-heading {
+  display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin: 0 0 12px;
+}
+.secura-soc-review-main .security-review-file-inspection-heading > span {
+  display: grid; place-items: center; flex: 0 0 34px; width: 34px; height: 34px;
+  border-radius: 11px; color: var(--rv-cyan); background: rgba(77,202,198,.14);
+}
+.secura-soc-review-main .security-review-file-inspection-heading > div { flex: 1; min-width: 130px; }
+.secura-soc-review-main .security-review-file-inspection-heading .secura-eyebrow {
+  color: var(--rv-cyan); font-size: 9px; font-weight: 820; letter-spacing: .75px; margin: 0 0 4px;
+}
+.secura-soc-review-main .security-review-file-inspection-heading h3 {
+  color: var(--rv-ink); font-size: 13px; font-weight: 810; line-height: 1.28; margin: 0;
+}
+.secura-soc-review-main .security-review-integrity-badge {
+  font-style: normal; font-weight: 800; font-size: 10px;
+  border: 1px solid var(--rv-line); border-radius: 99px; padding: 5px 9px;
+}
+.secura-soc-review-main .security-review-integrity-badge.verified { color: var(--rv-green); background: rgba(70,201,147,.11); }
+.secura-soc-review-main .security-review-integrity-badge.failed { color: var(--rv-danger); background: rgba(240,95,130,.11); }
+.secura-soc-review-main .security-review-integrity-badge.checking { color: var(--rv-amber); background: rgba(240,183,80,.1); }
+.secura-soc-review-main .security-review-file-inspection-grid {
+  display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; margin-bottom: 10px;
+}
+.secura-soc-review-main .security-review-file-inspection-grid > div {
+  min-width: 0; border: 1px solid var(--rv-line); border-radius: 11px;
+  padding: 10px; background: var(--rv-panel-soft);
+}
+.secura-soc-review-main .security-review-file-inspection-grid small {
+  display: block; color: var(--rv-muted); font-weight: 770; font-size: 9px; margin-bottom: 6px;
+}
+.secura-soc-review-main .security-review-file-inspection-grid code {
+  display: block; overflow-wrap: anywhere; white-space: normal;
+  color: var(--rv-ink); font-size: 10px; letter-spacing: .1px;
+}
+.secura-soc-review-main .security-review-file-inspection-state {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; flex-wrap: wrap; border-radius: 11px;
+}
+.secura-soc-review-main .security-review-file-inspection-state > div {
+  display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;
+  font-size: 10px; line-height: 1.55; color: var(--rv-muted);
+}
+.secura-soc-review-main .security-review-file-inspection-state svg { flex-shrink: 0; }
+.secura-soc-review-main .security-review-open-original {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 39px; border: 1px solid rgba(171,131,248,.42);
+  border-radius: 10px; background: rgba(161,103,237,.17);
+  padding: 8px 13px; font-weight: 800; font-size: 11px; color: var(--rv-purple);
+  transition: transform .18s,background .18s,border-color .18s;
+}
+.secura-soc-review-main .security-review-open-original:hover:not(:disabled) {
+  transform: translateY(-2px); background: rgba(161,103,237,.25);
+}
+.secura-soc-review-main .security-review-file-inspection-note {
+  margin: 12px 0 0; color: var(--rv-muted); font-size: 9px; line-height: 1.65;
+}
+.secura-soc-review-main .security-review-decision-lock {
+  padding: 10px 12px; border-radius: 10px; border: 1px solid var(--rv-line);
+  color: var(--rv-muted); background: var(--rv-panel-soft); font-size: 10px; line-height: 1.6;
+}
+.secura-soc-review-main .security-review-decision-lock.unlocked { color: var(--rv-green); border-color: rgba(85,220,166,.26); background: rgba(77,188,137,.08); }
+.secura-soc-review-main .security-review-decision-lock.partial { color: var(--rv-amber); border-color: rgba(239,183,77,.28); background: rgba(233,154,65,.08); }
+.secura-soc-review-main .security-review-figma-actions {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  margin-top: auto; padding-top: 15px; border-top: 1px solid var(--rv-line);
+}
+.secura-soc-review-main .security-review-figma-actions button {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 43px; border-radius: 11px; font-weight: 820; font-size: 12px;
+  transition: background .2s,opacity .2s,transform .2s;
+}
+.secura-soc-review-main .security-review-figma-approve {
+  border: 1px solid rgba(83,225,167,.35); color: var(--rv-green); background: rgba(78,218,153,.13);
+}
+.secura-soc-review-main .security-review-figma-reject {
+  border: 1px solid rgba(255,136,159,.39); color: var(--rv-danger); background: rgba(255,136,159,.09);
+}
+.secura-soc-review-main .security-review-figma-actions button:hover:not(:disabled) { transform: translateY(-2px); }
+.secura-soc-review-main .security-review-figma-actions button:disabled { opacity: .40; transform: none; box-shadow: none; }
+
+/* Zero-state: useful message while leaving search / filter available. */
+.secura-soc-review-main .security-review-figma-empty,
+.secura-soc-review-main .security-review-figma-detail-empty {
+  min-height: 330px; color: var(--rv-muted); padding: 45px 20px;
+}
+.secura-soc-review-main .security-review-figma-empty > span,
+.secura-soc-review-main .security-review-figma-detail-empty > span {
+  background: rgba(155,99,242,.12); color: var(--rv-purple);
+  width: 60px; height: 60px; border-radius: 19px;
+}
+.secura-soc-review-main :is(.security-review-figma-empty,.security-review-figma-detail-empty) b {
+  color: var(--rv-ink); font-size: 15px; font-weight: 830;
+}
+.secura-soc-review-main :is(.security-review-figma-empty,.security-review-figma-detail-empty) p {
+  color: var(--rv-muted); font-size: 11px; line-height: 1.6;
+}
+.secura-soc-review-main .security-review-figma-loading { padding: 20px; }
+.secura-soc-review-main .security-review-figma-loading > div { background: linear-gradient(110deg,var(--rv-panel-raised),var(--rv-panel-soft),var(--rv-panel-raised)); background-size: 200%; animation: rvSkeleton 1.3s linear infinite; }
+
+/* Confirmation modal: strong contrast and keyboard navigation preserved. */
+.secura-soc-review-main .security-review-figma-backdrop {
+  position: fixed; inset: 0; z-index: 110;
+  display: grid; place-items: center; padding: 18px;
+  background: rgba(3,7,19,.72);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+}
+.secura-soc-review-main .security-review-figma-modal {
+  position: relative; width: min(100%,470px); max-height: calc(100dvh - 36px);
+  overflow-y: auto; scrollbar-width: none; border: 1px solid var(--rv-line);
+  background: var(--rv-panel); color: var(--rv-ink);
+  box-shadow: 0 26px 100px rgba(0,0,0,.4); border-radius: 21px; padding: 28px;
+}
+.secura-soc-review-main .security-review-figma-modal::-webkit-scrollbar { display: none; }
+.secura-soc-review-main .security-review-figma-modal > h2 { color: var(--rv-ink); font-size: 23px; }
+.secura-soc-review-main .security-review-figma-modal > p:not(.secura-eyebrow) { color: var(--rv-muted); font-size: 12px; }
+.secura-soc-review-main .security-review-figma-modal .secura-eyebrow { color: var(--rv-purple); }
+.secura-soc-review-main .security-review-figma-modal-file {
+  color: var(--rv-ink); background: var(--rv-panel-soft); border-color: var(--rv-line); font-size: 11px;
+}
+.secura-soc-review-main .security-review-figma-modal-actions button { min-height: 44px; border-radius: 11px; font-weight: 820; font-size: 12px; }
+.secura-soc-review-main .security-review-figma-modal-actions .secondary {
+  color: var(--rv-ink); border-color: var(--rv-line); background: var(--rv-panel-raised);
+}
+.secura-soc-review-main .security-review-figma-modal-actions .approve { color: var(--rv-green); background: rgba(84,218,159,.15); border-color: rgba(84,218,159,.28); }
+.secura-soc-review-main .security-review-figma-modal-actions .reject { color: var(--rv-danger); background: rgba(241,93,131,.15); border-color: rgba(241,93,131,.28); }
+.secura-soc-review-main .security-review-figma-modal-close { color: var(--rv-muted); }
+.secura-soc-review-main .security-review-figma-success,
+.secura-soc-review-main .security-review-figma-error {
+  color: var(--rv-ink); margin: 0 0 14px; font-size: 11px;
+  border-radius: 12px; padding: 13px 15px;
+}
+.secura-soc-review-main .security-review-figma-success { background: rgba(65,196,135,.11); border-color: rgba(65,196,135,.3); color: var(--rv-green); }
+.secura-soc-review-main .security-review-figma-error { background: rgba(239,87,112,.11); border-color: rgba(239,87,112,.30); color: var(--rv-danger); }
+
+/* No scrollbar rails; navigation through mouse/trackpad/touch/keyboard continues. */
+.secura-soc-review-main { scrollbar-width: none; }
+.secura-soc-review-main::-webkit-scrollbar { display: none; }
+
+@keyframes rvEnter {
+  from {opacity: 0; transform: translateY(9px)}
+  to {opacity: 1; transform: translateY(0)}
+}
+@keyframes rvSkeleton { 100% { background-position: -200% 0 } }
+
+@media (min-width: 1680px) {
+  .secura-soc-workspace .secura-soc-review-main { width: min(calc(100% - 90px),1450px); max-width: 1450px; }
+}
+@media (max-width: 1180px) {
+  .secura-soc-review-main .security-review-figma-workspace { grid-template-columns: 1fr; }
+  .secura-soc-review-main .security-review-figma-list-panel,
+  .secura-soc-review-main .security-review-figma-detail-panel { min-height: 0; }
+  .secura-soc-review-main .security-review-figma-detail-panel { position: relative; top: auto; max-height: none; }
+  .secura-soc-review-main .security-review-figma-summary { gap: 10px; }
+}
+@media (max-width: 720px) {
+  .secura-soc-review-main .security-review-figma-header { padding: 24px 23px; min-height: 166px; border-radius: 17px; }
+  .secura-soc-review-main .security-review-figma-header::after { right: -215px; }
+  .secura-soc-review-main .security-review-figma-header h1 { font-size: 29px; }
+  .secura-soc-review-main .security-review-figma-header > p:last-child { font-size: 11px; }
+  .secura-soc-review-main .security-review-figma-summary { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .secura-soc-review-main .security-review-figma-summary article { min-height: 119px; padding: 15px; }
+  .secura-soc-review-main .security-review-figma-summary strong { font-size: 30px; }
+  .secura-soc-review-main .security-review-figma-tools { padding: 17px 14px; }
+  .secura-soc-review-main .security-review-figma-detail-content { padding: 20px 16px; }
+  .secura-soc-review-main .security-review-figma-detail-list { grid-template-columns: 1fr 1fr; }
+  .secura-soc-review-main .security-review-file-inspection-grid { grid-template-columns: 1fr; }
+  .secura-soc-review-main .security-review-figma-row { min-height: 65px; }
+  /* Request cards on narrow screens, with no sideways-only navigation. */
+  .secura-soc-review-main .security-review-figma-heading { display: none; }
+  .secura-soc-review-main .security-review-figma-data-row {
+    grid-template-columns: minmax(0,1fr) auto;
+    grid-template-areas: "request status" "requester status" "filename filename";
+    gap: 6px 11px;
+    min-height: 104px; padding: 16px;
+    align-items: start;
+  }
+  .secura-soc-review-main .security-review-figma-data-row > :nth-child(1) { grid-area: request; }
+  .secura-soc-review-main .security-review-figma-data-row > :nth-child(2) { grid-area: requester; color: var(--rv-muted); }
+  .secura-soc-review-main .security-review-figma-data-row > :nth-child(4) { grid-area: filename; white-space: normal; }
+  .secura-soc-review-main .security-review-figma-data-row > :nth-child(6) { grid-area: status; }
+}
+@media (max-width: 420px) {
+  .secura-soc-review-main .security-review-figma-summary { gap: 8px; }
+  .secura-soc-review-main .security-review-figma-summary span { font-size: 10px; }
+  .secura-soc-review-main .security-review-figma-summary strong { font-size: 29px; }
+  .secura-soc-review-main .security-review-figma-detail-list { grid-template-columns: 1fr; }
+  .secura-soc-review-main .security-review-figma-detail-list > div { grid-column: 1 / -1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .secura-soc-review-main *, .secura-soc-review-main *::before, .secura-soc-review-main *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+
+/* ================================================================
+ * V13.4 — Compact Review Inspector & aligned Inbox (full stylesheet)
+ * ============================================================== */
+
+/* Remove legacy almost-black tab container, including pseudo-layers. */
+.secura-soc-review-main .security-review-figma-tabs,
+html[data-theme="dark"] .secura-soc-review-main .security-review-figma-tabs,
+html[data-theme="light"] .secura-soc-review-main .security-review-figma-tabs {
+  display: flex !important;
+  align-items: center;
+  width: 100%; gap: 7px;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+.secura-soc-review-main .security-review-figma-tabs::before,
+.secura-soc-review-main .security-review-figma-tabs::after,
+.secura-soc-review-main .security-review-figma-tools::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Compact hero and summaries preserve the V13.3 palette. */
+.secura-soc-review-main { padding-top: 14px !important; }
+.secura-soc-review-main .security-review-figma-header {
+  min-height: 124px;
+  padding: 21px 28px;
+  margin-bottom: 12px;
+}
+.secura-soc-review-main .security-review-figma-header h1 {
+  margin: 9px 0 5px;
+  font-size: clamp(25px,2.6vw,35px);
+}
+.secura-soc-review-main .security-review-figma-header > p:last-child {
+  line-height: 1.4;
+}
+.secura-soc-review-main .security-review-figma-summary {
+  gap: 12px;
+  margin-bottom: 13px;
+}
+.secura-soc-review-main .security-review-figma-summary article {
+  min-height: 104px;
+  padding: 13px 17px;
+  gap: 2px;
+}
+.secura-soc-review-main .security-review-figma-summary strong {
+  font-size: clamp(27px,2.5vw,34px);
+  margin-top: 3px;
+}
+.secura-soc-review-main .security-review-figma-summary article strong::after {
+  margin-top: 6px;
+}
+
+/* Same visual height, each panel fills exactly one grid row on desktop. */
+@media (min-width: 1181px) {
+  .secura-soc-review-main .security-review-figma-workspace {
+    align-items: stretch;
+    grid-template-columns: minmax(0,1.08fr) minmax(420px,.92fr);
+    gap: 14px;
+    height: clamp(525px, calc(100dvh - 386px), 680px);
+  }
+  .secura-soc-review-main .security-review-figma-list-panel,
+  .secura-soc-review-main .security-review-figma-detail-panel {
+    height: 100%;
+    min-height: 0;
+    max-height: 100%;
+    align-self: stretch;
+    border-radius: 19px;
+  }
+  .secura-soc-review-main .security-review-figma-detail-panel {
+    position: relative;
+    top: auto;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .secura-soc-review-main .security-review-figma-table-wrap {
+    min-height: 0;
+    overflow-y: auto;
+  }
+}
+.secura-soc-review-main .security-review-figma-tools {
+  flex: 0 0 auto;
+  gap: 9px;
+  padding: 14px 16px 12px;
+}
+.secura-soc-review-main .security-review-figma-search { min-height: 38px; }
+.secura-soc-review-main .security-review-figma-search input { height: 36px; }
+.secura-soc-review-main .security-review-figma-tabs button { min-height: 29px; padding: 5px 10px; }
+.secura-soc-review-main .security-review-figma-row {
+  min-height: 59px;
+  padding: 9px 13px;
+}
+.secura-soc-review-main .security-review-figma-heading { min-height: 37px; }
+.secura-soc-review-main .security-review-figma-table-wrap { scrollbar-width: none; }
+.secura-soc-review-main .secura-review-inbox-footer {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 17px;
+  border-top: 1px solid var(--rv-line);
+  color: var(--rv-muted);
+  font-size: 10px;
+  font-weight: 720;
+  background: var(--rv-panel);
+}
+.secura-soc-review-main .secura-review-inbox-footer span:last-child {
+  color: var(--rv-amber);
+}
+
+/* Dense evidence inspector with readable labels; decision actions stay visible. */
+.secura-soc-review-main .security-review-figma-detail-content {
+  min-height: 100%;
+  padding: 16px 18px 0;
+  gap: 0;
+}
+.secura-soc-review-main .security-review-figma-detail-title {
+  padding: 7px 0 10px;
+  margin: 0;
+}
+.secura-soc-review-main .security-review-figma-detail-title h2 { font-size: 20px; }
+.secura-soc-review-main .security-review-figma-detail-list {
+  column-gap: 12px;
+  margin-bottom: 5px;
+}
+.secura-soc-review-main .security-review-figma-detail-list > div {
+  padding: 7px 0;
+}
+.secura-soc-review-main .security-review-figma-detail-list dt { font-size: 9px; }
+.secura-soc-review-main .security-review-figma-detail-list dd {
+  margin: 3px 0 0;
+  font-size: 11px;
+  line-height: 1.32;
+}
+.secura-soc-review-main .security-review-file-inspection {
+  padding: 11px 12px;
+  margin: 8px 0 4px;
+  border-radius: 13px;
+}
+.secura-soc-review-main .security-review-file-inspection-heading {
+  margin-bottom: 7px;
+  gap: 6px;
+}
+.secura-soc-review-main .security-review-file-inspection-heading > span {
+  width: 28px;
+  height: 28px;
+  flex-basis: 28px;
+  border-radius: 9px;
+}
+.secura-soc-review-main .security-review-file-inspection-grid { gap: 7px; margin-bottom: 7px; }
+.secura-soc-review-main .security-review-file-inspection-grid > div {
+  padding: 7px 9px;
+  border-radius: 9px;
+}
+.secura-soc-review-main .security-review-file-inspection-grid small { margin-bottom: 3px; }
+.secura-soc-review-main .security-review-file-inspection-state { gap: 6px; }
+.secura-soc-review-main .security-review-file-inspection-state > div { font-size: 10px; line-height: 1.35; }
+.secura-soc-review-main .security-review-open-original {
+  min-height: 34px;
+  padding: 6px 10px;
+  font-size: 10px;
+}
+.secura-soc-review-main .security-review-file-inspection-note {
+  margin-top: 6px;
+  font-size: 9px;
+  line-height: 1.4;
+}
+.secura-soc-review-main .security-review-related-link {
+  margin: 7px 0;
+  font-size: 10px;
+}
+.secura-soc-review-main .security-review-decision-lock {
+  margin: 3px 0 7px;
+  padding: 8px 10px;
+  line-height: 1.35;
+}
+/* Sticky within the inspector scrollport, so decisions remain reachable. */
+.secura-soc-review-main .security-review-figma-actions {
+  position: sticky;
+  z-index: 4;
+  bottom: 0;
+  margin-top: auto;
+  padding: 10px 0 12px;
+  border-top: 1px solid var(--rv-line);
+  background: var(--rv-panel);
+  box-shadow: 0 -12px 22px -20px rgba(1,2,10,.55);
+}
+.secura-soc-review-main .security-review-figma-actions button { min-height: 38px; }
+
+/* Rejection information is shown again after the backend confirms it. */
+.secura-soc-review-main .secura-review-rejection-note {
+  border: 1px solid rgba(238,114,143,.30);
+  background: rgba(238,114,143,.07);
+  border-radius: 11px;
+  padding: 11px 13px;
+  margin-top: 9px;
+}
+.secura-soc-review-main .secura-review-rejection-note span {
+  display: block;
+  font-weight: 850;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--rv-danger);
+}
+.secura-soc-review-main .secura-review-rejection-note p {
+  margin: 7px 0 0;
+  font-size: 11px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  color: var(--rv-ink);
+}
+
+/* Reject modal: clear mandatory remark, keyboard focus, strong contrast. */
+.secura-soc-review-main .secura-review-rejection-field {
+  margin-top: 16px;
+  display: grid;
+  gap: 8px;
+}
+.secura-soc-review-main .secura-review-rejection-field label {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--rv-ink);
+  font-weight: 800;
+}
+.secura-soc-review-main .secura-review-rejection-field label span {
+  font-size: 10px;
+  color: var(--rv-amber);
+}
+.secura-soc-review-main .secura-review-rejection-field textarea {
+  display: block;
+  width: 100%;
+  resize: vertical;
+  min-height: 98px;
+  max-height: 180px;
+  border: 1px solid var(--rv-line) !important;
+  border-radius: 11px;
+  padding: 12px;
+  background: var(--rv-panel-soft) !important;
+  color: var(--rv-ink) !important;
+  outline: none;
+  box-shadow: none;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.55;
+}
+.secura-soc-review-main .secura-review-rejection-field textarea:focus {
+  border-color: var(--rv-purple) !important;
+  box-shadow: 0 0 0 3px rgba(171,112,244,.14);
+}
+.secura-soc-review-main .secura-review-rejection-field textarea::placeholder {
+  color: var(--rv-muted);
+}
+.secura-soc-review-main .secura-review-rejection-field small {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--rv-muted);
+  font-size: 10px;
+  line-height: 1.4;
+}
+.secura-soc-review-main .secura-review-rejection-field small strong { color: var(--rv-purple); }
+.secura-soc-review-main .secura-review-modal-error {
+  margin: 9px 0;
+  border-radius: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(232,92,118,.40);
+  background: rgba(232,92,118,.11);
+  color: var(--rv-danger);
+  font-size: 11px;
+}
+.secura-soc-review-main .security-review-figma-modal-actions button:disabled { opacity: .5; cursor: not-allowed; }
+.secura-soc-review-main .security-review-figma-modal button,
+.secura-soc-review-main .security-review-figma-modal textarea { font-family: inherit; }
+
+/* Tablet and mobile retain native vertical flow; desktop is equal-height. */
+@media (max-width:1180px) {
+  .secura-soc-review-main .security-review-figma-workspace { height: auto; }
+  .secura-soc-review-main .security-review-figma-list-panel,
+  .secura-soc-review-main .security-review-figma-detail-panel { height: auto; max-height: none; }
+  .secura-soc-review-main .security-review-figma-detail-panel { overflow: visible; }
+  .secura-soc-review-main .security-review-figma-actions { position: static; }
+}
+@media (max-width:720px) {
+  .secura-soc-review-main .security-review-figma-header { min-height: 0; padding: 19px 20px; }
+  .secura-soc-review-main .security-review-figma-summary { gap: 8px; }
+  .secura-soc-review-main .security-review-figma-summary article { min-height: 90px; padding: 12px; }
+  .secura-soc-review-main .security-review-figma-detail-content { padding: 14px 13px 0; }
+  .secura-soc-review-main .security-review-figma-data-row { min-height: 93px; }
+}
+
+
+/* ============================================================
+   SECURA NeoFlow V13.4.1 — remove the long black rectangle
+   The legacy global index.css paints .secura-workspace-main with
+   --secura-bg in dark mode. Its background covers the entire
+   viewport-height review container and creates an obvious slab.
+   Only the review page's OUTER main surface is made transparent.
+   Do not change actual request cards, evidence panel, modal,
+   approval flow or the theme's overall page background.
+   ============================================================ */
+.secura-soc-workspace .secura-workspace-main.secura-soc-review-main,
+html[data-theme="dark"] .secura-soc-workspace .secura-workspace-main.secura-soc-review-main,
+html[data-theme="light"] .secura-soc-workspace .secura-workspace-main.secura-soc-review-main {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  min-height: 0 !important;
+}
