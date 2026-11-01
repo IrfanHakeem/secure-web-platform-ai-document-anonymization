@@ -146,6 +146,22 @@ function OriginalAccessReview() {
     setConfirmDecision,
   ] = useState(null)
 
+  const [rejectionReason, setRejectionReason] = useState('')
+  const [decisionModalError, setDecisionModalError] = useState('')
+
+  const openDecisionModal = (request, decision) => {
+    setRejectionReason('')
+    setDecisionModalError('')
+    setConfirmDecision({ request, decision })
+  }
+
+  const closeDecisionModal = () => {
+    if (decisionLoadingId !== null) return
+    setConfirmDecision(null)
+    setRejectionReason('')
+    setDecisionModalError('')
+  }
+
 
   const [
     reviewStates,
@@ -527,6 +543,13 @@ function OriginalAccessReview() {
       request,
       decision,
     ) => {
+      const reason = rejectionReason.trim()
+      if (decision === 'REJECT' && !reason) {
+        setDecisionModalError('Enter a rejection reason before confirming.')
+        return
+      }
+
+      setDecisionModalError('')
       setDecisionLoadingId(
         request.id,
       )
@@ -540,6 +563,7 @@ function OriginalAccessReview() {
             `/original-file-requests/${request.id}/security-decision`,
             {
               decision,
+              ...(decision === 'REJECT' ? { rejection_reason: reason } : {}),
             },
           )
 
@@ -568,8 +592,10 @@ function OriginalAccessReview() {
         }
 
         setConfirmDecision(null)
+        setRejectionReason('')
+        setDecisionModalError('')
       } catch (decisionError) {
-        setError(
+        setDecisionModalError(
           getApiError(
             decisionError,
             'Unable to update the security review.',
@@ -923,6 +949,14 @@ function OriginalAccessReview() {
             </div>
           )}
 
+          <footer className="secura-review-inbox-footer" aria-live="polite">
+            <span>
+              {loading
+                ? 'Loading requests…'
+                : `Showing ${visibleRequests.length} of ${requests.length} requests`}
+            </span>
+            <span>{loading ? '—' : `${counts.pending} pending`}</span>
+          </footer>
         </section>
 
         <aside className="security-review-figma-detail-panel">
@@ -1043,6 +1077,14 @@ function OriginalAccessReview() {
                   </dd>
                 </div>
               </dl>
+
+              {selectedRequest.status === 'REJECTED_BY_SECURITY' &&
+                selectedRequest.rejection_reason && (
+                <section className="secura-review-rejection-note">
+                  <span>REJECTION REASON</span>
+                  <p>{selectedRequest.rejection_reason}</p>
+                </section>
+              )}
 
               {selectedRequest.status ===
                 'PENDING_SECURITY' && (
@@ -1166,8 +1208,11 @@ function OriginalAccessReview() {
                     </button>
                   </div>
 
-                  <p className="security-review-file-inspection-note">
-                    PDF, TXT and CSV open for secure browser review. DOCX and XLSX are downloaded for local review. The backend decrypts in memory, verifies SHA-256, and records the review in the audit log.
+                  <p
+                    className="security-review-file-inspection-note"
+                    title="PDF, TXT and CSV open in the browser. DOCX and XLSX download for local review. The server verifies SHA-256 and records the review in the audit log."
+                  >
+                    PDF/TXT/CSV preview in browser · DOCX/XLSX download. Server verifies SHA-256.
                   </p>
                 </section>
               )}
@@ -1212,14 +1257,7 @@ function OriginalAccessReview() {
                         !canApproveSelected
                       }
                       onClick={() =>
-                        setConfirmDecision(
-                          {
-                            request:
-                              selectedRequest,
-                            decision:
-                              'APPROVE',
-                          },
-                        )
+                        openDecisionModal(selectedRequest, 'APPROVE')
                       }
                     >
                       Approve
@@ -1232,14 +1270,7 @@ function OriginalAccessReview() {
                         !canRejectSelected
                       }
                       onClick={() =>
-                        setConfirmDecision(
-                          {
-                            request:
-                              selectedRequest,
-                            decision:
-                              'REJECT',
-                          },
-                        )
+                        openDecisionModal(selectedRequest, 'REJECT')
                       }
                     >
                       Reject
@@ -1272,27 +1303,25 @@ function OriginalAccessReview() {
       {confirmDecision && (
         <div
           className="security-review-figma-backdrop"
-          onClick={() =>
-            setConfirmDecision(
-              null,
-            )
-          }
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) closeDecisionModal()
+          }}
+          onKeyDown={(event) => {
+            if (event.key === 'Escape') closeDecisionModal()
+          }}
         >
           <section
             className="security-review-figma-modal"
-            onClick={(event) =>
-              event.stopPropagation()
-            }
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="secura-review-decision-heading"
           >
             <button
               type="button"
               className="security-review-figma-modal-close"
               aria-label="Close"
-              onClick={() =>
-                setConfirmDecision(
-                  null,
-                )
-              }
+              onClick={closeDecisionModal}
+              disabled={decisionLoadingId !== null}
             >
               <X size={18} />
             </button>
@@ -1310,9 +1339,8 @@ function OriginalAccessReview() {
                   />
                 </div>
 
-                <h2>
-                  Approve original
-                  access
+                <h2 id="secura-review-decision-heading">
+                  Approve original access
                 </h2>
 
                 <p>
@@ -1332,9 +1360,8 @@ function OriginalAccessReview() {
                   />
                 </div>
 
-                <h2>
-                  Reject original
-                  access
+                <h2 id="secura-review-decision-heading">
+                  Reject original access
                 </h2>
 
                 <p>
@@ -1360,15 +1387,43 @@ function OriginalAccessReview() {
               </span>
             </div>
 
+            {confirmDecision.decision === 'REJECT' && (
+              <div className="secura-review-rejection-field">
+                <label htmlFor="secura-rejection-reason">
+                  Rejection Reason <span>Required</span>
+                </label>
+                <textarea
+                  id="secura-rejection-reason"
+                  autoFocus
+                  required
+                  maxLength={500}
+                  rows={4}
+                  placeholder="Explain why this original access request cannot be approved…"
+                  value={rejectionReason}
+                  onChange={(event) => {
+                    setRejectionReason(event.target.value)
+                    if (decisionModalError) setDecisionModalError('')
+                  }}
+                />
+                <small>
+                  This reason is saved to the audit trail and visible in the request record.
+                  <strong>{rejectionReason.length}/500</strong>
+                </small>
+              </div>
+            )}
+
+            {decisionModalError && (
+              <p className="secura-review-modal-error" role="alert">
+                {decisionModalError}
+              </p>
+            )}
+
             <div className="security-review-figma-modal-actions">
               <button
                 type="button"
                 className="secondary"
-                onClick={() =>
-                  setConfirmDecision(
-                    null,
-                  )
-                }
+                onClick={closeDecisionModal}
+                disabled={decisionLoadingId !== null}
               >
                 Cancel
               </button>
@@ -1382,9 +1437,8 @@ function OriginalAccessReview() {
                     : 'reject'
                 }
                 disabled={
-                  decisionLoadingId ===
-                  confirmDecision
-                    .request.id
+                  decisionLoadingId === confirmDecision.request.id ||
+                  (confirmDecision.decision === 'REJECT' && !rejectionReason.trim())
                 }
                 onClick={() =>
                   handleDecision(

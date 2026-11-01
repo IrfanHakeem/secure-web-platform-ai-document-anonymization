@@ -1,5 +1,6 @@
 import csv
 import io
+from collections import deque
 import uuid
 from pathlib import Path
 from xml.sax.saxutils import escape
@@ -184,56 +185,105 @@ def anonymize_txt(
     )
 
 
+class _CsvReplacementMatcher:
+    """Multi-pattern matcher: one scan per cell instead of N .replace calls.
+
+    Substitution is leftmost-longest and non-cascading (replacement text is
+    never scanned again), which prevents replacement collisions. This can
+    differ from the old cascading algorithm in contrived overlap cases.
+    """
+
+    def __init__(self, replacements: dict[str, str]):
+        self.exact = {key: value for key, value in replacements.items() if key}
+        self.goto: list[dict[str, int]] = [{}]
+        self.fail: list[int] = [0]
+        self.outputs: list[list[tuple[int, str]]] = [[]]
+
+        for original, replacement in self.exact.items():
+            state = 0
+            for char in original:
+                next_state = self.goto[state].get(char)
+                if next_state is None:
+                    next_state = len(self.goto)
+                    self.goto[state][char] = next_state
+                    self.goto.append({})
+                    self.fail.append(0)
+                    self.outputs.append([])
+                state = next_state
+            self.outputs[state].append((len(original), replacement))
+
+        queue = deque(self.goto[0].values())
+        while queue:
+            parent = queue.popleft()
+            for char, child in self.goto[parent].items():
+                queue.append(child)
+                candidate = self.fail[parent]
+                while candidate and char not in self.goto[candidate]:
+                    candidate = self.fail[candidate]
+                self.fail[child] = self.goto[candidate].get(char, 0)
+                self.outputs[child].extend(self.outputs[self.fail[child]])
+
+    def replace(self, cell: str) -> str:
+        # Typical CSV fields (name/email/phone/IC) are exact PII matches.
+        direct = self.exact.get(cell)
+        if direct is not None:
+            return direct
+        if not self.exact or not cell:
+            return cell
+
+        matches: dict[int, tuple[int, str]] = {}
+        state = 0
+        for end, char in enumerate(cell):
+            while state and char not in self.goto[state]:
+                state = self.fail[state]
+            state = self.goto[state].get(char, 0)
+            for length, replacement in self.outputs[state]:
+                start = end + 1 - length
+                previous = matches.get(start)
+                if previous is None or length > previous[0]:
+                    matches[start] = (length, replacement)
+
+        if not matches:
+            return cell
+
+        fragments = []
+        i = 0
+        anchor = 0
+        while i < len(cell):
+            match = matches.get(i)
+            if match is None:
+                i += 1
+                continue
+            length, replacement = match
+            fragments.append(cell[anchor:i])
+            fragments.append(replacement)
+            i += length
+            anchor = i
+        fragments.append(cell[anchor:])
+        return "".join(fragments)
+
+
 def anonymize_csv(
     data: bytes,
     replacement_map: dict[str, str]
 ) -> bytes:
-
-    text = data.decode(
-        "utf-8"
-    )
-
-    input_stream = io.StringIO(
-        text
-    )
+    text = data.decode("utf-8")
+    input_stream = io.StringIO(text)
 
     try:
-        dialect = csv.Sniffer().sniff(
-            text[:2048]
-        )
-
+        dialect = csv.Sniffer().sniff(text[:2048])
     except csv.Error:
         dialect = csv.excel
 
-    reader = csv.reader(
-        input_stream,
-        dialect
-    )
-
+    reader = csv.reader(input_stream, dialect)
     output_stream = io.StringIO()
+    writer = csv.writer(output_stream, dialect)
 
-    writer = csv.writer(
-        output_stream,
-        dialect
-    )
-
+    matcher = _CsvReplacementMatcher(replacement_map)
     for row in reader:
+        writer.writerow([matcher.replace(cell) for cell in row])
 
-        anonymized_row = [
-            replace_text(
-                cell,
-                replacement_map
-            )
-            for cell in row
-        ]
-
-        writer.writerow(
-            anonymized_row
-        )
-
-    return output_stream.getvalue().encode(
-        "utf-8"
-    )
+    return output_stream.getvalue().encode("utf-8")
 
 
 def anonymize_docx(

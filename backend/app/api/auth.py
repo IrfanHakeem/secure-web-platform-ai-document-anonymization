@@ -1,10 +1,6 @@
 import os
 import secrets
-from datetime import (
-    datetime,
-    timedelta,
-    timezone,
-)
+from datetime import datetime, timedelta, timezone
 
 import jwt
 from fastapi import (
@@ -14,10 +10,7 @@ from fastapi import (
     Request,
     status,
 )
-from sqlalchemy import (
-    func,
-    select,
-)
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
@@ -34,131 +27,172 @@ from app.core.security import (
     verify_otp_hash,
     verify_password,
 )
-from app.models.password_reset_otp import (
-    PasswordResetOTP,
-)
+from app.models.audit_log import AuditLog
+from app.models.password_reset_otp import PasswordResetOTP
 from app.models.user import User
-from app.schemas.auth import (
-    LoginRequest,
-    TokenResponse,
-)
+from app.schemas.auth import LoginRequest, TokenResponse
 from app.schemas.password_recovery import (
     AdminForgotPasswordRequest,
     AdminResetPasswordRequest,
     AdminVerifyOTPRequest,
     AdminVerifyOTPResponse,
 )
-from app.services.audit_service import (
-    record_audit_event,
-)
-from app.services.email_service import (
-    send_admin_password_reset_otp,
-)
+from app.services.audit_service import record_audit_event
+from app.services.email_service import send_admin_password_reset_otp
 
 
 router = APIRouter(
     prefix="/auth",
-    tags=["Authentication"]
+    tags=["Authentication"],
 )
 
-
-OTP_EXPIRE_MINUTES = int(
-    os.getenv(
-        "OTP_EXPIRE_MINUTES",
-        "10"
-    )
+OTP_EXPIRE_MINUTES = max(
+    1,
+    min(30, int(os.getenv("OTP_EXPIRE_MINUTES", "5"))),
 )
 
 MAX_OTP_ATTEMPTS = 5
+OTP_RESEND_COOLDOWN_SECONDS = 60
+OTP_REQUESTS_PER_HOUR = 5
+OTP_REQUESTS_PER_IP = 8
+OTP_VERIFICATIONS_PER_IP = 30
+OTP_RESETS_PER_IP = 20
+RATE_LIMIT_WINDOW_MINUTES = 15
 
 
-def get_client_ip(
-    request: Request
-) -> str | None:
+def get_client_ip(request: Request) -> str:
+    # Do not trust client-supplied X-Forwarded-For headers.
+    if request.client:
+        return request.client.host
+    return "unknown"
 
-    if request.client is None:
-        return None
 
-    return request.client.host
+def _utc(value: datetime) -> datetime:
+    if value.tzinfo is None:
+        return value.replace(tzinfo=timezone.utc)
+    return value
+
+
+def _recent_event_count(
+    db: Session,
+    *,
+    action: str,
+    since: datetime,
+    ip_address: str | None = None,
+    user_id: int | None = None,
+) -> int:
+    statement = select(func.count(AuditLog.id)).where(
+        AuditLog.action == action,
+        AuditLog.created_at >= since,
+    )
+
+    if ip_address is not None:
+        statement = statement.where(
+            AuditLog.ip_address == ip_address
+        )
+
+    if user_id is not None:
+        statement = statement.where(
+            AuditLog.user_id == user_id
+        )
+
+    return int(db.scalar(statement) or 0)
+
+
+def _check_ip_limit(
+    db: Session,
+    request: Request,
+    *,
+    action: str,
+    maximum: int,
+) -> None:
+    now = datetime.now(timezone.utc)
+    ip_address = get_client_ip(request)
+
+    count = _recent_event_count(
+        db,
+        action=action,
+        ip_address=ip_address,
+        since=now - timedelta(
+            minutes=RATE_LIMIT_WINDOW_MINUTES
+        ),
+    )
+
+    record_audit_event(
+        action=action,
+        resource_type="authentication",
+        details="Administrator recovery endpoint request",
+        ip_address=ip_address,
+    )
+
+    if count >= maximum:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=(
+                "Too many requests. "
+                "Please try again later."
+            ),
+            headers={
+                "Retry-After": str(
+                    RATE_LIMIT_WINDOW_MINUTES * 60
+                )
+            },
+        )
 
 
 @router.post(
     "/login",
-    response_model=TokenResponse
+    response_model=TokenResponse,
 )
 def login(
     credentials: LoginRequest,
     request: Request,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
-    client_ip = get_client_ip(
-        request
-    )
+    client_ip = get_client_ip(request)
 
-    email = (
-        credentials.email
-        .strip()
-        .lower()
-    )
+    email = credentials.email.strip().lower()
 
     if not email:
         raise HTTPException(
-            status_code=(
-                status.HTTP_400_BAD_REQUEST
-            ),
-            detail="Email cannot be empty"
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email cannot be empty",
         )
 
     user = db.scalar(
         select(User).where(
-            func.lower(
-                User.email
-            ) == email
+            func.lower(User.email) == email
         )
     )
 
     if user is None:
         record_audit_event(
             action="LOGIN_FAILED",
-            user_id=None,
             resource_type="authentication",
-            details=(
-                "Login failed for email: "
-                f"{email}"
-            ),
+            details=f"Login failed for email: {email}",
             ip_address=client_ip,
         )
 
         raise HTTPException(
-            status_code=(
-                status.HTTP_401_UNAUTHORIZED
-            ),
-            detail=(
-                "Invalid email or password"
-            )
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password",
         )
 
     if not verify_password(
         credentials.password,
-        user.password_hash
+        user.password_hash,
     ):
         record_audit_event(
             action="LOGIN_FAILED",
             user_id=user.id,
             resource_type="authentication",
-            details=(
-                "Invalid password attempt"
-            ),
+            details="Invalid password attempt",
             ip_address=client_ip,
         )
 
         raise HTTPException(
-            status_code=(
-                status.HTTP_401_UNAUTHORIZED
-            ),
-            detail=(
-                "Invalid email or password"
-            )
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password",
         )
 
     if not user.is_active:
@@ -166,116 +200,105 @@ def login(
             action="LOGIN_FAILED",
             user_id=user.id,
             resource_type="authentication",
-            details=(
-                "Inactive account attempted login"
-            ),
+            details="Inactive account attempted login",
             ip_address=client_ip,
         )
 
         raise HTTPException(
-            status_code=(
-                status.HTTP_403_FORBIDDEN
-            ),
-            detail=(
-                "User account is inactive"
-            )
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User account is inactive",
         )
 
-    access_token = create_access_token(
-        user.id
-    )
+    access_token = create_access_token(user.id)
 
     record_audit_event(
         action="LOGIN_SUCCESS",
         user_id=user.id,
         resource_type="authentication",
-        details=(
-            f"Successful login as "
-            f"{user.role.name}"
-        ),
+        details=f"Successful login as {user.role.name}",
         ip_address=client_ip,
     )
 
     return TokenResponse(
         access_token=access_token,
-        token_type="bearer"
+        token_type="bearer",
     )
 
 
-@router.post(
-    "/admin-forgot-password"
-)
+@router.post("/admin-forgot-password")
 def admin_forgot_password(
     recovery_data: AdminForgotPasswordRequest,
     request: Request,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
-    email = (
-        recovery_data.email
-        .strip()
-        .lower()
-    )
-
-    user = db.scalar(
-        select(User).where(
-            func.lower(
-                User.email
-            ) == email
-        )
+    _check_ip_limit(
+        db,
+        request,
+        action="ADMIN_PASSWORD_OTP_REQUESTED",
+        maximum=OTP_REQUESTS_PER_IP,
     )
 
     generic_message = {
         "message": (
-            "If a matching Administrator "
-            "account exists, an OTP has "
-            "been sent."
+            "If a matching Administrator account exists, "
+            "an OTP has been sent."
         )
     }
 
+    email = recovery_data.email.strip().lower()
+
+    if not email:
+        return generic_message
+
+    user = db.scalar(
+        select(User)
+        .where(func.lower(User.email) == email)
+        .with_for_update()
+    )
+
     if (
         user is None
-        or user.role.name
-        != "Administrator"
+        or not user.is_active
+        or user.role.name != "Administrator"
     ):
         return generic_message
 
-    now = datetime.now(
-        timezone.utc
-    )
+    now = datetime.now(timezone.utc)
 
-    previous_otps = db.scalars(
-        select(
-            PasswordResetOTP
-        ).where(
-            PasswordResetOTP.user_id
-            == user.id,
-            PasswordResetOTP.used_at
-            .is_(None),
+    last_sent = db.scalar(
+        select(func.max(AuditLog.created_at)).where(
+            AuditLog.user_id == user.id,
+            AuditLog.action == "ADMIN_PASSWORD_OTP_SENT",
         )
-    ).all()
-
-    for previous_otp in previous_otps:
-        previous_otp.used_at = now
-
-    otp = str(
-        secrets.randbelow(
-            900000
-        ) + 100000
     )
+
+    hourly_count = _recent_event_count(
+        db,
+        action="ADMIN_PASSWORD_OTP_SENT",
+        user_id=user.id,
+        since=now - timedelta(hours=1),
+    )
+
+    if hourly_count >= OTP_REQUESTS_PER_HOUR:
+        return generic_message
+
+    if (
+        last_sent is not None
+        and _utc(last_sent)
+        > now - timedelta(
+            seconds=OTP_RESEND_COOLDOWN_SECONDS
+        )
+    ):
+        return generic_message
+
+    otp = f"{secrets.randbelow(1_000_000):06d}"
 
     otp_record = PasswordResetOTP(
         user_id=user.id,
-        otp_hash=hash_otp(
-            otp
-        ),
+        otp_hash=hash_otp(otp),
         attempts=0,
-        expires_at=(
-            now
-            + timedelta(
-                minutes=(
-                    OTP_EXPIRE_MINUTES
-                )
-            )
+        expires_at=now + timedelta(
+            minutes=OTP_EXPIRE_MINUTES
         ),
     )
 
@@ -283,41 +306,46 @@ def admin_forgot_password(
         send_admin_password_reset_otp(
             to_email=user.email,
             otp=otp,
+            expires_minutes=OTP_EXPIRE_MINUTES,
         )
-
     except Exception:
         db.rollback()
 
-        raise HTTPException(
-            status_code=(
-                status.HTTP_503_SERVICE_UNAVAILABLE
+        record_audit_event(
+            action="ADMIN_PASSWORD_OTP_DELIVERY_FAILED",
+            user_id=user.id,
+            resource_type="authentication",
+            details=(
+                "OTP delivery failed; "
+                "check SMTP configuration"
             ),
-            detail=(
-                "Unable to send password "
-                "reset email"
-            )
+            ip_address=get_client_ip(request),
         )
 
-    db.add(
-        otp_record
-    )
+        return generic_message
 
+    # Revoke older OTPs and their reset sessions.
+    old_otps = db.scalars(
+        select(PasswordResetOTP)
+        .where(
+            PasswordResetOTP.user_id == user.id
+        )
+        .with_for_update()
+    ).all()
+
+    for old_otp in old_otps:
+        db.delete(old_otp)
+
+    db.add(otp_record)
     db.commit()
 
     record_audit_event(
-        action=(
-            "ADMIN_PASSWORD_OTP_SENT"
-        ),
+        action="ADMIN_PASSWORD_OTP_SENT",
         user_id=user.id,
         resource_type="authentication",
         resource_id=user.id,
-        details=(
-            "Administrator password "
-            "reset OTP sent"
-        ),
-        ip_address=get_client_ip(
-            request
-        ),
+        details="Administrator password reset OTP sent",
+        ip_address=get_client_ip(request),
     )
 
     return generic_message
@@ -325,380 +353,254 @@ def admin_forgot_password(
 
 @router.post(
     "/admin-verify-otp",
-    response_model=(
-        AdminVerifyOTPResponse
-    )
+    response_model=AdminVerifyOTPResponse,
 )
 def admin_verify_otp(
     verification_data: AdminVerifyOTPRequest,
     request: Request,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
-    email = (
-        verification_data.email
-        .strip()
-        .lower()
+    _check_ip_limit(
+        db,
+        request,
+        action="ADMIN_PASSWORD_OTP_VERIFY_REQUESTED",
+        maximum=OTP_VERIFICATIONS_PER_IP,
     )
 
-    otp = (
-        verification_data.otp
-        .strip()
-    )
+    email = verification_data.email.strip().lower()
+    otp = verification_data.otp.strip()
 
     if (
         len(otp) != 6
+        or not otp.isascii()
         or not otp.isdigit()
     ):
         raise HTTPException(
-            status_code=(
-                status.HTTP_400_BAD_REQUEST
-            ),
-            detail=(
-                "Invalid or expired OTP"
-            )
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired OTP",
         )
 
     user = db.scalar(
         select(User).where(
-            func.lower(
-                User.email
-            ) == email
+            func.lower(User.email) == email
         )
     )
 
     if (
         user is None
-        or user.role.name
-        != "Administrator"
+        or not user.is_active
+        or user.role.name != "Administrator"
     ):
         raise HTTPException(
-            status_code=(
-                status.HTTP_400_BAD_REQUEST
-            ),
-            detail=(
-                "Invalid or expired OTP"
-            )
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired OTP",
         )
 
-    now = datetime.now(
-        timezone.utc
-    )
+    now = datetime.now(timezone.utc)
 
     otp_record = db.scalar(
-        select(
-            PasswordResetOTP
-        )
+        select(PasswordResetOTP)
         .where(
-            PasswordResetOTP.user_id
-            == user.id,
-            PasswordResetOTP.used_at
-            .is_(None),
+            PasswordResetOTP.user_id == user.id,
+            PasswordResetOTP.used_at.is_(None),
         )
-        .order_by(
-            PasswordResetOTP.id.desc()
-        )
+        .order_by(PasswordResetOTP.id.desc())
+        .with_for_update()
     )
 
     if otp_record is None:
         raise HTTPException(
-            status_code=(
-                status.HTTP_400_BAD_REQUEST
-            ),
-            detail=(
-                "Invalid or expired OTP"
-            )
-        )
-
-    if otp_record.expires_at < now:
-        otp_record.used_at = now
-
-        db.commit()
-
-        raise HTTPException(
-            status_code=(
-                status.HTTP_400_BAD_REQUEST
-            ),
-            detail=(
-                "Invalid or expired OTP"
-            )
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired OTP",
         )
 
     if (
-        otp_record.attempts
-        >= MAX_OTP_ATTEMPTS
+        _utc(otp_record.expires_at) <= now
+        or otp_record.attempts >= MAX_OTP_ATTEMPTS
     ):
         otp_record.used_at = now
-
         db.commit()
 
         raise HTTPException(
-            status_code=(
-                status.HTTP_400_BAD_REQUEST
-            ),
-            detail=(
-                "OTP verification failed"
-            )
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired OTP",
         )
 
     if not verify_otp_hash(
         otp,
-        otp_record.otp_hash
+        otp_record.otp_hash,
     ):
         otp_record.attempts += 1
 
-        if (
-            otp_record.attempts
-            >= MAX_OTP_ATTEMPTS
-        ):
+        if otp_record.attempts >= MAX_OTP_ATTEMPTS:
             otp_record.used_at = now
 
         db.commit()
 
         record_audit_event(
-            action=(
-                "ADMIN_PASSWORD_OTP_FAILED"
-            ),
+            action="ADMIN_PASSWORD_OTP_FAILED",
             user_id=user.id,
             resource_type="authentication",
             resource_id=user.id,
-            details=(
-                "Invalid Administrator "
-                "password reset OTP"
-            ),
-            ip_address=get_client_ip(
-                request
-            ),
+            details="Invalid Administrator password reset OTP",
+            ip_address=get_client_ip(request),
         )
 
         raise HTTPException(
-            status_code=(
-                status.HTTP_400_BAD_REQUEST
-            ),
-            detail=(
-                "Invalid or expired OTP"
-            )
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired OTP",
         )
 
+    # Consume OTP before issuing the reset token.
     otp_record.used_at = now
-
     db.commit()
 
-    reset_token = (
-        create_password_reset_token(
-            user_id=user.id,
-            otp_id=otp_record.id,
-        )
+    reset_token = create_password_reset_token(
+        user_id=user.id,
+        otp_id=otp_record.id,
     )
 
     record_audit_event(
-        action=(
-            "ADMIN_PASSWORD_OTP_VERIFIED"
-        ),
+        action="ADMIN_PASSWORD_OTP_VERIFIED",
         user_id=user.id,
         resource_type="authentication",
         resource_id=user.id,
-        details=(
-            "Administrator password "
-            "reset OTP verified"
-        ),
-        ip_address=get_client_ip(
-            request
-        ),
+        details="Administrator password reset OTP verified",
+        ip_address=get_client_ip(request),
     )
 
-    return (
-        AdminVerifyOTPResponse(
-            reset_token=reset_token,
-            token_type="bearer",
-        )
+    return AdminVerifyOTPResponse(
+        reset_token=reset_token,
+        token_type="bearer",
     )
 
 
-@router.post(
-    "/admin-reset-password"
-)
+@router.post("/admin-reset-password")
 def admin_reset_password(
     reset_data: AdminResetPasswordRequest,
     request: Request,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
+    _check_ip_limit(
+        db,
+        request,
+        action="ADMIN_PASSWORD_RESET_REQUESTED",
+        maximum=OTP_RESETS_PER_IP,
+    )
+
     try:
-        payload = (
-            decode_password_reset_token(
-                reset_data.reset_token
-            )
+        payload = decode_password_reset_token(
+            reset_data.reset_token
         )
 
-        user_id = payload.get(
-            "sub"
-        )
-
-        otp_id = payload.get(
-            "otp_id"
-        )
-
-        if (
-            user_id is None
-            or otp_id is None
-        ):
-            raise ValueError
-
-        user = db.get(
-            User,
-            int(user_id)
-        )
-
-        otp_record = db.get(
-            PasswordResetOTP,
-            int(otp_id)
-        )
+        user_id = int(payload["sub"])
+        otp_id = int(payload["otp_id"])
 
     except (
-        jwt.ExpiredSignatureError,
-        jwt.InvalidTokenError,
+        jwt.PyJWTError,
         ValueError,
+        KeyError,
+        TypeError,
     ):
         raise HTTPException(
-            status_code=(
-                status.HTTP_401_UNAUTHORIZED
-            ),
-            detail=(
-                "Invalid or expired "
-                "password reset token"
-            )
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired password reset token",
         )
+
+    otp_record = db.scalar(
+        select(PasswordResetOTP)
+        .where(
+            PasswordResetOTP.id == otp_id,
+            PasswordResetOTP.user_id == user_id,
+        )
+        .with_for_update()
+    )
+
+    user = db.get(User, user_id)
 
     if (
         user is None
-        or user.role.name
-        != "Administrator"
+        or not user.is_active
+        or user.role.name != "Administrator"
     ):
         raise HTTPException(
-            status_code=(
-                status.HTTP_403_FORBIDDEN
-            ),
-            detail=(
-                "Administrator account "
-                "required"
-            )
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired password reset token",
         )
 
     if (
         otp_record is None
-        or otp_record.user_id
-        != user.id
-        or otp_record.used_at
-        is None
+        or otp_record.used_at is None
     ):
         raise HTTPException(
-            status_code=(
-                status.HTTP_401_UNAUTHORIZED
-            ),
-            detail=(
-                "Invalid or expired "
-                "password reset token"
-            )
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired password reset token",
         )
 
-    new_password = (
-        reset_data.new_password
-    )
+    new_password = reset_data.new_password
 
-    if not new_password:
+    if (
+        len(new_password) < 8
+        or len(new_password.encode("utf-8")) > 72
+    ):
         raise HTTPException(
-            status_code=(
-                status.HTTP_400_BAD_REQUEST
-            ),
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail=(
-                "New password cannot "
-                "be empty"
-            )
-        )
-
-    if len(
-        new_password.encode("utf-8")
-    ) > 72:
-        raise HTTPException(
-            status_code=(
-                status.HTTP_400_BAD_REQUEST
+                "Password must be at least 8 characters "
+                "and at most 72 UTF-8 bytes"
             ),
-            detail=(
-                "Password is too long "
-                "for bcrypt"
-            )
         )
 
     user.password_hash = hash_password(
         new_password
     )
 
-    db.delete(
-        otp_record
-    )
-
+    # Delete the OTP record to prevent reset token replay.
+    db.delete(otp_record)
     db.commit()
 
     record_audit_event(
-        action=(
-            "ADMIN_PASSWORD_RESET_BY_OTP"
-        ),
+        action="ADMIN_PASSWORD_RESET_BY_OTP",
         user_id=user.id,
         resource_type="authentication",
         resource_id=user.id,
         details=(
-            "Administrator password "
-            "reset using verified OTP"
+            "Administrator password reset "
+            "using verified OTP"
         ),
-        ip_address=get_client_ip(
-            request
-        ),
+        ip_address=get_client_ip(request),
     )
 
     return {
         "message": (
-            "Administrator password "
-            "reset successfully"
+            "Administrator password reset successfully"
         )
     }
 
 
-@router.get(
-    "/verify"
-)
+@router.get("/verify")
 def verify_authentication(
-    current_user: User = Depends(
-        get_current_user
-    )
+    current_user: User = Depends(get_current_user),
 ):
     return {
         "authenticated": True,
-        "user_id":
-            current_user.id,
-        "username":
-            current_user.username,
-        "full_name":
-            current_user.full_name,
-        "email":
-            current_user.email,
-        "role":
-            current_user.role.name,
-        "department_id":
-            current_user.department_id,
-        "is_active":
-            current_user.is_active,
+        "user_id": current_user.id,
+        "username": current_user.username,
+        "full_name": current_user.full_name,
+        "email": current_user.email,
+        "role": current_user.role.name,
+        "department_id": current_user.department_id,
+        "is_active": current_user.is_active,
     }
 
 
-@router.get(
-    "/admin-check"
-)
+@router.get("/admin-check")
 def verify_administrator(
     current_user: User = Depends(
         require_role("Administrator")
-    )
+    ),
 ):
     return {
         "authorized": True,
-        "role":
-            current_user.role.name,
+        "role": current_user.role.name,
     }

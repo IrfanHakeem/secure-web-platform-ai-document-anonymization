@@ -1,3 +1,6 @@
+import { Navigate as SecuraNavigate } from 'react-router-dom'
+import { useAuth as useSecuraAuth } from './context/useAuth'
+import { ROLES as SECURA_ROLES } from './utils/roles'
 import {
   Navigate,
   Route,
@@ -33,22 +36,45 @@ import ProtectedRoute from './routes/ProtectedRoute'
 import RoleRoute from './routes/RoleRoute'
 import { ROLES } from './utils/roles'
 
-function Placeholder({ title }) {
-  return (
-    <main className="min-h-screen bg-[#f7f8fb] p-10">
-      <div className="mx-auto max-w-5xl rounded-[18px] border border-[#e9eaf0] bg-white p-10 shadow-sm">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#6560c9]">
-          Secura
-        </p>
+import { useAuth } from './context/useAuth'
 
-        <h1 className="mt-3 text-3xl font-semibold text-[#22283b]">
-          {title}
-        </h1>
-      </div>
-    </main>
-  )
+function SecuraRoleRedirect() {
+  const { user, loading } = useAuth()
+
+  // A session may still be verifying after a browser refresh.
+  if (loading) return null
+  if (!user) return <Navigate to="/login" replace />
+
+  const homeByRole = {
+    [ROLES.USER]: '/user/dashboard',
+    [ROLES.ADMINISTRATOR]: '/admin/dashboard',
+    [ROLES.SECURITY_OFFICER]: '/security/dashboard',
+  }
+
+  // Unauthorized routes send a signed-in user back to their OWN dashboard.
+  // RoleRoute and ProtectedRoute continue enforcing access controls.
+  return <Navigate to={homeByRole[user.role] || '/login'} replace />
 }
 
+
+function SecuraHomeRedirect() {
+  const { user } = useSecuraAuth()
+
+  if (!user) {
+    return <SecuraNavigate to="/login" replace />
+  }
+
+  const destination =
+    user.role === SECURA_ROLES.ADMINISTRATOR
+      ? '/admin/dashboard'
+      : user.role === SECURA_ROLES.SECURITY_OFFICER
+        ? '/security/dashboard'
+        : user.role === SECURA_ROLES.USER
+          ? '/user/dashboard'
+          : '/unauthorized'
+
+  return <SecuraNavigate to={destination} replace />
+}
 function App() {
   return (
     <Routes>
@@ -68,7 +94,7 @@ function App() {
         <Route
           path="/"
           element={
-            <Placeholder title="Authenticated Workspace" />
+            <SecuraHomeRedirect />
           }
         />
 
@@ -249,7 +275,7 @@ function App() {
       <Route
         path="/unauthorized"
         element={
-          <Placeholder title="Unauthorized Access" />
+          <SecuraRoleRedirect />
         }
       />
 

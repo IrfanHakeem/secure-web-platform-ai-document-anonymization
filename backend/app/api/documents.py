@@ -1,3 +1,6 @@
+
+from pathlib import Path
+
 from fastapi import (
     APIRouter,
     Depends,
@@ -23,14 +26,13 @@ from app.services.file_service import (
 
 router = APIRouter(
     prefix="/documents",
-    tags=["Documents"]
+    tags=["Documents"],
 )
 
 
 def get_client_ip(
-    request: Request
+    request: Request,
 ) -> str | None:
-
     if request.client is None:
         return None
 
@@ -39,7 +41,7 @@ def get_client_ip(
 
 @router.post(
     "/upload",
-    response_model=DocumentUploadResponse
+    response_model=DocumentUploadResponse,
 )
 async def upload_document(
     request: Request,
@@ -47,38 +49,76 @@ async def upload_document(
     current_user: User = Depends(
         get_current_user
     ),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
-    file_data = await process_uploaded_file(
-        file
-    )
+    # Validate uploaded file before saving its database record.
+    try:
+        file_data = await process_uploaded_file(
+            file
+        )
 
+    except HTTPException as error:
+        record_audit_event(
+            action="DOCUMENT_UPLOAD_REJECTED",
+            user_id=current_user.id,
+            resource_type="document",
+            details=(
+                "Upload validation rejected: "
+                f"{error.detail}"
+            ),
+            ip_address=get_client_ip(request),
+        )
+
+        raise
+
+    # Save metadata of a validated, encrypted document.
     document = Document(
         owner_id=current_user.id,
+
         original_filename=(
             file_data["original_filename"]
         ),
+
         file_type=file_data["file_type"],
+
         file_size=file_data["file_size"],
+
         sha256_hash=file_data["sha256_hash"],
+
         encrypted_file_path=(
             file_data["encrypted_file_path"]
         ),
+
         anonymized_file_path=None,
+
         is_private=True,
     )
 
-    db.add(document)
-    db.commit()
-    db.refresh(document)
+    try:
+        db.add(document)
+        db.commit()
+        db.refresh(document)
 
+    except Exception:
+        db.rollback()
+
+        # Prevent orphaned encrypted files when DB insert fails.
+        Path(
+            file_data["encrypted_file_path"]
+        ).unlink(
+            missing_ok=True
+        )
+
+        raise
+
+    # Audit successful upload.
     record_audit_event(
         action="DOCUMENT_UPLOAD",
         user_id=current_user.id,
         resource_type="document",
         resource_id=document.id,
         details=(
-            f"Uploaded document: "
+            "Uploaded document: "
             f"{document.original_filename}"
         ),
         ip_address=get_client_ip(request),
@@ -87,30 +127,33 @@ async def upload_document(
     return document
 
 
-@router.get("/{document_id}/integrity")
+@router.get(
+    "/{document_id}/integrity",
+)
 def verify_document_integrity(
     document_id: int,
     request: Request,
     current_user: User = Depends(
         get_current_user
     ),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     document = db.get(
         Document,
-        document_id
+        document_id,
     )
 
     if document is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Document not found"
+            detail="Document not found",
         )
 
+    # Only the document owner or Administrator can check
+    # integrity using this endpoint.
     if (
         document.owner_id != current_user.id
-        and current_user.role.name
-        != "Administrator"
+        and current_user.role.name != "Administrator"
     ):
         record_audit_event(
             action="UNAUTHORIZED_ACCESS",
@@ -126,13 +169,14 @@ def verify_document_integrity(
 
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Access denied"
+            detail="Access denied",
         )
 
+    # Decrypt original and verify its SHA-256 hash.
     try:
         decrypt_and_verify_file(
             document.encrypted_file_path,
-            document.sha256_hash
+            document.sha256_hash,
         )
 
     except HTTPException as error:
@@ -152,13 +196,11 @@ def verify_document_integrity(
         user_id=current_user.id,
         resource_type="document",
         resource_id=document.id,
-        details=(
-            "Document integrity verified"
-        ),
+        details="Document integrity verified",
         ip_address=get_client_ip(request),
     )
 
     return {
         "document_id": document.id,
-        "integrity": "verified"
+        "integrity": "verified",
     }

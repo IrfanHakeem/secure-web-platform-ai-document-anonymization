@@ -1,0 +1,165 @@
+/* SECURA NeoFlow V12.1 — Login polish. Auth-only design. */
+.secura-neo-login {
+  --auth-bg:#0c1020; --auth-ink:#f4f4ff; --auth-muted:#a5acc8;
+  --auth-form:#12182b; --auth-field:#1a2238; --auth-border:rgba(152,153,210,.19);
+  --auth-violet:#9c72ff; --auth-cyan:#50e7df;
+  min-height:100vh; min-height:100dvh; color:var(--auth-ink);
+  background:var(--auth-bg); font-family:Inter,ui-sans-serif,system-ui,sans-serif;
+}
+.secura-neo-login[data-login-theme='light'] {
+  --auth-bg:#f4f3fb; --auth-ink:#222341; --auth-muted:#6e748f;
+  --auth-form:#ffffff; --auth-field:#f7f6fe; --auth-border:rgba(86,82,151,.16);
+  --auth-violet:#784be3; --auth-cyan:#078f9b;
+}
+.secura-neo-login,.secura-neo-login *,.secura-neo-login *::before,.secura-neo-login *::after { box-sizing:border-box; }
+.secura-neo-login__layout { display:grid; grid-template-columns:minmax(0,1.04fr) minmax(420px,.96fr); min-height:100vh; min-height:100dvh; }
+.secura-neo-login__story { position:relative; overflow:hidden; isolation:isolate; color:#fff; background:linear-gradient(150deg,#181a36 0%,#1f2046 49%,#1a1840 100%); border-right:1px solid rgba(178,145,255,.16); }
+.secura-neo-login__story-glow { position:absolute; inset:-15%; z-index:-2; pointer-events:none; background:radial-gradient(ellipse at 20% 8%,rgba(140,72,252,.35),transparent 45%),radial-gradient(ellipse at 83% 68%,rgba(29,205,228,.17),transparent 38%),radial-gradient(ellipse at 58% 42%,rgba(184,75,251,.2),transparent 42%); background-size:105% 105%; animation:securaLoginGlow 11s ease-in-out infinite alternate; }
+.secura-neo-login__story-grid { position:absolute; inset:0; z-index:-1; opacity:.33; pointer-events:none; background-image:linear-gradient(rgba(196,172,255,.064) 1px,transparent 1px),linear-gradient(90deg,rgba(196,172,255,.064) 1px,transparent 1px); background-size:40px 40px; mask-image:linear-gradient(to bottom,#000,transparent 94%); }
+.secura-neo-login__story-inner { min-height:100vh; min-height:100dvh; width:100%; max-width:780px; margin:0 auto; padding:clamp(28px,3.2vw,54px) clamp(30px,5vw,78px) 28px; display:flex; flex-direction:column; }
+.secura-neo-login__brand { display:flex; align-items:center; gap:12px; }
+.secura-neo-login__brand-logo { width:46px; height:46px; flex-shrink:0; border:1px solid rgba(222,202,255,.45); border-radius:15px; background:linear-gradient(145deg,#bc52ff,#7a64fd 63%,#9c4be5); display:grid;place-items:center; color:#fff; box-shadow:0 0 24px rgba(170,95,255,.30),inset 0 1px rgba(255,255,255,.28); }
+.secura-neo-login__brand-copy { display:grid; gap:4px; }
+.secura-neo-login__brand-copy b,.secura-neo-login__mobile-brand b { color:#fff; font-weight:900; font-size:22px; letter-spacing:-.9px; line-height:1.05; }
+.secura-neo-login__brand-copy b span,.secura-neo-login__mobile-brand b span { color:#ce78ff; }
+.secura-neo-login__brand-copy small { font-size:9px; color:#c3bdda; font-weight:850; letter-spacing:1.55px; }
+.secura-neo-login__story-content { margin:auto 0; padding:45px 0 26px; }
+.secura-neo-login__pill { display:inline-flex; align-items:center; gap:9px; border-radius:999px; border:1px solid rgba(194,160,255,.27); background:rgba(146,112,232,.12); color:#d8c3ff; padding:8px 13px; font-size:10px; font-weight:850; letter-spacing:1.15px; }
+.secura-neo-login__pill-dot { display:block; width:7px;height:7px; border-radius:50%; background:#57ead4; box-shadow:0 0 12px rgba(61,241,211,.9); }
+.secura-neo-login__story h1 { margin:23px 0 15px; font-size:clamp(34px,3.35vw,58px); font-weight:900; line-height:1.11; letter-spacing:-1.8px; }
+.secura-neo-login__story h1 span { background:linear-gradient(100deg,#5ef1e0 0%,#c3b5ff 52%,#e49cff 100%); background-size:200% 100%; background-clip:text; -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation:securaLoginGradient 8s ease-in-out infinite; }
+.secura-neo-login__story-content > p { color:#bfc7e1; font-size:14px; line-height:1.75; max-width:530px; margin:0; }
+.secura-neo-login__visual { position:relative; height:280px; margin:23px auto 5px; width:min(100%,590px); display:grid; place-items:center; isolation:isolate; }
+.secura-neo-login__visual-orbit { position:absolute; border-radius:50%; pointer-events:none; }
+.secura-neo-login__visual-orbit--outer { width:260px; height:260px; border:1px solid rgba(184,146,255,.29); box-shadow:0 0 0 20px rgba(168,103,255,.045),0 0 0 49px rgba(168,103,255,.035); animation:securaLoginPulse 7s ease-in-out infinite; }
+.secura-neo-login__visual-orbit--inner { width:212px;height:212px;border:1px dashed rgba(126,232,231,.3); animation:securaLoginOrbit 45s linear infinite; }
+.secura-neo-login__visual-sheen { width:160px;height:160px;position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(164,105,255,.26),transparent 70%);filter:blur(17px); }
+.secura-neo-login__visual-shield { z-index:3; width:106px;height:106px;border-radius:33px;display:grid;place-items:center;color:#f4edff; background:linear-gradient(135deg,rgba(184,114,255,.83),rgba(76,65,171,.89));border:1px solid rgba(229,205,255,.51);box-shadow:0 0 35px rgba(151,88,240,.34),inset 0 1px 22px rgba(255,255,255,.15); transform:rotate(-6deg);animation:securaLoginFloat 6s ease-in-out infinite; }
+.secura-neo-login__visual-file { position:absolute; z-index:2; width:192px; padding:13px 13px 17px; border:1px solid rgba(186,157,247,.26); border-radius:14px;background:linear-gradient(150deg,rgba(47,45,90,.93),rgba(33,40,78,.95)); box-shadow:0 18px 35px rgba(8,7,27,.34); backdrop-filter:blur(14px); animation:securaLoginFloat 8s ease-in-out infinite; }
+.secura-neo-login__visual-file--left { top:20px;left:0; transform:rotate(-7deg); animation-delay:-1.5s; }
+.secura-neo-login__visual-file--right { right:0;bottom:29px;transform:rotate(5deg);animation-delay:-3s; }
+.secura-neo-login__file-heading { display:flex;gap:8px;align-items:center;color:#e9e7ff;font-size:9px;font-weight:850;letter-spacing:.6px;margin-bottom:17px;white-space:nowrap; }
+.secura-neo-login__file-line { display:block;height:7px;margin:8px 0;border-radius:99px;background:rgba(190,183,238,.28);width:75%; }
+.secura-neo-login__file-line.is-long { width:96%; } .secura-neo-login__file-line.is-medium { width:66%; }.secura-neo-login__file-line.is-short{width:45%;}
+.secura-neo-login__file-line.is-sensitive { background:linear-gradient(90deg,#e66ba1,#f0a7ba);box-shadow:0 0 7px rgba(236,104,156,.22); }
+.secura-neo-login__file-line.is-protected { background:linear-gradient(90deg,#3ecdbd,#7ff3dd);box-shadow:0 0 7px rgba(57,232,202,.23); }
+.secura-neo-login__visual-toast { position:absolute;z-index:5; bottom:7px;left:12%;display:flex;align-items:center;gap:8px;padding:10px 13px; border-radius:11px; font-size:10px;font-weight:800;white-space:nowrap;color:#cff9eb;border:1px solid rgba(77,234,190,.26);background:rgba(24,67,75,.88);box-shadow:0 9px 29px rgba(5,28,41,.29);animation:securaLoginToast 5s ease-in-out infinite; }
+.secura-neo-login__visual-toast svg {color:#7ef3d6;}
+.secura-neo-login__visual-spark { position:absolute;color:#caabff;filter:drop-shadow(0 0 8px rgba(180,133,255,.4));animation:securaLoginTwinkle 4s ease-in-out infinite; }
+.secura-neo-login__visual-spark--one {top:16px;right:23%;} .secura-neo-login__visual-spark--two {left:23%;bottom:28px;animation-delay:-2s;}
+.secura-neo-login__story-footer {color:#9099bd;font-size:10px;margin:28px 0 0;} .secura-neo-login__story-footer span {color:#a176f2;padding:0 5px;}
+.secura-neo-login__entry { min-height:100vh;min-height:100dvh;display:flex; flex-direction:column; padding:clamp(22px,3vw,44px) clamp(24px,4vw,72px) 23px; background:radial-gradient(ellipse at 75% -10%,rgba(143,92,246,.15),transparent 50%),radial-gradient(ellipse at 5% 95%,rgba(28,218,200,.055),transparent 42%),var(--auth-bg); transition:background-color .35s,color .35s; }
+.secura-neo-login__entry-top { display:flex;justify-content:flex-end;align-items:center; min-height:50px; }
+.secura-neo-login__mobile-brand {display:none;align-items:center;gap:10px;}
+.secura-neo-login__mode { display:inline-flex;align-items:center;gap:9px;min-height:41px;padding:7px 11px;border-radius:12px;color:var(--auth-ink);border:1px solid var(--auth-border);background:color-mix(in srgb,var(--auth-form) 75%,transparent);box-shadow:0 6px 21px rgba(8,6,33,.055);font-weight:800;font-size:11px;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s; }
+.secura-neo-login__mode:hover {transform:translateY(-2px);border-color:var(--auth-violet);box-shadow:0 0 23px rgba(140,90,238,.16);}
+.secura-neo-login__mode svg {color:var(--auth-violet);}
+.secura-neo-login__mode-switch { width:35px;height:20px;flex:0 0 35px;display:flex;align-items:center;padding:3px;border-radius:99px;background:linear-gradient(120deg,#50418a,#9565f6); }
+.secura-neo-login__mode-switch > span { width:14px;height:14px;border-radius:50%;background:#fff;transform:translateX(15px);box-shadow:0 1px 7px rgba(0,0,0,.27);transition:transform .28s ease; }
+.secura-neo-login[data-login-theme='light'] .secura-neo-login__mode-switch > span { transform:translateX(0); }
+.secura-neo-login__entry-center { width:min(100%,460px); margin:auto; padding:30px 0; animation:securaLoginEntrance .65s cubic-bezier(.2,.8,.2,1) both; }
+.secura-neo-login__entry-mark { width:54px;height:54px;border-radius:17px;display:grid;place-items:center;color:var(--auth-violet);background:rgba(157,109,247,.13);border:1px solid rgba(157,109,247,.22);box-shadow:0 0 31px rgba(146,93,255,.09);margin-bottom:21px; }
+.secura-neo-login__eyebrow { margin:0 0 11px;color:var(--auth-violet);font-size:10px;font-weight:900;letter-spacing:1.85px; }
+.secura-neo-login__entry-head h2 { margin:0;color:var(--auth-ink);font-size:clamp(30px,3vw,43px);line-height:1.16;font-weight:900;letter-spacing:-1.25px; }
+.secura-neo-login__entry-head h2 span {background:linear-gradient(100deg,#9261fb,#da75e5);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.secura-neo-login__entry-head > p:last-child {margin:14px 0 0;color:var(--auth-muted);font-size:13px;line-height:1.65;max-width:380px;}
+.secura-neo-login__form {margin-top:34px;display:grid;gap:22px;}
+.secura-neo-login__field-group {display:grid;gap:9px;}
+.secura-neo-login__field-group label {color:var(--auth-ink);font-size:12px;font-weight:800;}
+.secura-neo-login__label-row {display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.secura-neo-login__label-row a {color:var(--auth-violet);font-size:11px;font-weight:750;text-decoration:none;transition:color .2s;}
+.secura-neo-login__label-row a:hover {color:#d18fff;text-decoration:underline;}
+.secura-neo-login__field {min-height:53px;display:flex;align-items:center;gap:11px;padding:0 14px;border:1px solid var(--auth-border);border-radius:13px;background:var(--auth-field);transition:border-color .22s,box-shadow .22s,background .22s;}
+.secura-neo-login__field:focus-within {border-color:var(--auth-violet);box-shadow:0 0 0 3px rgba(148,93,255,.11),0 0 20px rgba(134,82,240,.12);}
+.secura-neo-login__field > svg {flex-shrink:0;color:var(--auth-muted);}
+.secura-neo-login__field input {display:block;flex:1;min-width:0;height:51px;padding:0;border:0!important;outline:0!important;background:transparent!important;color:var(--auth-ink)!important;box-shadow:none!important;font:inherit;font-size:13px;}
+.secura-neo-login__field input::placeholder{color:var(--auth-muted);opacity:.72;}
+.secura-neo-login__field input:disabled {opacity:.7;cursor:wait;}
+.secura-neo-login__reveal {display:grid;place-items:center;width:32px;height:32px;flex:0 0 32px;border:0;background:transparent;color:var(--auth-muted);cursor:pointer;border-radius:8px;}
+.secura-neo-login__reveal:hover {color:var(--auth-violet);background:rgba(153,113,240,.1);}
+.secura-neo-login__error {display:flex;align-items:flex-start;gap:9px;padding:12px;border:1px solid rgba(242,115,139,.29);border-radius:11px;background:rgba(235,91,123,.08);color:var(--auth-ink);font-size:12px;line-height:1.5;}
+.secura-neo-login__error svg {color:#e980a2;flex-shrink:0;}
+.secura-neo-login__submit {min-height:53px;margin-top:6px;padding:12px 16px;border:1px solid rgba(216,169,255,.4);border-radius:13px;background:linear-gradient(108deg,#8356ee,#b344e7);color:#fff;display:flex;align-items:center;justify-content:center;gap:12px;font-size:13px;font-weight:850;cursor:pointer;box-shadow:0 0 23px rgba(144,78,241,.3),0 10px 28px rgba(64,29,130,.17);transition:transform .22s,box-shadow .3s,filter .2s;}
+.secura-neo-login__submit:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 0 34px rgba(153,77,253,.48),0 15px 29px rgba(79,31,155,.28);filter:brightness(1.05);}
+.secura-neo-login__submit:disabled {opacity:.67;cursor:wait;transform:none;}
+.secura-neo-login__loading {animation:securaLoginOrbit .95s linear infinite;}
+.secura-neo-login__safe-note { display:flex;align-items:center;justify-content:center;gap:9px;margin-top:23px;padding:13px 10px;color:var(--auth-muted);font-size:10.5px;line-height:1.5;text-align:center;}
+.secura-neo-login__safe-note svg {color:var(--auth-cyan);flex-shrink:0;}
+.secura-neo-login__entry-bottom {text-align:center;margin:25px 0 0;color:var(--auth-muted);font-size:10px;}
+.secura-neo-login__entry-bottom span {padding:0 5px;color:var(--auth-violet);}
+.secura-neo-login__entry :is(button,a):focus-visible {outline:2px solid var(--auth-cyan)!important;outline-offset:3px;}
+/* The field wrapper owns the focus ring. Never draw a second cyan rectangle around the input. */
+.secura-neo-login .secura-neo-login__field input:is(:focus,:focus-visible) {
+  border:0!important;
+  outline:none!important;
+  outline-offset:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+  -webkit-box-shadow:none!important;
+}
+/* Hide the old global theme controls only while the NeoFlow login is mounted.
+   Keep the single login theme toggle in the top-right corner. */
+body:has(.secura-neo-login) :is(
+  .secura-bold-theme-switch,
+  .secura-theme-toggle-floating,
+  .secura-glass-theme-switch
+) { display:none!important; }
+@keyframes securaLoginGlow {from{transform:translate(-1%,-2%) scale(1)}to{transform:translate(2%,2%) scale(1.05)}}
+@keyframes securaLoginGradient {0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
+@keyframes securaLoginPulse {0%,100%{opacity:.72;transform:scale(.98)}50%{opacity:1;transform:scale(1.03)}}
+@keyframes securaLoginOrbit {to{transform:rotate(360deg)}}
+@keyframes securaLoginFloat {0%,100%{translate:0 0}50%{translate:0 -8px}}
+@keyframes securaLoginToast {0%,100%{translate:0 0}50%{translate:0 -6px}}
+@keyframes securaLoginTwinkle {0%,100%{opacity:.4;transform:scale(.88)}50%{opacity:1;transform:scale(1.06)}}
+@keyframes securaLoginEntrance {from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+/* Chrome/Edge circular theme reveal, matching SECURA dashboard transition. */
+html.secura-login-theme-wave::view-transition-old(root) {animation:none!important;z-index:1;}
+html.secura-login-theme-wave::view-transition-new(root) {animation:securaLoginReveal .65s cubic-bezier(.22,.84,.18,1) both!important;z-index:2;}
+@keyframes securaLoginReveal {from{clip-path:circle(0 at var(--secura-login-wave-x) var(--secura-login-wave-y))}to{clip-path:circle(150vmax at var(--secura-login-wave-x) var(--secura-login-wave-y))}}
+@media (max-width:1240px) {.secura-neo-login__layout{grid-template-columns:minmax(0,1fr) minmax(400px,1fr)}.secura-neo-login__visual-file{width:164px}.secura-neo-login__story-inner{padding-left:36px;padding-right:36px}}
+@media (max-width:1000px) {.secura-neo-login__layout{grid-template-columns:1fr}.secura-neo-login__story{display:none}.secura-neo-login__entry{min-height:100vh;min-height:100dvh}.secura-neo-login__mobile-brand{display:flex;margin-right:auto}.secura-neo-login__entry-center{max-width:460px}.secura-neo-login__entry-top{justify-content:space-between}.secura-neo-login__entry{padding:23px clamp(20px,6vw,52px)}}
+@media (max-width:480px) {.secura-neo-login__entry{padding:19px 20px}.secura-neo-login__entry-center{padding:25px 0}.secura-neo-login__entry-head h2{font-size:32px}.secura-neo-login__form{margin-top:26px}.secura-neo-login__mode{font-size:0;padding:9px;gap:7px}.secura-neo-login__mode span:not(.secura-neo-login__mode-switch){font-size:0}.secura-neo-login__mode-switch{margin-left:1px}}
+@media (prefers-reduced-motion:reduce) {
+  .secura-neo-login *, .secura-neo-login *::before, .secura-neo-login *::after {animation:none!important;transition:none!important;scroll-behavior:auto!important;}
+  html.secura-login-theme-wave::view-transition-new(root) {animation:none!important;}
+}
+
+
+/* ==============================================================
+   SECURA NeoFlow V12.2 — Chrome / Edge saved-login autofill fix.
+
+   Browser/password manager autofill paints a solid rectangle INSIDE
+   the existing icon+input shell. The wrapper is already the field
+   background; cover Chromium's native autofill color using the SAME
+   field variable so the surface is seamless in both themes.
+   These states must be AFTER the generic focused-input overrides.
+   ============================================================== */
+.secura-neo-login { color-scheme: dark; }
+.secura-neo-login[data-login-theme='light'] { color-scheme: light; }
+
+.secura-neo-login .secura-neo-login__field input:is(
+  :-webkit-autofill,
+  :-webkit-autofill:hover,
+  :-webkit-autofill:focus,
+  :-webkit-autofill:active,
+  :autofill
+) {
+  background: var(--auth-field) !important;
+  background-color: var(--auth-field) !important;
+  background-image: none !important;
+  -webkit-text-fill-color: var(--auth-ink) !important;
+  color: var(--auth-ink) !important;
+  caret-color: var(--auth-violet) !important;
+  border: 0 !important;
+  outline: none !important;
+  border-radius: 0;
+  /* Chrome paints autofill via an inset layer, not ordinary background. */
+  -webkit-box-shadow: inset 0 0 0 1000px var(--auth-field) !important;
+  box-shadow: inset 0 0 0 1000px var(--auth-field) !important;
+}
+
+/* Password-manager / internal browser highlights: no extra field rings. */
+.secura-neo-login .secura-neo-login__field input:focus-visible {
+  outline: 0 !important;
+  outline-offset: 0 !important;
+}

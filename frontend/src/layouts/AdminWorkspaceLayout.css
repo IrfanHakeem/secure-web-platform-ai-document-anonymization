@@ -1,0 +1,142 @@
+/* ================================================================
+   SECURA V10.5 — Admin workspace design alignment
+   Keeps the Admin identity while reusing the approved User sidebar.
+   Only affects Admin management pages. Does NOT override body/root.
+   ================================================================ */
+
+.secura-workspace-shell--admin-v105 {
+  --admin-workspace-canvas: #ece9f6;
+  position: relative;
+  min-height: 100dvh;
+  background: var(--admin-workspace-canvas);
+}
+html[data-theme="dark"] .secura-workspace-shell--admin-v105 {
+  --admin-workspace-canvas: #111729;
+}
+
+/* Exact same base class as User sidebar, with an Admin-specific glow. */
+.secura-sidebar--admin-v105 {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-right: 1px solid rgba(148, 131, 220, .20);
+  background: linear-gradient(180deg,#141a29 0%,#111824 54%,#141d2c 100%);
+}
+html[data-theme="light"] .secura-sidebar--admin-v105 {
+  background: linear-gradient(180deg,#2b274c 0%,#222744 47%,#202842 100%);
+}
+.secura-sidebar--admin-v105 .secura-sidebar-bold__orb--one {
+  top: -110px;
+  right: -85px;
+  width: 190px;
+  height: 190px;
+  background: rgba(181, 48, 239, .29);
+}
+.secura-sidebar--admin-v105 .secura-sidebar-bold__orb--two {
+  left: -130px;
+  bottom: 90px;
+  background: rgba(46, 176, 240, .12);
+}
+.secura-sidebar--admin-v105 .secura-sidebar-bold__mesh {
+  opacity: .10;
+}
+.secura-sidebar--admin-v105 .secura-sidebar-brand,
+.secura-sidebar--admin-v105 .secura-sidebar-brand-note,
+.secura-sidebar--admin-v105 .secura-sidebar-label,
+.secura-sidebar--admin-v105 .secura-side-nav {
+  position: relative;
+  z-index: 1;
+}
+.secura-sidebar--admin-v105 .secura-sidebar-brand-mark {
+  background: linear-gradient(145deg,#aa49fa,#7668ea);
+  box-shadow: 0 7px 20px rgba(156, 66, 236, .25);
+  color: #fff;
+}
+.secura-sidebar--admin-v105 .secura-sidebar-brand-name { color: #fff; }
+.secura-sidebar--admin-v105 .secura-sidebar-brand-note,
+.secura-sidebar--admin-v105 .secura-sidebar-label {
+  color: #afbddf;
+  letter-spacing: .13em;
+}
+.secura-sidebar--admin-v105 .secura-side-link--admin-v105 {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  color: #bfcbe1;
+  transition: background .2s ease, color .2s ease, border-color .2s ease, transform .2s ease;
+}
+.secura-sidebar--admin-v105 .secura-side-link--admin-v105 .secura-side-link__icon {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  color: #9aa8c6;
+  transition: color .2s ease, transform .2s ease;
+}
+.secura-sidebar--admin-v105 .secura-side-link--admin-v105:hover {
+  color: #fff;
+  border-color: rgba(155, 111, 235, .20);
+  background: rgba(135, 99, 237, .13);
+  transform: translateX(2px);
+}
+.secura-sidebar--admin-v105 .secura-side-link--admin-v105:hover .secura-side-link__icon {
+  color: #c9a9ff;
+}
+.secura-sidebar--admin-v105 .secura-side-link--admin-v105.active,
+.secura-sidebar--admin-v105 .secura-side-link--admin-v105[aria-current="page"] {
+  color: #e4d4ff;
+  border-color: rgba(180, 104, 250, .33);
+  background: linear-gradient(115deg,rgba(139, 75, 236, .26),rgba(111, 89, 213, .19));
+  box-shadow: inset 3px 0 0 #c12cda,0 5px 19px rgba(102, 57, 168, .10);
+  transform: none;
+}
+.secura-sidebar--admin-v105 .secura-side-link--admin-v105.active .secura-side-link__icon {
+  color: #b99aff;
+}
+.secura-sidebar--admin-v105 .secura-side-link--admin-v105:focus-visible {
+  outline: 2px solid #d8b4fe;
+  outline-offset: 3px;
+}
+
+/* Shared, continuous canvas behind all Admin management pages. */
+.secura-workspace-main--admin-v105 {
+  min-width: 0;
+  background:
+    radial-gradient(circle at 95% 3%,rgba(194, 43, 215, .10),transparent 26%),
+    radial-gradient(circle at 9% 91%,rgba(49, 159, 203, .07),transparent 30%),
+    var(--admin-workspace-canvas);
+}
+html[data-theme="dark"] .secura-workspace-main--admin-v105 {
+  background:
+    radial-gradient(circle at 95% 3%,rgba(164, 58, 226, .10),transparent 26%),
+    radial-gradient(circle at 8% 92%,rgba(48, 158, 212, .07),transparent 32%),
+    var(--admin-workspace-canvas);
+}
+/* V10.4 already draws its own ambient light; remove duplicate solid slab. */
+.secura-workspace-main--admin-v105 > .secura-admin-users-v10 {
+  background: transparent;
+}
+/* Department management will inherit the same canvas when redesigned. */
+.secura-workspace-main--admin-v105:has(.admin-departments-header) {
+  background-color: var(--admin-workspace-canvas);
+}
+@media (prefers-reduced-motion: reduce) {
+  .secura-sidebar--admin-v105 .secura-side-link--admin-v105 {transition:none!important}
+}
+
+/* The V10.4 directory stylesheet sets an explicit main background with
+   :has(), so match its specificity here to avoid a rectangular backdrop. */
+.secura-workspace-main.secura-workspace-main--admin-v105:has(> .secura-admin-users-v10) {
+  background:
+    radial-gradient(circle at 95% 3%,rgba(194,43,215,.10),transparent 26%),
+    radial-gradient(circle at 9% 91%,rgba(49,159,203,.07),transparent 30%),
+    var(--admin-workspace-canvas);
+  padding: 0;
+}
+html[data-theme="dark"] .secura-workspace-main.secura-workspace-main--admin-v105:has(> .secura-admin-users-v10) {
+  background:
+    radial-gradient(circle at 95% 3%,rgba(164,58,226,.10),transparent 26%),
+    radial-gradient(circle at 8% 92%,rgba(48,158,212,.07),transparent 32%),
+    var(--admin-workspace-canvas);
+}
