@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from urllib.parse import quote
 
 from fastapi import (
@@ -12,6 +12,7 @@ from fastapi import (
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.core.client import get_client_ip
 from app.core.database import get_db
 from app.core.dependencies import (
     get_current_user,
@@ -19,6 +20,7 @@ from app.core.dependencies import (
 )
 from app.models.audit_log import AuditLog
 from app.models.document import Document
+from app.models.document_share import DocumentShare
 from app.models.original_file_request import (
     OriginalFileRequest,
 )
@@ -50,6 +52,14 @@ ACTIVE_REQUEST_STATUSES = {
 }
 
 
+# Approved original-file downloads are bounded: a requester may
+# download the original a limited number of times within a fixed
+# window after security approval. This prevents an approved request
+# from becoming a permanent, unlimited exfiltration channel.
+MAX_ORIGINAL_DOWNLOADS = 3
+ORIGINAL_DOWNLOAD_EXPIRY_MINUTES = 30
+
+
 SECURITY_REVIEW_AUDIT_ACTIONS = {
     "SECURITY_ORIGINAL_REVIEWED",
     "SECURITY_ORIGINAL_REVIEW_FAILED",
@@ -79,15 +89,6 @@ INLINE_REVIEW_TYPES = {
     "txt",
     "csv",
 }
-
-
-def get_client_ip(
-    request: Request,
-) -> str | None:
-    if request.client is None:
-        return None
-
-    return request.client.host
 
 
 def build_request_response(
@@ -850,6 +851,9 @@ def security_decision(
 
     if decision.decision == "APPROVE":
         original_request.status = "APPROVED"
+        original_request.approved_at = (
+            datetime.now(timezone.utc)
+        )
         audit_action = "SECURITY_APPROVED"
     else:
         original_request.status = (
@@ -950,6 +954,78 @@ def download_approved_original(
             ),
         )
 
+    now = datetime.now(timezone.utc)
+
+    if original_request.approved_at is None:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=(
+                "Approval timestamp is missing; "
+                "contact an administrator"
+            ),
+        )
+
+    approved_at = original_request.approved_at
+
+    if approved_at.tzinfo is None:
+        # Defensive: treat a naive DB timestamp as UTC rather
+        # than crashing on an aware/naive comparison below.
+        approved_at = approved_at.replace(
+            tzinfo=timezone.utc
+        )
+
+    if now > (
+        approved_at
+        + timedelta(
+            minutes=(
+                ORIGINAL_DOWNLOAD_EXPIRY_MINUTES
+            )
+        )
+    ):
+        record_audit_event(
+            action="UNAUTHORIZED_ACCESS",
+            user_id=current_user.id,
+            resource_type="original_file_request",
+            resource_id=original_request.id,
+            details=(
+                "Original file download blocked: "
+                "approval download window expired"
+            ),
+            ip_address=get_client_ip(request),
+        )
+
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "The download window for this "
+                "original file has expired"
+            ),
+        )
+
+    if (
+        original_request.download_count
+        >= MAX_ORIGINAL_DOWNLOADS
+    ):
+        record_audit_event(
+            action="UNAUTHORIZED_ACCESS",
+            user_id=current_user.id,
+            resource_type="original_file_request",
+            resource_id=original_request.id,
+            details=(
+                "Original file download blocked: "
+                "download limit reached"
+            ),
+            ip_address=get_client_ip(request),
+        )
+
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "Download limit for this "
+                "original file has been reached"
+            ),
+        )
+
     document = db.get(
         Document,
         original_request.document_id,
@@ -970,13 +1046,20 @@ def download_approved_original(
         ),
     )
 
+    original_request.download_count += 1
+
+    db.commit()
+
     record_audit_event(
         action="ORIGINAL_DOWNLOAD",
         user_id=current_user.id,
         resource_type="document",
         resource_id=document.id,
         details=(
-            "Approved original document downloaded"
+            f"Approved original document "
+            f"downloaded (download "
+            f"{original_request.download_count} "
+            f"of {MAX_ORIGINAL_DOWNLOADS})"
         ),
         ip_address=get_client_ip(request),
     )
@@ -1064,6 +1147,52 @@ def request_original_file(
             detail=(
                 "Document owner cannot request "
                 "their own original file"
+            ),
+        )
+
+    # Only a department-shared document is visible to the requester.
+    # Without a share relation the requester cannot see the anonymized
+    # version, so they must not be able to enumerate or request the
+    # original either. Prevents IDOR-style existence/filename disclosure
+    # via brute-forced auto-increment document IDs.
+    if current_user.department_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "You do not have access to "
+                "this document"
+            ),
+        )
+
+    shared_record = db.scalar(
+        select(DocumentShare).where(
+            DocumentShare.document_id
+            == document.id,
+
+            DocumentShare.department_id
+            == current_user.department_id,
+        )
+    )
+
+    if shared_record is None:
+        record_audit_event(
+            action="UNAUTHORIZED_ACCESS",
+            user_id=current_user.id,
+            resource_type="document",
+            resource_id=document.id,
+            details=(
+                "Original-file request blocked: "
+                "document is not shared with the "
+                "requester's department"
+            ),
+            ip_address=get_client_ip(request),
+        )
+
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "You do not have access to "
+                "this document"
             ),
         )
 

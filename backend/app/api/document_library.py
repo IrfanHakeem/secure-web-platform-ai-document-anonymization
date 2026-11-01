@@ -12,6 +12,7 @@ from fastapi.responses import FileResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.core.client import get_client_ip
 from app.core.database import get_db
 from app.core.dependencies import (
     get_current_user,
@@ -36,16 +37,6 @@ router = APIRouter(
     prefix="/document-library",
     tags=["Document Library"]
 )
-
-
-def get_client_ip(
-    request: Request
-) -> str | None:
-
-    if request.client is None:
-        return None
-
-    return request.client.host
 
 
 def get_owned_anonymized_document(

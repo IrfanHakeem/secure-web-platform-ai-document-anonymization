@@ -20,10 +20,15 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Session
 
+from app.core.client import get_client_ip
 from app.core.database import get_db
 from app.core.dependencies import (
     get_current_user,
     require_role,
+)
+from app.core.rate_limit import (
+    login_limiter,
+    otp_request_limiter,
 )
 from app.core.security import (
     create_access_token,
@@ -31,6 +36,7 @@ from app.core.security import (
     decode_password_reset_token,
     hash_otp,
     hash_password,
+    validate_password_strength,
     verify_otp_hash,
     verify_password,
 )
@@ -72,16 +78,6 @@ OTP_EXPIRE_MINUTES = int(
 MAX_OTP_ATTEMPTS = 5
 
 
-def get_client_ip(
-    request: Request
-) -> str | None:
-
-    if request.client is None:
-        return None
-
-    return request.client.host
-
-
 @router.post(
     "/login",
     response_model=TokenResponse
@@ -94,6 +90,18 @@ def login(
     client_ip = get_client_ip(
         request
     )
+
+    if client_ip is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Client IP could not be determined",
+        )
+
+    if not login_limiter.is_allowed(client_ip):
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many login attempts. Try again shortly.",
+        )
 
     email = (
         credentials.email
@@ -215,6 +223,23 @@ def admin_forgot_password(
         .strip()
         .lower()
     )
+
+    client_ip = get_client_ip(request)
+
+    if client_ip is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Client IP could not be determined",
+        )
+
+    if not otp_request_limiter.is_allowed(client_ip):
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=(
+                "Too many reset requests. "
+                "Try again shortly."
+            ),
+        )
 
     user = db.scalar(
         select(User).where(
@@ -613,6 +638,18 @@ def admin_reset_password(
                 "New password cannot "
                 "be empty"
             )
+        )
+
+    strength_error = validate_password_strength(
+        new_password
+    )
+
+    if strength_error is not None:
+        raise HTTPException(
+            status_code=(
+                status.HTTP_400_BAD_REQUEST
+            ),
+            detail=strength_error,
         )
 
     if len(

@@ -9,6 +9,7 @@ from fastapi import (
 )
 from sqlalchemy.orm import Session
 
+from app.core.client import get_client_ip
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
 from app.models.document import Document
@@ -25,16 +26,6 @@ router = APIRouter(
     prefix="/documents",
     tags=["Documents"]
 )
-
-
-def get_client_ip(
-    request: Request
-) -> str | None:
-
-    if request.client is None:
-        return None
-
-    return request.client.host
 
 
 @router.post(

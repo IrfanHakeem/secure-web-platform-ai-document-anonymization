@@ -10,9 +10,13 @@ from fastapi import (
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from app.core.client import get_client_ip
 from app.core.database import get_db
 from app.core.dependencies import require_role
-from app.core.security import hash_password
+from app.core.security import (
+    hash_password,
+    validate_password_strength,
+)
 from app.models.department import Department
 from app.models.role import Role
 from app.models.user import User
@@ -35,15 +39,6 @@ router = APIRouter(
 EMAIL_PATTERN = re.compile(
     r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
 )
-
-
-def get_client_ip(
-    request: Request
-) -> str | None:
-    if request.client is None:
-        return None
-
-    return request.client.host
 
 
 def build_user_response(
@@ -188,6 +183,16 @@ def create_user(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Password cannot be empty",
+        )
+
+    strength_error = validate_password_strength(
+        user_data.password
+    )
+
+    if strength_error is not None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=strength_error,
         )
 
     if len(
@@ -498,6 +503,16 @@ def reset_user_password(
             detail=(
                 "New password cannot be empty"
             ),
+        )
+
+    strength_error = validate_password_strength(
+        new_password
+    )
+
+    if strength_error is not None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=strength_error,
         )
 
     if len(

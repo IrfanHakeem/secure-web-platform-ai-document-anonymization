@@ -8,6 +8,7 @@ from fastapi import (
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from app.core.client import get_client_ip
 from app.core.database import get_db
 from app.core.dependencies import require_role
 from app.models.department import Department
@@ -24,15 +25,6 @@ router = APIRouter(
     prefix="/admin/departments",
     tags=["Admin Department Management"],
 )
-
-
-def get_client_ip(
-    request: Request
-) -> str | None:
-    if request.client is None:
-        return None
-
-    return request.client.host
 
 
 @router.get(

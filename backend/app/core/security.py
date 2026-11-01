@@ -1,6 +1,7 @@
 import hashlib
 import hmac
 import os
+import re
 from datetime import datetime, timedelta, timezone
 
 import bcrypt
@@ -39,6 +40,47 @@ if not JWT_SECRET_KEY:
     raise RuntimeError(
         "JWT_SECRET_KEY is not configured."
     )
+
+
+MIN_PASSWORD_LENGTH = 12
+MAX_PASSWORD_BYTES = 72
+
+
+def validate_password_strength(password: str) -> str | None:
+    """Return an error message if the password fails policy, else None.
+
+    Policy: at least 12 characters and all four character classes
+    (lowercase, uppercase, digit, special). Bcrypt truncates at 72
+    bytes; callers still enforce the byte cap separately.
+    """
+
+    if password is None or len(password) < MIN_PASSWORD_LENGTH:
+        return (
+            f"Password must be at least "
+            f"{MIN_PASSWORD_LENGTH} characters long"
+        )
+
+    checks = {
+        "lowercase": re.search(r"[a-z]", password),
+        "uppercase": re.search(r"[A-Z]", password),
+        "digit": re.search(r"\d", password),
+        "special": re.search(r"[^A-Za-z0-9]", password),
+    }
+
+    missing = [
+        name
+        for name, matched in checks.items()
+        if matched is None
+    ]
+
+    if missing:
+        return (
+            "Password must include at least one "
+            + ", ".join(missing)
+            + " character"
+        )
+
+    return None
 
 
 def hash_password(
