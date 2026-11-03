@@ -5,6 +5,22 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SECURA</title>
+    <script>
+      // Apply the saved theme before first paint, on every load/refresh.
+      // Without this, data-theme is only set when the Login page mounts, so a
+      // refresh (or opening a /user/* URL directly) falls back to the light
+      // base variables while components still use dark-only selectors, giving
+      // a half-light page. Same key and default (dark) as LoginPage/layouts.
+      (function () {
+        var theme = 'dark';
+        try {
+          if (window.localStorage.getItem('secura-theme') === 'light') theme = 'light';
+        } catch (e) { /* storage unavailable: keep dark */ }
+        var root = document.documentElement;
+        root.setAttribute('data-theme', theme);
+        root.style.colorScheme = theme;
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
