@@ -154,7 +154,7 @@
 
   color: var(--secura-ink);
 
-  font-size: 20px;
+  font-size: calc(20px * var(--secura-font-scale));
 
   font-weight: 800;
 
@@ -186,7 +186,7 @@
 
     monospace;
 
-  font-size: 10.5px;
+  font-size: calc(10.5px * var(--secura-font-scale));
 
   line-height: 1.45;
 
@@ -250,7 +250,7 @@
 
   color: #747a8a;
 
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 
   font-weight: 800;
 
@@ -332,7 +332,7 @@
 
     rgba(101, 96, 201, 0.17);
 
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 
   font-weight: 800;
 
@@ -412,7 +412,7 @@
 
   color: #9f4e46;
 
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 
   animation:
 
@@ -594,7 +594,7 @@
 
     monospace;
 
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 
 }
 
@@ -654,7 +654,7 @@
 
   color: #687080;
 
-  font-size: 9.5px;
+  font-size: calc(9.5px * var(--secura-font-scale));
 
   font-weight: 800;
 
@@ -730,7 +730,7 @@
 
     monospace;
 
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 
   white-space: nowrap;
 
@@ -784,7 +784,7 @@
 
     monospace;
 
-  font-size: 8.5px;
+  font-size: calc(8.5px * var(--secura-font-scale));
 
 }
 
@@ -1032,7 +1032,7 @@
 
     monospace;
 
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 
 }
 
@@ -1074,7 +1074,7 @@
 
   color: #4a4f5b;
 
-  font-size: 10.5px;
+  font-size: calc(10.5px * var(--secura-font-scale));
 
   font-weight: 850;
 
@@ -1384,7 +1384,7 @@
 
     sans-serif;
 
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 
 }
 
@@ -1472,7 +1472,7 @@
 
   color: #373c47;
 
-  font-size: 11.5px;
+  font-size: calc(11.5px * var(--secura-font-scale));
 
 }
 
@@ -1484,7 +1484,7 @@
 
   color: #777d8c;
 
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 
   text-overflow: ellipsis;
 
@@ -1506,7 +1506,7 @@
 
   padding: 5px 9px;
 
-  font-size: 9.5px !important;
+  font-size: calc(9.5px * var(--secura-font-scale)) !important;
 
   font-weight: 900;
 
@@ -1634,7 +1634,7 @@
 
   padding: 5px 7px;
 
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 
   line-height: 1.45;
 
@@ -1710,7 +1710,7 @@
 
   color: #73798a;
 
-  font-size: 9.5px;
+  font-size: calc(9.5px * var(--secura-font-scale));
 
   font-weight: 900;
 
@@ -1728,7 +1728,7 @@
 
   font: inherit;
 
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 
   line-height: 1.6;
 
@@ -1750,7 +1750,7 @@
 
   color: var(--secura-muted);
 
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 
 }
 
@@ -1804,7 +1804,7 @@
 
     monospace;
 
-  font-size: 9.5px;
+  font-size: calc(9.5px * var(--secura-font-scale));
 
 }
 
@@ -2140,8 +2140,8 @@ html[data-theme="dark"] .security-ws--v138 .security-ws__window { background: #1
   background: linear-gradient(90deg, #7650e6, #b29bf9 55%, #5abce3);
 }
 .security-ws--v138 .security-ws__topbar { min-height: 68px; padding: 12px 18px; }
-.security-ws--v138 .security-ws__topbar h1 { font-size: 20px; letter-spacing: -.035em; }
-.security-ws--v138 .security-ws__topbar p { font-size: 10px; }
+.security-ws--v138 .security-ws__topbar h1 { font-size: calc(20px * var(--secura-font-scale)); letter-spacing: -.035em; }
+.security-ws--v138 .security-ws__topbar p { font-size: calc(10px * var(--secura-font-scale)); }
 .security-ws--v138 .security-ws__toolbar { min-height: 49px; gap: 10px; padding: 7px 12px; }
 .security-ws--v138 .security-ws__filter-box { width: min(560px, 51%); min-width: 210px; }
 .security-ws--v138 .security-ws__filter-box input { background: transparent !important; box-shadow: none !important; outline: 0 !important; border: 0 !important; min-width: 0; }
@@ -2164,11 +2164,11 @@ html[data-theme="dark"] .security-ws--v138 .security-ws__window { background: #1
   width: 100%;
   min-width: 910px;
   table-layout: fixed;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 .security-ws--v138 .security-ws__table th {
   height: 33px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   letter-spacing: .02em;
   padding: 5px 8px;
 }
@@ -2216,7 +2216,7 @@ html[data-theme="dark"] .security-ws--v138 .security-ws__window { background: #1
   border: 1px solid rgba(134,153,217,.22);
   border-radius: 6px;
   padding: 3px 6px;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 800;
   line-height: 1.2;
   white-space: nowrap;
@@ -2255,7 +2255,7 @@ html[data-theme="light"] .security-ws--v138 .security-ws__severity-tag.tone-info
 .security-ws--v138 .security-ws__splitter:hover,
 .security-ws--v138 .security-ws__splitter:focus-visible { background: rgba(124,96,228,.20); }
 .security-ws--v138 .security-ws__splitter:focus-visible { box-shadow: inset 0 0 0 2px var(--log-accent); }
-.security-ws--v138 .security-ws__splitter-label { display: inline-flex; align-items: center; justify-content: center; gap: 6px; font: 600 10px/1.2 ui-monospace, Consolas, monospace; }
+.security-ws--v138 .security-ws__splitter-label { display: inline-flex; align-items: center; justify-content: center; gap: 6px; font: 600 calc(10px * var(--secura-font-scale))/1.2 ui-monospace, Consolas, monospace; }
 .security-ws--v138 .security-ws__splitter-label svg { color: var(--log-accent); }
 .security-ws--v138 .security-ws__splitter > button {
   position: absolute;
@@ -2268,7 +2268,7 @@ html[data-theme="light"] .security-ws--v138 .security-ws__severity-tag.tone-info
   border-radius: 7px;
   background: var(--log-control);
   color: var(--log-dim);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 800;
   padding: 2px 8px;
   cursor: pointer;
@@ -2300,7 +2300,7 @@ html[data-theme="light"] .security-ws--v138 .security-ws__severity-tag.tone-info
   padding: 4px 7px;
   background: transparent;
   color: var(--log-dim);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 800;
   cursor: pointer;
 }
@@ -2412,7 +2412,7 @@ html[data-theme="light"] .security-ws--v139 .security-ws__view-switch button.is-
   background: rgba(61, 178, 145, .09);
   color: #84e1bf;
   cursor: pointer;
-  font: 800 10px/1.2 ui-sans-serif, system-ui, sans-serif;
+  font: 800 calc(10px * var(--secura-font-scale))/1.2 ui-sans-serif, system-ui, sans-serif;
   white-space: nowrap;
   transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
 }

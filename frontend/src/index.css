@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 :root {
+  /* Global font scale: change this ONE value to resize all text (1 = original). */
+  --secura-font-scale: 1.15;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", sans-serif;
   color: var(--secura-ink);
@@ -159,7 +161,7 @@ html[data-theme="dark"] {
   align-items: center;
   gap: 8px;
   color: var(--secura-primary-dark);
-  font-size: 15px;
+  font-size: calc(15px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -173,21 +175,21 @@ html[data-theme="dark"] {
   background: var(--secura-primary);
   color: white;
   font-family: Georgia, serif;
-  font-size: 16px;
+  font-size: calc(16px * var(--secura-font-scale));
   font-weight: 700;
 }
 
 .secura-eyebrow {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 800;
   letter-spacing: 1.35px;
 }
 
 .secura-topbar h1 {
   margin: 6px 0 5px;
-  font-size: 27px;
+  font-size: calc(27px * var(--secura-font-scale));
   line-height: 1.15;
   letter-spacing: -0.8px;
 }
@@ -195,7 +197,7 @@ html[data-theme="dark"] {
 .secura-subtitle {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
 }
 
 .secura-header-actions {
@@ -227,7 +229,7 @@ html[data-theme="dark"] {
 .secura-user-menu b {
   max-width: 150px;
   overflow: hidden;
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -235,7 +237,7 @@ html[data-theme="dark"] {
 .secura-user-menu small {
   margin-top: 2px;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .secura-avatar {
@@ -247,7 +249,7 @@ html[data-theme="dark"] {
   border-radius: 50%;
   background: #e8dbfa;
   color: #725f99;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -264,7 +266,7 @@ html[data-theme="dark"] {
   background: var(--secura-surface);
   padding: 8px 10px;
   color: var(--secura-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   font-weight: 700;
   transition:
     color 180ms ease,
@@ -283,14 +285,14 @@ html[data-theme="dark"] {
 
 .secura-dashboard-intro h2 {
   margin: 7px 0 5px;
-  font-size: 22px;
+  font-size: calc(22px * var(--secura-font-scale));
   letter-spacing: -0.6px;
 }
 
 .secura-dashboard-intro > p:last-child {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 }
 
 .secura-workspace-grid {
@@ -353,14 +355,14 @@ button.secura-workspace-card:hover {
 }
 
 .secura-workspace-copy b {
-  font-size: 14px;
+  font-size: calc(14px * var(--secura-font-scale));
   letter-spacing: -0.2px;
 }
 
 .secura-workspace-copy small {
   max-width: 215px;
   color: var(--secura-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -409,7 +411,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-bg);
   padding: 13px 17px;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 700;
   text-align: left;
   transition:
@@ -452,7 +454,7 @@ button.secura-workspace-card:hover {
   color: white;
   box-shadow: 0 0 0 3px var(--secura-lilac);
   padding: 0 5px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -530,7 +532,7 @@ button.secura-workspace-card:hover {
   align-items: center;
   gap: 10px;
   color: var(--secura-ink);
-  font-size: 22px;
+  font-size: calc(22px * var(--secura-font-scale));
   font-weight: 760;
   letter-spacing: -0.8px;
 }
@@ -544,13 +546,13 @@ button.secura-workspace-card:hover {
   background: var(--secura-primary);
   color: white;
   font-family: Georgia, serif;
-  font-size: 19px;
+  font-size: calc(19px * var(--secura-font-scale));
 }
 
 .secura-sidebar-brand-note {
   margin: 13px 0 36px 41px;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 700;
   letter-spacing: 1.25px;
 }
@@ -559,7 +561,7 @@ button.secura-workspace-card:hover {
   margin: 0 0 8px;
   padding: 0 12px;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 800;
   letter-spacing: 1.35px;
 }
@@ -577,7 +579,7 @@ button.secura-workspace-card:hover {
   border-radius: 10px;
   padding: 11px 12px;
   color: var(--secura-muted);
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
   transition:
     background 180ms ease,
     color 180ms ease;
@@ -617,7 +619,7 @@ button.secura-workspace-card:hover {
 .anonymize-header h1 {
   margin: 6px 0 5px;
   color: var(--secura-ink);
-  font-size: 27px;
+  font-size: calc(27px * var(--secura-font-scale));
   line-height: 1.15;
   letter-spacing: -0.8px;
 }
@@ -625,7 +627,7 @@ button.secura-workspace-card:hover {
 .anonymize-header > p:last-child {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
 }
 
 .anonymize-mobile-back {
@@ -643,7 +645,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-danger-soft);
   padding: 12px 14px;
   color: var(--secura-danger);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   font-weight: 650;
 }
 
@@ -686,19 +688,19 @@ button.secura-workspace-card:hover {
   border-radius: 50%;
   background: var(--secura-primary);
   color: white;
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   font-weight: 800;
 }
 
 .anonymize-step h2 {
   margin: 0;
-  font-size: 16px;
+  font-size: calc(16px * var(--secura-font-scale));
 }
 
 .anonymize-step p {
   margin: 5px 0 0;
   color: var(--secura-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -756,7 +758,7 @@ button.secura-workspace-card:hover {
 .anonymize-dropzone b {
   max-width: 90%;
   overflow: hidden;
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -764,7 +766,7 @@ button.secura-workspace-card:hover {
 .anonymize-dropzone > small,
 .anonymize-upload-progress {
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .anonymize-file-meta {
@@ -780,7 +782,7 @@ button.secura-workspace-card:hover {
   align-items: center;
   gap: 4px;
   color: #607669;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .anonymize-file-meta small:first-child {
@@ -869,7 +871,7 @@ button.secura-workspace-card:hover {
   gap: 7px;
   margin: 9px 0;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .anonymize-ai-status svg {
@@ -881,14 +883,14 @@ button.secura-workspace-card:hover {
 }
 
 .anonymize-ai-waiting b {
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 }
 
 .anonymize-ai-waiting p {
   margin: 5px auto 0;
   max-width: 230px;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -904,7 +906,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-primary);
   padding: 12px 16px;
   color: white;
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
   font-weight: 750;
   transition:
     background 180ms ease,
@@ -951,13 +953,13 @@ button.secura-workspace-card:hover {
 
 .anonymize-process-card h2 {
   margin: 0 0 19px;
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
 }
 
 .anonymize-process-card b,
 .anonymize-process-card strong {
   display: block;
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .anonymize-process-card p {
@@ -966,7 +968,7 @@ button.secura-workspace-card:hover {
   gap: 6px;
   margin: 8px 0;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .anonymize-process-divider {
@@ -999,13 +1001,13 @@ button.secura-workspace-card:hover {
   align-items: center;
   gap: 7px;
   color: #438665;
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 }
 
 .anonymize-ready-card p {
   margin: 5px 0 0;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .anonymize-result-actions {
@@ -1023,7 +1025,7 @@ button.secura-workspace-card:hover {
   gap: 6px;
   border-radius: 8px;
   padding: 8px 10px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 700;
 }
 
@@ -1063,13 +1065,13 @@ button.secura-workspace-card:hover {
 }
 
 .anonymize-department-picker > div:first-child > b {
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 }
 
 .anonymize-department-picker > div:first-child > p {
   margin: 4px 0 15px;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .anonymize-department-options {
@@ -1086,7 +1088,7 @@ button.secura-workspace-card:hover {
   border-radius: 9px;
   padding: 10px;
   color: var(--secura-ink);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   font-weight: 700;
 }
 
@@ -1102,12 +1104,12 @@ button.secura-workspace-card:hover {
 .anonymize-department-options small {
   margin-left: auto;
   color: var(--secura-success);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .anonymize-empty-departments {
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .anonymize-department-footer {
@@ -1120,7 +1122,7 @@ button.secura-workspace-card:hover {
 
 .anonymize-department-footer small {
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .anonymize-primary-compact {
@@ -1130,7 +1132,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-primary);
   padding: 8px 13px;
   color: white;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -1154,7 +1156,7 @@ button.secura-workspace-card:hover {
 
 .anonymize-detection-header h2 {
   margin: 6px 0 0;
-  font-size: 15px;
+  font-size: calc(15px * var(--secura-font-scale));
 }
 
 .anonymize-report-button {
@@ -1167,7 +1169,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-surface);
   padding: 8px 10px;
   color: var(--secura-primary);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -1186,7 +1188,7 @@ button.secura-workspace-card:hover {
   gap: 8px;
   margin: 11px 0;
   color: var(--secura-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .anonymize-detection-list b {
@@ -1208,7 +1210,7 @@ button.secura-workspace-card:hover {
   gap: 15px;
   border-bottom: 1px solid var(--secura-line);
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .anonymize-detection-detail > div:last-child {
@@ -1219,7 +1221,7 @@ button.secura-workspace-card:hover {
 .anonymize-detection-detail p {
   margin: 0;
   color: var(--secura-ink);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 700;
 }
 
@@ -1234,7 +1236,7 @@ button.secura-workspace-card:hover {
 
 .anonymize-before-after-row small {
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .anonymize-before-after-row > button {
@@ -1244,7 +1246,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-lilac);
   padding: 7px 9px;
   color: var(--secura-primary-dark);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -1265,14 +1267,14 @@ button.secura-workspace-card:hover {
 }
 
 .anonymize-privacy-note b {
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .anonymize-privacy-note p {
   max-width: 520px;
   margin: 4px 0 0;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   line-height: 1.5;
 }
 
@@ -1335,13 +1337,13 @@ button.secura-workspace-card:hover {
 
 .anonymize-replacements-modal h2 {
   margin: 7px 0 4px;
-  font-size: 20px;
+  font-size: calc(20px * var(--secura-font-scale));
 }
 
 .anonymize-modal-lead {
   margin: 0 0 20px;
   color: var(--secura-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -1363,7 +1365,7 @@ button.secura-workspace-card:hover {
 .anonymize-replacement-heading {
   background: var(--secura-lilac);
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -1371,7 +1373,7 @@ button.secura-workspace-card:hover {
 
 .anonymize-replacement-row {
   border-top: 1px solid var(--secura-line);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .anonymize-replacement-row > span {
@@ -1387,7 +1389,7 @@ button.secura-workspace-card:hover {
   padding: 6px 7px;
   color: var(--secura-ink);
   font-family: inherit;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 @media (max-width: 900px) {
@@ -1437,7 +1439,7 @@ button.secura-workspace-card:hover {
     background: var(--secura-lilac);
     padding: 8px 10px;
     color: var(--secura-primary-dark);
-    font-size: 10px;
+    font-size: calc(10px * var(--secura-font-scale));
     font-weight: 750;
   }
 
@@ -1484,14 +1486,14 @@ button.secura-workspace-card:hover {
 .library-page-header h1 {
   margin: 6px 0 5px;
   color: var(--secura-ink);
-  font-size: 26px;
+  font-size: calc(26px * var(--secura-font-scale));
   letter-spacing: -0.7px;
 }
 
 .library-page-header > p:last-child {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 }
 
 .library-error {
@@ -1505,7 +1507,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-danger-soft);
   padding: 11px 13px;
   color: var(--secura-danger);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 700;
 }
 
@@ -1543,7 +1545,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-surface);
   padding: 9px 15px;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 750;
   text-transform: uppercase;
   transition:
@@ -1571,7 +1573,7 @@ button.secura-workspace-card:hover {
   border-radius: 9px;
   background: var(--secura-surface-muted);
   padding: 0 5px;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .library-tabs-real button.selected span {
@@ -1614,7 +1616,7 @@ button.secura-workspace-card:hover {
   outline: 0;
   background: transparent;
   color: var(--secura-ink);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .library-search-real button {
@@ -1649,7 +1651,7 @@ button.secura-workspace-card:hover {
   border-bottom: 0;
   padding: 0 14px;
   color: var(--secura-ink);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   transition: background 150ms ease;
 }
 
@@ -1665,7 +1667,7 @@ button.secura-workspace-card:hover {
   min-height: 47px;
   background: var(--secura-lilac);
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 800;
   letter-spacing: 0.55px;
   text-transform: uppercase;
@@ -1690,7 +1692,7 @@ button.secura-workspace-card:hover {
 .library-file-real b {
   overflow: hidden;
   color: var(--secura-ink);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -1698,7 +1700,7 @@ button.secura-workspace-card:hover {
 .library-file-real small {
   margin-top: 4px;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .library-file-icon-real {
@@ -1735,7 +1737,7 @@ button.secura-workspace-card:hover {
   width: max-content;
   border-radius: 7px;
   padding: 5px 8px;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-style: normal;
   font-weight: 750;
 }
@@ -1769,7 +1771,7 @@ button.secura-workspace-card:hover {
   gap: 5px;
   border-radius: 7px;
   padding: 7px 9px;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
   white-space: nowrap;
   transition:
@@ -1854,14 +1856,14 @@ button.secura-workspace-card:hover {
 
 .library-empty-state b {
   margin-top: 13px;
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 }
 
 .library-empty-state p {
   max-width: 330px;
   margin: 5px 0 0;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -1923,19 +1925,19 @@ button.secura-workspace-card:hover {
 .library-request-modal h2 {
   margin: 7px 0 4px;
   color: var(--secura-ink);
-  font-size: 18px;
+  font-size: calc(18px * var(--secura-font-scale));
 }
 
 .library-modal-file {
   margin: 0 0 19px;
   color: var(--secura-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .library-request-modal label {
   display: block;
   color: var(--secura-ink);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   font-weight: 700;
 }
 
@@ -1949,7 +1951,7 @@ button.secura-workspace-card:hover {
   outline: 0;
   padding: 10px;
   color: var(--secura-ink);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   resize: vertical;
 }
 
@@ -1961,7 +1963,7 @@ button.secura-workspace-card:hover {
 .library-reason-count {
   margin-top: 5px;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   text-align: right;
 }
 
@@ -1974,7 +1976,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-blue);
   padding: 10px;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   line-height: 1.45;
 }
 
@@ -1989,7 +1991,7 @@ button.secura-workspace-card:hover {
 .library-primary-compact {
   border-radius: 8px;
   padding: 8px 11px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -2036,7 +2038,7 @@ button.secura-workspace-card:hover {
 
 .library-request-success p {
   color: var(--secura-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -2048,7 +2050,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-primary);
   padding: 11px 15px;
   color: white;
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -2086,14 +2088,14 @@ button.secura-workspace-card:hover {
 .access-page-header h1 {
   margin: 6px 0 5px;
   color: var(--secura-ink);
-  font-size: 26px;
+  font-size: calc(26px * var(--secura-font-scale));
   letter-spacing: -0.7px;
 }
 
 .access-page-header > p:last-child {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 }
 
 .access-tabs-real {
@@ -2115,7 +2117,7 @@ button.secura-workspace-card:hover {
   background: transparent;
   padding: 8px 13px;
   color: var(--secura-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -2134,7 +2136,7 @@ button.secura-workspace-card:hover {
   background: rgba(101, 96, 201, 0.1);
   padding: 0 5px;
   color: var(--secura-primary);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .access-tabs-real button.selected span {
@@ -2151,7 +2153,7 @@ button.secura-workspace-card:hover {
   margin-bottom: 15px;
   border-radius: 10px;
   padding: 11px 13px;
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   font-weight: 700;
 }
 
@@ -2224,7 +2226,7 @@ button.secura-workspace-card:hover {
   display: block;
   overflow: hidden;
   color: var(--secura-ink);
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -2232,7 +2234,7 @@ button.secura-workspace-card:hover {
 .access-request-file p {
   margin: 4px 0 0;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .access-request-meta small,
@@ -2240,7 +2242,7 @@ button.secura-workspace-card:hover {
 .access-owner-reason small {
   display: block;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
   letter-spacing: 0.55px;
   text-transform: uppercase;
@@ -2249,7 +2251,7 @@ button.secura-workspace-card:hover {
 .access-request-meta p {
   margin: 7px 0 0;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .access-reason-preview {
@@ -2266,7 +2268,7 @@ button.secura-workspace-card:hover {
   margin-top: 7px;
   border-radius: 7px;
   padding: 6px 8px;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
   white-space: nowrap;
 }
@@ -2302,7 +2304,7 @@ button.secura-workspace-card:hover {
 .access-owner-reason p {
   margin: 6px 0 0;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   line-height: 1.5;
 }
 
@@ -2310,7 +2312,7 @@ button.secura-workspace-card:hover {
   display: block;
   margin-top: 8px;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-style: normal;
 }
 
@@ -2324,7 +2326,7 @@ button.secura-workspace-card:hover {
 .access-reject-button {
   border-radius: 8px;
   padding: 8px 11px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 700;
 }
 
@@ -2381,14 +2383,14 @@ button.secura-workspace-card:hover {
 .access-empty-state b {
   margin-top: 14px;
   color: var(--secura-ink);
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 }
 
 .access-empty-state p {
   max-width: 340px;
   margin: 5px 0 0;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -2399,7 +2401,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-lilac);
   padding: 8px 11px;
   color: var(--secura-primary-dark);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -2484,13 +2486,13 @@ button.secura-workspace-card:hover {
 .access-confirm-modal h2 {
   margin: 7px 0 4px;
   color: var(--secura-ink);
-  font-size: 18px;
+  font-size: calc(18px * var(--secura-font-scale));
 }
 
 .access-modal-file {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .access-confirm-copy {
@@ -2499,7 +2501,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-danger-soft);
   padding: 12px;
   color: #7c6461;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -2514,7 +2516,7 @@ button.secura-workspace-card:hover {
 .access-confirm-reject {
   border-radius: 8px;
   padding: 8px 11px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -2577,14 +2579,14 @@ button.secura-workspace-card:hover {
 .security-review-header h1 {
   margin: 6px 0 5px;
   color: var(--secura-ink);
-  font-size: 26px;
+  font-size: calc(26px * var(--secura-font-scale));
   letter-spacing: -0.7px;
 }
 
 .security-review-header > p:last-child {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 }
 
 .security-review-summary {
@@ -2619,13 +2621,13 @@ button.secura-workspace-card:hover {
 .security-review-summary b {
   display: block;
   color: var(--secura-ink);
-  font-size: 20px;
+  font-size: calc(20px * var(--secura-font-scale));
 }
 
 .security-review-summary p {
   margin: 2px 0 0;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .security-review-success,
@@ -2637,7 +2639,7 @@ button.secura-workspace-card:hover {
   margin-bottom: 14px;
   border-radius: 10px;
   padding: 11px 13px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 700;
 }
 
@@ -2711,7 +2713,7 @@ button.secura-workspace-card:hover {
 .security-review-file b {
   display: block;
   overflow: hidden;
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -2721,13 +2723,13 @@ button.secura-workspace-card:hover {
 .security-review-date p {
   margin: 4px 0 0;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .security-review-person small,
 .security-review-date small {
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -2745,7 +2747,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-primary);
   padding: 8px 12px;
   color: white;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -2778,14 +2780,14 @@ button.secura-workspace-card:hover {
 
 .security-review-empty b {
   margin-top: 14px;
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 }
 
 .security-review-empty p {
   max-width: 350px;
   margin: 5px 0 0;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -2870,14 +2872,14 @@ button.secura-workspace-card:hover {
 .security-review-modal h2,
 .security-review-confirm h2 {
   margin: 7px 0 4px;
-  font-size: 19px;
+  font-size: calc(19px * var(--secura-font-scale));
 }
 
 .security-review-modal-file,
 .security-review-confirm > p {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .security-review-details {
@@ -2898,7 +2900,7 @@ button.secura-workspace-card:hover {
 .security-review-reason small {
   display: block;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.45px;
@@ -2907,7 +2909,7 @@ button.secura-workspace-card:hover {
 .security-review-details b {
   display: block;
   margin-top: 5px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .security-review-reason {
@@ -2920,7 +2922,7 @@ button.secura-workspace-card:hover {
 .security-review-reason p {
   margin: 7px 0 0;
   color: #606779;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -2936,7 +2938,7 @@ button.secura-workspace-card:hover {
 
 .security-review-notice p {
   margin: 0;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.5;
 }
 
@@ -2953,7 +2955,7 @@ button.secura-workspace-card:hover {
 .security-review-confirm-reject {
   border-radius: 8px;
   padding: 9px 12px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -2986,7 +2988,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-danger-soft);
   padding: 12px;
   color: #826460;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -3026,14 +3028,14 @@ button.secura-workspace-card:hover {
 .approved-library-header h1 {
   margin: 6px 0 5px;
   color: var(--secura-ink);
-  font-size: 26px;
+  font-size: calc(26px * var(--secura-font-scale));
   letter-spacing: -0.7px;
 }
 
 .approved-library-header > p:last-child {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 }
 
 .approved-library-summary {
@@ -3080,13 +3082,13 @@ button.secura-workspace-card:hover {
 
 .approved-library-summary b {
   display: block;
-  font-size: 19px;
+  font-size: calc(19px * var(--secura-font-scale));
 }
 
 .approved-library-summary p {
   margin: 2px 0 0;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .approved-library-error {
@@ -3100,7 +3102,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-danger-soft);
   padding: 11px 13px;
   color: var(--secura-danger);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 700;
 }
 
@@ -3153,7 +3155,7 @@ button.secura-workspace-card:hover {
   outline: 0;
   background: transparent;
   color: var(--secura-ink);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .approved-library-search button {
@@ -3188,7 +3190,7 @@ button.secura-workspace-card:hover {
   border: 1px solid var(--secura-line);
   border-bottom: 0;
   padding: 0 13px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .approved-library-row:last-child {
@@ -3206,7 +3208,7 @@ button.secura-workspace-card:hover {
   min-height: 45px;
   background: var(--secura-lilac);
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -3237,7 +3239,7 @@ button.secura-workspace-card:hover {
 .approved-file-cell b {
   display: block;
   overflow: hidden;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -3246,7 +3248,7 @@ button.secura-workspace-card:hover {
   display: block;
   margin-top: 4px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .approved-library-muted {
@@ -3260,7 +3262,7 @@ button.secura-workspace-card:hover {
   gap: 5px;
   border-radius: 7px;
   padding: 5px 7px;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -3287,7 +3289,7 @@ button.secura-workspace-card:hover {
   gap: 5px;
   border-radius: 7px;
   padding: 7px 9px;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 750;
   white-space: nowrap;
 }
@@ -3338,14 +3340,14 @@ button.secura-workspace-card:hover {
 
 .approved-library-empty b {
   margin-top: 14px;
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 }
 
 .approved-library-empty p {
   max-width: 350px;
   margin: 5px 0 0;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -3432,13 +3434,13 @@ button.secura-workspace-card:hover {
 
 .approved-details-modal h2 {
   margin: 7px 0 4px;
-  font-size: 19px;
+  font-size: calc(19px * var(--secura-font-scale));
 }
 
 .approved-details-filename {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .approved-details-status {
@@ -3451,7 +3453,7 @@ button.secura-workspace-card:hover {
   gap: 7px;
   border-radius: 8px;
   padding: 7px 9px;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -3483,7 +3485,7 @@ button.secura-workspace-card:hover {
 .approved-hash-section small {
   display: block;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
   letter-spacing: 0.45px;
   text-transform: uppercase;
@@ -3492,7 +3494,7 @@ button.secura-workspace-card:hover {
 .approved-details-grid b {
   display: block;
   margin-top: 5px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .approved-hash-section {
@@ -3515,7 +3517,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-bg);
   padding: 7px;
   color: #596071;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .approved-hash-comparison {
@@ -3531,7 +3533,7 @@ button.secura-workspace-card:hover {
 
 .approved-hash-comparison p {
   margin: 0;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.6;
 }
 
@@ -3547,7 +3549,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-primary);
   padding: 11px;
   color: white;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -3601,7 +3603,7 @@ button.secura-workspace-card:hover {
   border: 0;
   background: transparent;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 700;
 }
 
@@ -3616,14 +3618,14 @@ button.secura-workspace-card:hover {
 .profile-page-header h1 {
   margin: 6px 0 5px;
   color: var(--secura-ink);
-  font-size: 27px;
+  font-size: calc(27px * var(--secura-font-scale));
   letter-spacing: -0.7px;
 }
 
 .profile-page-header > p:last-child {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .profile-success-message,
@@ -3634,7 +3636,7 @@ button.secura-workspace-card:hover {
   margin-bottom: 16px;
   border-radius: 10px;
   padding: 11px 13px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 700;
 }
 
@@ -3691,7 +3693,7 @@ button.secura-workspace-card:hover {
   border-radius: 50%;
   background: var(--secura-lilac);
   color: var(--secura-primary);
-  font-size: 25px;
+  font-size: calc(25px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -3711,7 +3713,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-surface);
   padding: 7px 10px;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -3731,13 +3733,13 @@ button.secura-workspace-card:hover {
 .profile-identity-card h2 {
   margin: 18px 0 3px;
   color: var(--secura-ink);
-  font-size: 16px;
+  font-size: calc(16px * var(--secura-font-scale));
 }
 
 .profile-identity-card > p {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .profile-role-badge {
@@ -3746,14 +3748,14 @@ button.secura-workspace-card:hover {
   background: var(--secura-lilac);
   padding: 5px 9px;
   color: var(--secura-primary-dark);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
 }
 
 .profile-identity-card > small {
   margin-top: 20px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .profile-settings-card {
@@ -3770,7 +3772,7 @@ button.secura-workspace-card:hover {
 
 .profile-settings-heading h2 {
   margin: 5px 0 0;
-  font-size: 17px;
+  font-size: calc(17px * var(--secura-font-scale));
 }
 
 .profile-settings-heading > span {
@@ -3792,7 +3794,7 @@ button.secura-workspace-card:hover {
 
 .profile-form-grid label {
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -3806,7 +3808,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-surface);
   padding: 9px 10px;
   color: var(--secura-ink);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .profile-form-grid input:focus:not(:disabled) {
@@ -3848,12 +3850,12 @@ button.secura-workspace-card:hover {
 
 .profile-security-note b {
   display: block;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .profile-security-note p {
   margin: 4px 0 0;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.5;
 }
 
@@ -3870,7 +3872,7 @@ button.secura-workspace-card:hover {
 .profile-save-button {
   border-radius: 8px;
   padding: 9px 12px;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -3962,7 +3964,7 @@ button.secura-workspace-card:hover {
   align-items: center;
   gap: 8px;
   color: var(--secura-ink);
-  font-size: 14px;
+  font-size: calc(14px * var(--secura-font-scale));
 }
 
 .admin-brand > span {
@@ -3973,21 +3975,21 @@ button.secura-workspace-card:hover {
   border-radius: 9px;
   background: var(--secura-primary);
   color: white;
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
   font-weight: 800;
 }
 
 .admin-topbar-title h1 {
   margin: 6px 0 3px;
   color: var(--secura-ink);
-  font-size: 23px;
+  font-size: calc(23px * var(--secura-font-scale));
   letter-spacing: -0.55px;
 }
 
 .admin-topbar-title p:last-child {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .admin-topbar-actions {
@@ -4014,13 +4016,13 @@ button.secura-workspace-card:hover {
 
 .admin-profile-button b {
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .admin-profile-button small {
   margin-top: 2px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .admin-avatar {
@@ -4031,7 +4033,7 @@ button.secura-workspace-card:hover {
   border-radius: 50%;
   background: var(--secura-lilac);
   color: var(--secura-primary);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -4044,7 +4046,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-surface);
   padding: 8px 10px;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 700;
 }
 
@@ -4055,14 +4057,14 @@ button.secura-workspace-card:hover {
 .admin-dashboard-intro h2 {
   margin: 7px 0 5px;
   color: var(--secura-ink);
-  font-size: 25px;
+  font-size: calc(25px * var(--secura-font-scale));
   letter-spacing: -0.6px;
 }
 
 .admin-dashboard-intro > p:last-child {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .admin-dashboard-error {
@@ -4075,7 +4077,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-danger-soft);
   padding: 10px 12px;
   color: var(--secura-danger);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .admin-stat-grid {
@@ -4127,13 +4129,13 @@ button.secura-workspace-card:hover {
 .admin-stat-grid b {
   display: block;
   color: var(--secura-ink);
-  font-size: 19px;
+  font-size: calc(19px * var(--secura-font-scale));
 }
 
 .admin-stat-grid p {
   margin: 2px 0 0;
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -4141,7 +4143,7 @@ button.secura-workspace-card:hover {
   display: block;
   margin-top: 3px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .admin-dashboard-body {
@@ -4173,7 +4175,7 @@ button.secura-workspace-card:hover {
 
 .admin-panel-heading h2 {
   margin: 5px 0 0;
-  font-size: 16px;
+  font-size: calc(16px * var(--secura-font-scale));
 }
 
 .admin-panel-heading > svg {
@@ -4232,14 +4234,14 @@ button.secura-workspace-card:hover {
 .admin-action-grid b {
   display: block;
   color: var(--secura-ink);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .admin-action-grid small {
   display: block;
   margin-top: 4px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   line-height: 1.45;
 }
 
@@ -4266,7 +4268,7 @@ button.secura-workspace-card:hover {
 .admin-status-panel h3 {
   margin: 0;
   color: var(--secura-ink);
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 }
 
 .admin-status-panel > p:not(
@@ -4274,7 +4276,7 @@ button.secura-workspace-card:hover {
 ) {
   margin: 6px 0 19px;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.5;
 }
 
@@ -4285,13 +4287,13 @@ button.secura-workspace-card:hover {
   border-top: 1px solid var(--secura-line);
   padding: 11px 2px;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   text-align: left;
 }
 
 .admin-status-row b {
   color: var(--secura-ink);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 @media (max-width: 900px) {
@@ -4339,14 +4341,14 @@ button.secura-workspace-card:hover {
 .admin-users-header h1 {
   margin: 6px 0 5px;
   color: var(--secura-ink);
-  font-size: 26px;
+  font-size: calc(26px * var(--secura-font-scale));
   letter-spacing: -0.7px;
 }
 
 .admin-users-header > div > p:last-child {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .admin-create-user-button {
@@ -4358,7 +4360,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-primary);
   padding: 9px 13px;
   color: white;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -4375,7 +4377,7 @@ button.secura-workspace-card:hover {
   margin-bottom: 14px;
   border-radius: 9px;
   padding: 10px 12px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 700;
 }
 
@@ -4434,7 +4436,7 @@ button.secura-workspace-card:hover {
   flex: 1;
   border: 0;
   outline: none;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .admin-users-search button {
@@ -4456,7 +4458,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-surface);
   padding: 6px 8px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -4489,7 +4491,7 @@ button.secura-workspace-card:hover {
   border: 1px solid var(--secura-line);
   border-bottom: 0;
   padding: 0 13px;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .admin-users-row:last-child {
@@ -4500,7 +4502,7 @@ button.secura-workspace-card:hover {
   min-height: 44px;
   background: var(--secura-lilac);
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
   letter-spacing: 0.45px;
   text-transform: uppercase;
@@ -4522,7 +4524,7 @@ button.secura-workspace-card:hover {
   border-radius: 10px;
   background: var(--secura-lilac);
   color: var(--secura-primary);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -4538,7 +4540,7 @@ button.secura-workspace-card:hover {
 
 .admin-user-identity b {
   overflow: hidden;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -4546,13 +4548,13 @@ button.secura-workspace-card:hover {
 .admin-user-identity small {
   margin-top: 3px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .admin-user-identity em {
   margin-top: 2px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-style: normal;
 }
 
@@ -4561,7 +4563,7 @@ button.secura-workspace-card:hover {
   width: max-content;
   border-radius: 7px;
   padding: 5px 7px;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -4609,7 +4611,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-surface);
   padding: 6px 8px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 700;
 }
 
@@ -4620,7 +4622,7 @@ button.secura-workspace-card:hover {
 
 .admin-protected-account {
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .admin-users-loading {
@@ -4647,12 +4649,12 @@ button.secura-workspace-card:hover {
 .admin-users-empty b {
   margin-top: 11px;
   color: var(--secura-ink);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .admin-users-empty p {
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .admin-modal-backdrop {
@@ -4694,14 +4696,14 @@ button.secura-workspace-card:hover {
 .admin-user-modal h2,
 .admin-small-modal h2 {
   margin: 6px 0 4px;
-  font-size: 18px;
+  font-size: calc(18px * var(--secura-font-scale));
 }
 
 .admin-modal-subtitle,
 .admin-small-modal > p {
   margin: 0 0 18px;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .admin-create-grid {
@@ -4717,7 +4719,7 @@ button.secura-workspace-card:hover {
 .admin-create-grid label,
 .admin-small-modal label {
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -4734,7 +4736,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-surface);
   padding: 9px;
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .admin-create-grid input:focus,
@@ -4762,7 +4764,7 @@ button.secura-workspace-card:hover {
 
 .admin-create-note p {
   margin: 0;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.5;
 }
 
@@ -4777,7 +4779,7 @@ button.secura-workspace-card:hover {
 .admin-modal-primary {
   border-radius: 8px;
   padding: 8px 11px;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -4841,14 +4843,14 @@ button.secura-workspace-card:hover {
 .admin-departments-header h1 {
   margin: 6px 0 5px;
   color: var(--secura-ink);
-  font-size: 26px;
+  font-size: calc(26px * var(--secura-font-scale));
   letter-spacing: -0.7px;
 }
 
 .admin-departments-header > div > p:last-child {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .admin-create-department-button {
@@ -4860,7 +4862,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-primary);
   padding: 9px 13px;
   color: white;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -4905,13 +4907,13 @@ button.secura-workspace-card:hover {
 
 .admin-department-stats b {
   display: block;
-  font-size: 18px;
+  font-size: calc(18px * var(--secura-font-scale));
 }
 
 .admin-department-stats p {
   margin: 3px 0 0;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .admin-departments-success,
@@ -4923,7 +4925,7 @@ button.secura-workspace-card:hover {
   margin-bottom: 14px;
   border-radius: 9px;
   padding: 10px 12px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 700;
 }
 
@@ -4986,7 +4988,7 @@ button.secura-workspace-card:hover {
   flex: 1;
   border: 0;
   outline: 0;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .admin-departments-search button {
@@ -5029,7 +5031,7 @@ button.secura-workspace-card:hover {
   min-height: 44px;
   background: var(--secura-lilac);
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
   letter-spacing: 0.45px;
   text-transform: uppercase;
@@ -5055,14 +5057,14 @@ button.secura-workspace-card:hover {
 
 .admin-department-identity b {
   display: block;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .admin-department-identity small {
   display: block;
   margin-top: 3px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .admin-department-users {
@@ -5070,7 +5072,7 @@ button.secura-workspace-card:hover {
   align-items: center;
   gap: 6px;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .admin-departments-row code {
@@ -5079,7 +5081,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-bg);
   padding: 5px 7px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .admin-departments-loading {
@@ -5114,13 +5116,13 @@ button.secura-workspace-card:hover {
 
 .admin-departments-empty b {
   margin-top: 12px;
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .admin-departments-empty p {
   margin: 5px 0 0;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .admin-department-modal {
@@ -5137,18 +5139,18 @@ button.secura-workspace-card:hover {
 
 .admin-department-modal h2 {
   margin: 6px 0 4px;
-  font-size: 18px;
+  font-size: calc(18px * var(--secura-font-scale));
 }
 
 .admin-department-modal-subtitle {
   margin: 0 0 18px;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .admin-department-modal label {
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -5161,7 +5163,7 @@ button.secura-workspace-card:hover {
   outline: none;
   padding: 9px;
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .admin-department-modal input:focus {
@@ -5183,7 +5185,7 @@ button.secura-workspace-card:hover {
 
 .admin-department-note p {
   margin: 0;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.5;
 }
 
@@ -5218,14 +5220,14 @@ button.secura-workspace-card:hover {
 .admin-profile-header h1 {
   margin: 6px 0 5px;
   color: var(--secura-ink);
-  font-size: 26px;
+  font-size: calc(26px * var(--secura-font-scale));
   letter-spacing: -0.7px;
 }
 
 .admin-profile-header > p:last-child {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .admin-profile-success,
@@ -5237,7 +5239,7 @@ button.secura-workspace-card:hover {
   margin-bottom: 14px;
   border-radius: 9px;
   padding: 10px 12px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 700;
 }
 
@@ -5296,7 +5298,7 @@ button.secura-workspace-card:hover {
   border-radius: 50%;
   background: var(--secura-lilac);
   color: var(--secura-primary);
-  font-size: 25px;
+  font-size: calc(25px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -5316,7 +5318,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-surface);
   padding: 7px 10px;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -5331,13 +5333,13 @@ button.secura-workspace-card:hover {
 
 .admin-profile-identity h2 {
   margin: 18px 0 3px;
-  font-size: 15px;
+  font-size: calc(15px * var(--secura-font-scale));
 }
 
 .admin-profile-identity > p {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .admin-profile-role {
@@ -5346,7 +5348,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-lilac);
   padding: 5px 9px;
   color: var(--secura-primary-dark);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -5365,13 +5367,13 @@ button.secura-workspace-card:hover {
 
 .admin-profile-security b {
   display: block;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .admin-profile-security small {
   display: block;
   margin-top: 2px;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .admin-profile-settings {
@@ -5388,7 +5390,7 @@ button.secura-workspace-card:hover {
 
 .admin-profile-settings-heading h2 {
   margin: 5px 0 0;
-  font-size: 17px;
+  font-size: calc(17px * var(--secura-font-scale));
 }
 
 .admin-profile-settings-heading > span {
@@ -5410,7 +5412,7 @@ button.secura-workspace-card:hover {
 
 .admin-profile-form-grid label {
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -5424,7 +5426,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-surface);
   padding: 9px 10px;
   color: var(--secura-ink);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .admin-profile-form-grid input:focus:not(:disabled) {
@@ -5466,12 +5468,12 @@ button.secura-workspace-card:hover {
 
 .admin-profile-note b {
   display: block;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .admin-profile-note p {
   margin: 4px 0 0;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.5;
 }
 
@@ -5488,7 +5490,7 @@ button.secura-workspace-card:hover {
 .admin-profile-save {
   border-radius: 8px;
   padding: 9px 12px;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -5554,7 +5556,7 @@ button.secura-workspace-card:hover {
 .admin-security-eyebrow {
   margin: 0;
   color: #747b8d;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 800;
   letter-spacing: 1.4px;
 }
@@ -5562,14 +5564,14 @@ button.secura-workspace-card:hover {
 .admin-security-card h2 {
   margin: 7px 0 0;
   color: var(--secura-ink);
-  font-size: 16px;
+  font-size: calc(16px * var(--secura-font-scale));
   font-weight: 500;
 }
 
 .admin-security-description {
   margin: 13px 0 0;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.65;
 }
 
@@ -5584,7 +5586,7 @@ button.secura-workspace-card:hover {
 .admin-security-email-box small {
   display: block;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
   letter-spacing: 0.5px;
 }
@@ -5593,7 +5595,7 @@ button.secura-workspace-card:hover {
   display: block;
   margin-top: 7px;
   color: var(--secura-ink);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .admin-security-request-actions {
@@ -5608,7 +5610,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-primary);
   padding: 10px 20px;
   color: white;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -5627,7 +5629,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-danger-soft);
   padding: 9px 10px;
   color: #a5544d;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .admin-security-success {
@@ -5639,7 +5641,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-mint);
   padding: 9px 10px;
   color: var(--secura-success);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -5657,20 +5659,20 @@ button.secura-workspace-card:hover {
 }
 
 .admin-security-otp-banner b {
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .admin-security-otp-banner span {
   margin-top: 5px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .admin-security-label {
   display: block;
   margin-top: 17px;
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -5689,7 +5691,7 @@ button.secura-workspace-card:hover {
   outline: none;
   text-align: center;
   color: var(--secura-ink);
-  font-size: 14px;
+  font-size: calc(14px * var(--secura-font-scale));
   font-weight: 700;
 }
 
@@ -5703,7 +5705,7 @@ button.secura-workspace-card:hover {
 .admin-security-resend {
   margin: 8px 0 0;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .admin-security-resend button {
@@ -5728,7 +5730,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-surface);
   padding: 8px 10px;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 700;
 }
 
@@ -5741,14 +5743,14 @@ button.secura-workspace-card:hover {
   background: var(--secura-mint);
   padding: 11px;
   color: var(--secura-success);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .admin-security-password-field {
   display: block;
   margin-top: 17px;
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -5764,7 +5766,7 @@ button.secura-workspace-card:hover {
   outline: none;
   padding: 11px 38px 11px 11px;
   color: var(--secura-ink);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .admin-security-password-field input:focus {
@@ -5790,7 +5792,7 @@ button.secura-workspace-card:hover {
   display: block;
   margin-top: 7px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 500;
 }
 
@@ -5836,26 +5838,26 @@ button.secura-workspace-card:hover {
   border-radius: 9px;
   background: var(--secura-primary);
   color: white;
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
   font-weight: 800;
 }
 
 .security-dashboard-brand b {
   color: var(--secura-ink);
-  font-size: 14px;
+  font-size: calc(14px * var(--secura-font-scale));
 }
 
 .security-dashboard-brand-area h1 {
   margin: 6px 0 3px;
   color: var(--secura-ink);
-  font-size: 23px;
+  font-size: calc(23px * var(--secura-font-scale));
   letter-spacing: -0.55px;
 }
 
 .security-dashboard-brand-area p:last-child {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .security-dashboard-account {
@@ -5883,7 +5885,7 @@ button.secura-workspace-card:hover {
   border-radius: 50%;
   background: var(--secura-lilac);
   color: var(--secura-primary);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -5894,13 +5896,13 @@ button.secura-workspace-card:hover {
 
 .security-account-button b {
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .security-account-button small {
   margin-top: 2px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .security-dashboard-logout {
@@ -5912,7 +5914,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-surface);
   padding: 8px 10px;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 700;
 }
 
@@ -5923,14 +5925,14 @@ button.secura-workspace-card:hover {
 .security-dashboard-intro h2 {
   margin: 7px 0 5px;
   color: var(--secura-ink);
-  font-size: 25px;
+  font-size: calc(25px * var(--secura-font-scale));
   letter-spacing: -0.6px;
 }
 
 .security-dashboard-intro > p:last-child {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .security-dashboard-error {
@@ -5943,7 +5945,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-danger-soft);
   padding: 10px 12px;
   color: var(--secura-danger);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .security-dashboard-network {
@@ -5991,7 +5993,7 @@ button.secura-workspace-card:hover {
 .security-network-content small,
 .security-network-meta small {
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
   letter-spacing: 0.5px;
 }
@@ -6005,19 +6007,19 @@ button.secura-workspace-card:hover {
 
 .security-network-content h3 {
   margin: 0;
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 }
 
 .security-network-content p {
   margin: 5px 0 0;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .security-network-status {
   border-radius: 7px;
   padding: 4px 7px;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -6049,7 +6051,7 @@ button.secura-workspace-card:hover {
   display: block;
   margin-top: 5px;
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 650;
 }
 
@@ -6104,13 +6106,13 @@ button.secura-workspace-card:hover {
 
 .security-dashboard-stats b {
   display: block;
-  font-size: 19px;
+  font-size: calc(19px * var(--secura-font-scale));
 }
 
 .security-dashboard-stats p {
   margin: 2px 0 0;
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -6118,7 +6120,7 @@ button.secura-workspace-card:hover {
   display: block;
   margin-top: 3px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .security-dashboard-main-grid {
@@ -6150,7 +6152,7 @@ button.secura-workspace-card:hover {
 
 .security-dashboard-panel-heading h2 {
   margin: 5px 0 0;
-  font-size: 16px;
+  font-size: calc(16px * var(--secura-font-scale));
 }
 
 .security-dashboard-panel-heading > svg {
@@ -6212,14 +6214,14 @@ button.secura-workspace-card:hover {
 .security-dashboard-actions b {
   display: block;
   color: var(--secura-ink);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .security-dashboard-actions small {
   display: block;
   margin-top: 4px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   line-height: 1.45;
 }
 
@@ -6245,7 +6247,7 @@ button.secura-workspace-card:hover {
 
 .security-dashboard-status-panel h3 {
   margin: 0;
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 }
 
 .security-dashboard-status-panel > p:not(
@@ -6253,7 +6255,7 @@ button.secura-workspace-card:hover {
 ) {
   margin: 6px 0 19px;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.5;
 }
 
@@ -6264,12 +6266,12 @@ button.secura-workspace-card:hover {
   border-top: 1px solid var(--secura-line);
   padding: 11px 2px;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .security-dashboard-status-row b {
   color: var(--secura-ink);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 @media (max-width: 900px) {
@@ -6326,14 +6328,14 @@ button.secura-workspace-card:hover {
 .security-alerts-header h1 {
   margin: 6px 0 5px;
   color: var(--secura-ink);
-  font-size: 26px;
+  font-size: calc(26px * var(--secura-font-scale));
   letter-spacing: -0.7px;
 }
 
 .security-alerts-header > div:first-child > p:last-child {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .security-alert-count {
@@ -6364,13 +6366,13 @@ button.secura-workspace-card:hover {
 
 .security-alert-count b {
   color: var(--secura-ink);
-  font-size: 14px;
+  font-size: calc(14px * var(--secura-font-scale));
 }
 
 .security-alert-count small {
   margin-top: 1px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .security-alerts-error {
@@ -6384,7 +6386,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-danger-soft);
   padding: 10px 12px;
   color: var(--secura-danger);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 700;
 }
 
@@ -6429,7 +6431,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-surface);
   padding: 7px 10px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -6447,7 +6449,7 @@ button.secura-workspace-card:hover {
   border-radius: 9px;
   background: var(--secura-surface-muted);
   padding: 0 5px;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .security-alerts-filters button.selected span {
@@ -6480,7 +6482,7 @@ button.secura-workspace-card:hover {
   outline: none;
   background: transparent;
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .security-alerts-search button {
@@ -6525,7 +6527,7 @@ button.secura-workspace-card:hover {
   min-height: 44px;
   background: var(--secura-lilac);
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -6552,14 +6554,14 @@ button.secura-workspace-card:hover {
   align-items: center;
   gap: 5px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .security-alert-severity {
   width: max-content;
   border-radius: 7px;
   padding: 5px 7px;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -6589,18 +6591,18 @@ button.secura-workspace-card:hover {
 }
 
 .security-alert-event b {
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .security-alert-event small {
   margin-top: 3px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .security-alert-user {
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .security-alert-row-button code {
@@ -6609,7 +6611,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-bg);
   padding: 5px 7px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .security-alerts-loading {
@@ -6645,14 +6647,14 @@ button.secura-workspace-card:hover {
 .security-alerts-empty b {
   margin-top: 13px;
   color: var(--secura-ink);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .security-alerts-empty p {
   max-width: 360px;
   margin: 5px 0 0;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -6692,7 +6694,7 @@ button.secura-workspace-card:hover {
 .security-alert-details-modal h2 {
   margin: 6px 0 0;
   color: var(--secura-ink);
-  font-size: 18px;
+  font-size: calc(18px * var(--secura-font-scale));
 }
 
 .security-alert-details-top {
@@ -6707,7 +6709,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-lilac);
   padding: 5px 7px;
   color: var(--secura-primary-dark);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -6728,7 +6730,7 @@ button.secura-workspace-card:hover {
 .security-alert-details-grid small {
   display: block;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
   letter-spacing: 0.4px;
   text-transform: uppercase;
@@ -6738,7 +6740,7 @@ button.secura-workspace-card:hover {
   display: block;
   margin-top: 5px;
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .security-alert-message {
@@ -6754,14 +6756,14 @@ button.secura-workspace-card:hover {
 
 .security-alert-message small {
   display: block;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
   letter-spacing: 0.4px;
 }
 
 .security-alert-message p {
   margin: 5px 0 0;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -6773,7 +6775,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-primary);
   padding: 10px;
   color: white;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -6817,14 +6819,14 @@ button.secura-workspace-card:hover {
 .security-logs-header h1 {
   margin: 6px 0 5px;
   color: var(--secura-ink);
-  font-size: 26px;
+  font-size: calc(26px * var(--secura-font-scale));
   letter-spacing: -0.7px;
 }
 
 .security-logs-header > div:first-child > p:last-child {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .security-logs-count {
@@ -6855,13 +6857,13 @@ button.secura-workspace-card:hover {
 
 .security-logs-count b {
   color: var(--secura-ink);
-  font-size: 14px;
+  font-size: calc(14px * var(--secura-font-scale));
 }
 
 .security-logs-count small {
   margin-top: 1px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .security-logs-error {
@@ -6875,7 +6877,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-danger-soft);
   padding: 10px 12px;
   color: var(--secura-danger);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .security-logs-error button {
@@ -6917,7 +6919,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-surface);
   padding: 8px 10px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -6935,7 +6937,7 @@ button.secura-workspace-card:hover {
   border-radius: 9px;
   background: var(--secura-surface-muted);
   padding: 0 5px;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .security-logs-tabs button.selected span {
@@ -6968,7 +6970,7 @@ button.secura-workspace-card:hover {
   outline: 0;
   background: transparent;
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .security-logs-search button {
@@ -7016,7 +7018,7 @@ button.secura-workspace-card:hover {
 
 .security-network-log-status small {
   color: var(--secura-muted);
-  font-size: 7px;
+  font-size: calc(7px * var(--secura-font-scale));
   font-weight: 800;
   letter-spacing: 0.5px;
 }
@@ -7024,7 +7026,7 @@ button.secura-workspace-card:hover {
 .security-network-log-status b {
   margin-top: 2px;
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .security-network-log-last {
@@ -7088,7 +7090,7 @@ button.secura-workspace-card:hover {
   min-height: 43px;
   background: var(--secura-lilac);
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -7110,7 +7112,7 @@ button.secura-workspace-card:hover {
   align-items: center;
   gap: 5px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .security-log-action {
@@ -7119,12 +7121,12 @@ button.secura-workspace-card:hover {
   background: var(--secura-lilac);
   padding: 5px 7px;
   color: var(--secura-primary-dark);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 750;
 }
 
 .security-log-row-button > span {
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .security-log-row-button code {
@@ -7133,14 +7135,14 @@ button.secura-workspace-card:hover {
   background: var(--secura-bg);
   padding: 5px 7px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .security-network-severity {
   width: max-content;
   border-radius: 7px;
   padding: 5px 7px;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -7170,13 +7172,13 @@ button.secura-workspace-card:hover {
 }
 
 .security-network-event-name b {
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .security-network-event-name small {
   margin-top: 3px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .security-logs-loading {
@@ -7212,14 +7214,14 @@ button.secura-workspace-card:hover {
 .security-logs-empty b {
   margin-top: 13px;
   color: var(--secura-ink);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .security-logs-empty p {
   max-width: 360px;
   margin: 5px 0 0;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -7259,7 +7261,7 @@ button.secura-workspace-card:hover {
 .security-log-modal h2 {
   margin: 6px 0 0;
   color: var(--secura-ink);
-  font-size: 18px;
+  font-size: calc(18px * var(--secura-font-scale));
 }
 
 .security-log-modal-tags {
@@ -7274,7 +7276,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-lilac);
   padding: 5px 7px;
   color: var(--secura-primary-dark);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -7295,7 +7297,7 @@ button.secura-workspace-card:hover {
 .security-log-details-grid small {
   display: block;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
   letter-spacing: 0.4px;
   text-transform: uppercase;
@@ -7306,7 +7308,7 @@ button.secura-workspace-card:hover {
   margin-top: 5px;
   overflow-wrap: anywhere;
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .security-log-details-message {
@@ -7319,7 +7321,7 @@ button.secura-workspace-card:hover {
 
 .security-log-details-message small {
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
   letter-spacing: 0.4px;
 }
@@ -7328,7 +7330,7 @@ button.secura-workspace-card:hover {
   margin: 6px 0 0;
   overflow-wrap: anywhere;
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -7340,7 +7342,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-primary);
   padding: 10px;
   color: white;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -7380,14 +7382,14 @@ button.secura-workspace-card:hover {
 .security-profile-header h1 {
   margin: 6px 0 5px;
   color: var(--secura-ink);
-  font-size: 26px;
+  font-size: calc(26px * var(--secura-font-scale));
   letter-spacing: -0.7px;
 }
 
 .security-profile-header > p:last-child {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .security-profile-success,
@@ -7399,7 +7401,7 @@ button.secura-workspace-card:hover {
   margin-bottom: 14px;
   border-radius: 9px;
   padding: 10px 12px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 700;
 }
 
@@ -7459,7 +7461,7 @@ button.secura-workspace-card:hover {
   border-radius: 50%;
   background: var(--secura-lilac);
   color: var(--secura-primary);
-  font-size: 22px;
+  font-size: calc(22px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -7479,7 +7481,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-surface);
   padding: 7px 10px;
   color: var(--secura-primary);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -7494,13 +7496,13 @@ button.secura-workspace-card:hover {
 .security-profile-identity h2 {
   margin: 18px 0 0;
   color: var(--secura-ink);
-  font-size: 15px;
+  font-size: calc(15px * var(--secura-font-scale));
 }
 
 .security-profile-identity > p {
   margin: 5px 0 0;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   overflow-wrap: anywhere;
 }
 
@@ -7510,7 +7512,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-lilac);
   padding: 5px 9px;
   color: var(--secura-primary-dark);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -7533,12 +7535,12 @@ button.secura-workspace-card:hover {
 }
 
 .security-profile-status-card b {
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .security-profile-status-card small {
   margin-top: 3px;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   line-height: 1.4;
 }
 
@@ -7555,7 +7557,7 @@ button.secura-workspace-card:hover {
 .security-profile-settings-heading h2 {
   margin: 5px 0 0;
   color: var(--secura-ink);
-  font-size: 16px;
+  font-size: calc(16px * var(--secura-font-scale));
 }
 
 .security-profile-settings-heading > span {
@@ -7578,7 +7580,7 @@ button.secura-workspace-card:hover {
 
 .security-profile-form-grid label {
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -7591,7 +7593,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-surface);
   padding: 10px 11px;
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .security-profile-form-grid input:focus {
@@ -7637,13 +7639,13 @@ button.secura-workspace-card:hover {
 
 .security-profile-note b {
   display: block;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .security-profile-note p {
   margin: 4px 0 0;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -7663,7 +7665,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-surface);
   padding: 8px 12px;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 700;
 }
 
@@ -7676,7 +7678,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-primary);
   padding: 9px 13px;
   color: white;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -7754,7 +7756,7 @@ button.secura-workspace-card:hover {
   background: transparent;
   padding: 0;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 700;
 }
 
@@ -7777,13 +7779,13 @@ button.secura-workspace-card:hover {
   border-radius: 9px;
   background: #6560c9;
   color: white;
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
   font-weight: 800;
 }
 
 .admin-recovery-brand b {
   color: var(--secura-ink);
-  font-size: 14px;
+  font-size: calc(14px * var(--secura-font-scale));
 }
 
 .admin-recovery-icon {
@@ -7807,14 +7809,14 @@ button.secura-workspace-card:hover {
 .admin-recovery-card h1 {
   margin: 7px 0 0;
   color: var(--secura-ink);
-  font-size: 22px;
+  font-size: calc(22px * var(--secura-font-scale));
   letter-spacing: -0.5px;
 }
 
 .admin-recovery-description {
   margin: 8px 0 0;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   line-height: 1.6;
 }
 
@@ -7822,7 +7824,7 @@ button.secura-workspace-card:hover {
   display: block;
   margin-top: 20px;
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -7856,7 +7858,7 @@ button.secura-workspace-card:hover {
   background: transparent;
   padding: 11px 39px 11px 34px;
   color: var(--secura-ink);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .admin-recovery-eye {
@@ -7881,7 +7883,7 @@ button.secura-workspace-card:hover {
   background: #6560c9;
   padding: 11px 14px;
   color: white;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -7906,7 +7908,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-surface);
   padding: 10px 15px;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 700;
 }
 
@@ -7916,7 +7918,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-bg-bottom);
   padding: 10px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   line-height: 1.55;
   text-align: center;
 }
@@ -7928,7 +7930,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-danger-soft);
   padding: 10px;
   color: var(--secura-danger);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.5;
 }
 
@@ -7939,7 +7941,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-mint);
   padding: 10px;
   color: var(--secura-success);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.5;
 }
 
@@ -7950,7 +7952,7 @@ button.secura-workspace-card:hover {
   background: var(--secura-bg-bottom);
   padding: 6px 9px;
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -7970,7 +7972,7 @@ button.secura-workspace-card:hover {
   outline: 0;
   background: var(--secura-surface);
   color: var(--secura-ink);
-  font-size: 17px;
+  font-size: calc(17px * var(--secura-font-scale));
   font-weight: 800;
   text-align: center;
 }
@@ -7989,7 +7991,7 @@ button.secura-workspace-card:hover {
   gap: 10px;
   margin-top: 13px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .admin-recovery-resend button {
@@ -7999,7 +8001,7 @@ button.secura-workspace-card:hover {
   border: 0;
   background: transparent;
   color: #6560c9;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -8034,18 +8036,18 @@ button.secura-workspace-card:hover {
 }
 
 .admin-recovery-verified b {
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .admin-recovery-verified small {
   margin-top: 3px;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .admin-recovery-hint {
   margin: 5px 0 0;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .admin-recovery-complete {
@@ -8069,7 +8071,7 @@ button.secura-workspace-card:hover {
 ) {
   margin: 9px 0 0;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   line-height: 1.6;
 }
 
@@ -8307,11 +8309,11 @@ button.secura-workspace-card:hover {
   width: 32px;
   height: 32px;
   border-radius: 10px 10px 10px 3px;
-  font-size: 17px;
+  font-size: calc(17px * var(--secura-font-scale));
 }
 
 .secura-topbar-brand > span:last-child {
-  font-size: 15px;
+  font-size: calc(15px * var(--secura-font-scale));
   line-height: 1;
 }
 
@@ -8327,7 +8329,7 @@ button.secura-workspace-card:hover {
 }
 
 .secura-subtitle {
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
 }
 
 .secura-header-actions {
@@ -8380,11 +8382,11 @@ button.secura-workspace-card:hover {
 
 .secura-dashboard-intro h2 {
   margin-top: 8px;
-  font-size: 25px;
+  font-size: calc(25px * var(--secura-font-scale));
 }
 
 .secura-dashboard-intro > p:last-child {
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
 }
 
 /* Fill the canvas instead of stopping at 920px */
@@ -8418,12 +8420,12 @@ button.secura-workspace-card:hover {
 }
 
 .secura-workspace-copy b {
-  font-size: 15px;
+  font-size: calc(15px * var(--secura-font-scale));
 }
 
 .secura-workspace-copy small {
   max-width: 290px;
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -8433,7 +8435,7 @@ button.secura-workspace-card:hover {
 
 .secura-original-actions > button {
   padding: 14px 18px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .secura-card-arrow {
@@ -8576,7 +8578,7 @@ button.secura-workspace-card:hover
   }
 
   .secura-topbar h1 {
-    font-size: 25px;
+    font-size: calc(25px * var(--secura-font-scale));
   }
 
   .secura-header-actions {
@@ -8757,7 +8759,7 @@ button.secura-workspace-card:hover
 
 .anonymize-header > p:last-child {
   max-width: 650px;
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
   line-height: 1.6;
 }
 
@@ -8845,14 +8847,14 @@ button.secura-workspace-card:hover
 }
 
 .anonymize-step h2 {
-  font-size: 18px;
+  font-size: calc(18px * var(--secura-font-scale));
   letter-spacing: -0.25px;
 }
 
 .anonymize-step p {
   max-width: 520px;
   margin-top: 6px;
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .anonymize-dropzone {
@@ -8960,7 +8962,7 @@ button.secura-workspace-card:hover
   position: relative;
   z-index: 1;
   margin-top: 3px;
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
 }
 
 .anonymize-dropzone > small,
@@ -9074,12 +9076,12 @@ button.secura-workspace-card:hover
 }
 
 .anonymize-ai-waiting b {
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
 }
 
 .anonymize-ai-waiting p {
   max-width: 275px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -9217,18 +9219,18 @@ button.secura-workspace-card:hover
 
 .anonymize-process-card h2 {
   margin-bottom: 23px;
-  font-size: 14px;
+  font-size: calc(14px * var(--secura-font-scale));
   letter-spacing: -0.15px;
 }
 
 .anonymize-process-card b,
 .anonymize-process-card strong {
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 }
 
 .anonymize-process-card p {
   margin: 9px 0;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .anonymize-process-card p svg {
@@ -9324,7 +9326,7 @@ button.secura-workspace-card:hover
 }
 
 .anonymize-ready-card b {
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
 }
 
 .anonymize-ready-card b svg {
@@ -9338,7 +9340,7 @@ button.secura-workspace-card:hover
 
 .anonymize-ready-card p {
   margin-top: 6px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .anonymize-result-actions {
@@ -9411,7 +9413,7 @@ button.secura-workspace-card:hover
 
 .anonymize-detection-header h2 {
   margin-top: 7px;
-  font-size: 17px;
+  font-size: calc(17px * var(--secura-font-scale));
   letter-spacing: -0.25px;
 }
 
@@ -9474,7 +9476,7 @@ button.secura-workspace-card:hover
 
 .anonymize-detection-list b {
   min-width: 0;
-  font-size: 18px;
+  font-size: calc(18px * var(--secura-font-scale));
   line-height: 1;
 }
 
@@ -9535,13 +9537,13 @@ button.secura-workspace-card:hover
 }
 
 .anonymize-privacy-note b {
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 }
 
 .anonymize-privacy-note p {
   max-width: 760px;
   margin-top: 5px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 @media (max-width: 1180px) {
@@ -9593,7 +9595,7 @@ button.secura-workspace-card:hover
 
 @media (max-width: 640px) {
   .anonymize-header h1 {
-    font-size: 28px;
+    font-size: calc(28px * var(--secura-font-scale));
   }
 
   .anonymize-panel {
@@ -9734,7 +9736,7 @@ button.secura-workspace-card:hover
 
 .library-page-header > p:last-child {
   max-width: 650px;
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
   line-height: 1.6;
 }
 
@@ -9831,14 +9833,14 @@ button.secura-workspace-card:hover
 .library-summary b {
   display: block;
   color: var(--secura-ink);
-  font-size: 20px;
+  font-size: calc(20px * var(--secura-font-scale));
   line-height: 1;
 }
 
 .library-summary p {
   margin: 5px 0 0;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .library-card {
@@ -10060,7 +10062,7 @@ button.secura-workspace-card:hover
 .library-access-modal h2 {
   margin: 7px 0 4px;
   color: var(--secura-ink);
-  font-size: 20px;
+  font-size: calc(20px * var(--secura-font-scale));
 }
 
 .library-access-feedback {
@@ -10070,7 +10072,7 @@ button.secura-workspace-card:hover
   margin: 14px 0 0;
   border-radius: 9px;
   padding: 10px 11px;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 700;
 }
 
@@ -10172,13 +10174,13 @@ button.secura-workspace-card:hover
 }
 
 .library-private-choice b {
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .library-private-choice small {
   margin-top: 3px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .library-private-choice > svg {
@@ -10191,7 +10193,7 @@ button.secura-workspace-card:hover
   gap: 10px;
   margin: 18px 0 12px;
   color: #9a9ead;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
   letter-spacing: 0.75px;
 }
@@ -10265,7 +10267,7 @@ button.secura-workspace-card:hover
 .library-access-departments button b {
   min-width: 0;
   overflow: hidden;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -10293,7 +10295,7 @@ button.secura-workspace-card:hover
   background: var(--secura-bg);
   padding: 13px;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   text-align: center;
 }
 
@@ -10306,7 +10308,7 @@ button.secura-workspace-card:hover
   background: var(--secura-blue);
   padding: 10px 11px;
   color: #617493;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 @media (max-width: 980px) {
@@ -10490,7 +10492,7 @@ button.secura-workspace-card:hover
 
 .access-page-header > p:last-child {
   max-width: 670px;
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
   line-height: 1.6;
 }
 
@@ -10587,14 +10589,14 @@ button.secura-workspace-card:hover
 .access-summary-grid b {
   display: block;
   color: var(--secura-ink);
-  font-size: 20px;
+  font-size: calc(20px * var(--secura-font-scale));
   line-height: 1;
 }
 
 .access-summary-grid p {
   margin: 5px 0 0;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .access-control-bar {
@@ -10643,7 +10645,7 @@ button.secura-workspace-card:hover
 .access-control-bar > p {
   margin: 0 5px 0 auto;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   text-align: right;
 }
 
@@ -10792,7 +10794,7 @@ button.secura-workspace-card:hover
   position: relative;
   z-index: 1;
   margin-top: 24px;
-  font-size: 14px;
+  font-size: calc(14px * var(--secura-font-scale));
 }
 
 .access-empty-state p {
@@ -10800,7 +10802,7 @@ button.secura-workspace-card:hover
   z-index: 1;
   max-width: 410px;
   margin-top: 8px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   line-height: 1.65;
 }
 
@@ -10887,7 +10889,7 @@ button.secura-workspace-card:hover
 .access-workflow-heading h2 {
   margin: 5px 0 0;
   color: var(--secura-ink);
-  font-size: 15px;
+  font-size: calc(15px * var(--secura-font-scale));
   letter-spacing: -0.25px;
 }
 
@@ -10896,7 +10898,7 @@ button.secura-workspace-card:hover
   z-index: 1;
   margin: 16px 0 17px;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.6;
 }
 
@@ -10943,7 +10945,7 @@ button.secura-workspace-card:hover
   border: 1px solid
     rgba(101, 96, 201, 0.18);
   color: var(--secura-primary);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 800;
   box-shadow:
     0 5px 12px
@@ -10968,13 +10970,13 @@ button.secura-workspace-card:hover
 .access-workflow-steps b {
   margin-top: 2px;
   color: var(--secura-ink);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .access-workflow-steps small {
   margin-top: 4px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   line-height: 1.5;
 }
 
@@ -10989,7 +10991,7 @@ button.secura-workspace-card:hover
   background: var(--secura-blue);
   padding: 10px;
   color: #647b9a;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   line-height: 1.5;
 }
 
@@ -11271,7 +11273,7 @@ button.secura-workspace-card:hover
 
 .approved-library-header > p:last-child {
   max-width: 680px;
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
   line-height: 1.6;
 }
 
@@ -11343,13 +11345,13 @@ button.secura-workspace-card:hover
 }
 
 .approved-library-summary b {
-  font-size: 21px;
+  font-size: calc(21px * var(--secura-font-scale));
   line-height: 1;
 }
 
 .approved-library-summary p {
   margin-top: 6px;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .approved-library-error {
@@ -11415,13 +11417,13 @@ button.secura-workspace-card:hover
 
 .approved-library-toolbar-copy b {
   color: var(--secura-ink);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .approved-library-toolbar-copy small {
   margin-top: 3px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .approved-library-search {
@@ -11647,7 +11649,7 @@ button.secura-workspace-card:hover
 .approved-library-assurance h2 {
   margin: 6px 0 6px;
   color: var(--secura-ink);
-  font-size: 14px;
+  font-size: calc(14px * var(--secura-font-scale));
   letter-spacing: -0.2px;
 }
 
@@ -11657,7 +11659,7 @@ button.secura-workspace-card:hover
   max-width: 460px;
   margin: 0;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.65;
 }
 
@@ -11689,7 +11691,7 @@ button.secura-workspace-card:hover
 
 .approved-details-modal h2 {
   margin-top: 7px;
-  font-size: 21px;
+  font-size: calc(21px * var(--secura-font-scale));
   letter-spacing: -0.35px;
 }
 
@@ -11744,13 +11746,13 @@ button.secura-workspace-card:hover
 
 .approved-details-flow b {
   color: var(--secura-ink);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .approved-details-flow small {
   margin-top: 3px;
   color: var(--secura-muted);
-  font-size: 7px;
+  font-size: calc(7px * var(--secura-font-scale));
   line-height: 1.4;
 }
 
@@ -11796,7 +11798,7 @@ button.secura-workspace-card:hover
   background: var(--secura-mint);
   padding: 7px 9px;
   color: var(--secura-success);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
   white-space: nowrap;
   transition:
@@ -12037,7 +12039,7 @@ button.secura-workspace-card:hover
 
 .profile-page-header > p:last-child {
   max-width: 650px;
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
   line-height: 1.6;
 }
 
@@ -12129,7 +12131,7 @@ button.secura-workspace-card:hover
     var(--secura-mint);
   padding: 6px 8px;
   color: var(--secura-success);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -12153,7 +12155,7 @@ button.secura-workspace-card:hover
   box-shadow:
     0 15px 30px
     rgba(101, 96, 201, 0.13);
-  font-size: 30px;
+  font-size: calc(30px * var(--secura-font-scale));
 }
 
 .profile-avatar-camera {
@@ -12204,12 +12206,12 @@ button.secura-workspace-card:hover
 
 .profile-identity-card h2 {
   margin: 21px 0 4px;
-  font-size: 19px;
+  font-size: calc(19px * var(--secura-font-scale));
   letter-spacing: -0.35px;
 }
 
 .profile-identity-card > p {
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .profile-badge-row {
@@ -12225,7 +12227,7 @@ button.secura-workspace-card:hover
   margin: 0;
   border-radius: 999px;
   padding: 6px 9px;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -12292,7 +12294,7 @@ button.secura-workspace-card:hover
 .profile-account-facts small {
   color:
     var(--secura-muted);
-  font-size: 7px;
+  font-size: calc(7px * var(--secura-font-scale));
 }
 
 .profile-account-facts b {
@@ -12300,7 +12302,7 @@ button.secura-workspace-card:hover
   overflow: hidden;
   color:
     var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -12321,7 +12323,7 @@ button.secura-workspace-card:hover
 
 .profile-settings-heading h2 {
   margin-top: 6px;
-  font-size: 19px;
+  font-size: calc(19px * var(--secura-font-scale));
   letter-spacing: -0.35px;
 }
 
@@ -12331,7 +12333,7 @@ button.secura-workspace-card:hover
   margin: 6px 0 0;
   color:
     var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.5;
 }
 
@@ -12357,7 +12359,7 @@ button.secura-workspace-card:hover
 .profile-system-label > span {
   color:
     var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -12365,7 +12367,7 @@ button.secura-workspace-card:hover
 .profile-system-label > small {
   color:
     var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .profile-system-label {
@@ -12394,7 +12396,7 @@ button.secura-workspace-card:hover
 }
 
 .profile-form-grid label {
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .profile-form-grid input {
@@ -12427,11 +12429,11 @@ button.secura-workspace-card:hover
 }
 
 .profile-security-note b {
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .profile-security-note p {
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   line-height: 1.6;
 }
 
@@ -12676,11 +12678,11 @@ button.secura-workspace-card:hover
   box-shadow:
     0 8px 18px
     rgba(101, 96, 201, 0.18);
-  font-size: 14px;
+  font-size: calc(14px * var(--secura-font-scale));
 }
 
 .security-dashboard-brand b {
-  font-size: 16px;
+  font-size: calc(16px * var(--secura-font-scale));
 }
 
 .security-dashboard-brand-area
@@ -12702,7 +12704,7 @@ button.secura-workspace-card:hover
 .security-dashboard-brand-area
   p:last-child {
   max-width: 590px;
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -12748,11 +12750,11 @@ button.secura-workspace-card:hover
 }
 
 .security-account-button b {
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .security-account-button small {
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .security-dashboard-logout {
@@ -12819,7 +12821,7 @@ button.secura-workspace-card:hover
 
 .security-dashboard-intro
   > p:last-child {
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -12874,7 +12876,7 @@ button.secura-workspace-card:hover
 
 .security-network-content small,
 .security-network-meta small {
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   letter-spacing: 0.8px;
 }
 
@@ -12884,7 +12886,7 @@ button.secura-workspace-card:hover
 }
 
 .security-network-content h3 {
-  font-size: 14px;
+  font-size: calc(14px * var(--secura-font-scale));
 }
 
 .security-network-status {
@@ -12895,7 +12897,7 @@ button.secura-workspace-card:hover
 .security-network-content p {
   max-width: 650px;
   margin-top: 7px;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.5;
 }
 
@@ -12909,7 +12911,7 @@ button.secura-workspace-card:hover
 
 .security-network-meta b {
   margin-top: 6px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 /* Larger stat cards */
@@ -12999,18 +13001,18 @@ button.secura-workspace-card:hover
 }
 
 .security-dashboard-stats b {
-  font-size: 24px;
+  font-size: calc(24px * var(--secura-font-scale));
   line-height: 1;
 }
 
 .security-dashboard-stats p {
   margin-top: 5px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .security-dashboard-stats small {
   margin-top: 5px;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 /* Main panel fills the screen better */
@@ -13056,7 +13058,7 @@ button.secura-workspace-card:hover
 
 .security-dashboard-panel-heading h2 {
   margin-top: 6px;
-  font-size: 18px;
+  font-size: calc(18px * var(--secura-font-scale));
   letter-spacing: -0.3px;
 }
 
@@ -13115,13 +13117,13 @@ button.secura-workspace-card:hover
 }
 
 .security-dashboard-actions b {
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .security-dashboard-actions small {
   max-width: 590px;
   margin-top: 5px;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -13190,7 +13192,7 @@ button.secura-workspace-card:hover
 }
 
 .security-dashboard-status-panel h3 {
-  font-size: 14px;
+  font-size: calc(14px * var(--secura-font-scale));
 }
 
 .security-dashboard-status-panel
@@ -13200,18 +13202,18 @@ button.secura-workspace-card:hover
   max-width: 245px;
   margin:
     8px auto 24px;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.6;
 }
 
 .security-dashboard-status-row {
   min-height: 48px;
   padding: 13px 3px;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .security-dashboard-status-row b {
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 }
 
 /* Error banner */
@@ -13446,7 +13448,7 @@ button.secura-workspace-card:hover
   max-width: 720px;
   margin: 0;
   color: var(--secura-muted);
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
   line-height: 1.6;
 }
 
@@ -13458,7 +13460,7 @@ button.secura-workspace-card:hover
   margin-bottom: 14px;
   border-radius: 11px;
   padding: 11px 13px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 700;
   animation:
     security-review-figma-card
@@ -13555,7 +13557,7 @@ button.secura-workspace-card:hover
 .security-review-figma-summary
   span {
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -13563,7 +13565,7 @@ button.secura-workspace-card:hover
   strong {
   margin-top: 10px;
   color: var(--secura-primary-dark);
-  font-size: 28px;
+  font-size: calc(28px * var(--secura-font-scale));
   line-height: 1;
 }
 
@@ -13648,7 +13650,7 @@ button.secura-workspace-card:hover
   border: 0;
   outline: 0;
   color: var(--secura-ink);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .security-review-figma-search
@@ -13682,7 +13684,7 @@ button.secura-workspace-card:hover
   background: transparent;
   padding: 7px 11px;
   color: #717789;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
   transition:
     background 180ms ease-out,
@@ -13727,7 +13729,7 @@ button.secura-workspace-card:hover
   min-height: 43px;
   background: var(--secura-surface-soft);
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
   letter-spacing: 0.6px;
   text-transform: uppercase;
@@ -13739,7 +13741,7 @@ button.secura-workspace-card:hover
   border-top: 1px solid var(--secura-line);
   background: var(--secura-surface);
   color: var(--secura-ink);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   text-align: left;
   opacity: 0;
   animation:
@@ -13774,7 +13776,7 @@ button.secura-workspace-card:hover
 
 .security-review-figma-data-row
   b {
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .security-review-figma-file {
@@ -13791,7 +13793,7 @@ button.secura-workspace-card:hover
   justify-content: center;
   border-radius: 999px;
   padding: 5px 8px;
-  font-size: 7px;
+  font-size: calc(7px * var(--secura-font-scale));
   font-style: normal;
   font-weight: 800;
   white-space: nowrap;
@@ -13839,7 +13841,7 @@ button.secura-workspace-card:hover
   h2 {
   margin: 0;
   color: var(--secura-ink);
-  font-size: 21px;
+  font-size: calc(21px * var(--secura-font-scale));
   letter-spacing: -0.5px;
 }
 
@@ -13856,7 +13858,7 @@ button.secura-workspace-card:hover
 .security-review-figma-detail-list
   dt {
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
   letter-spacing: 0.65px;
   text-transform: uppercase;
@@ -13866,7 +13868,7 @@ button.secura-workspace-card:hover
   dd {
   margin: 5px 0 0;
   color: var(--secura-ink);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 700;
   line-height: 1.55;
 }
@@ -13882,7 +13884,7 @@ button.secura-workspace-card:hover
   background: transparent;
   padding: 0;
   color: var(--secura-primary);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
   transition:
     color 170ms ease;
@@ -13906,7 +13908,7 @@ button.secura-workspace-card:hover
 .security-review-figma-reject {
   min-height: 40px;
   border-radius: 999px;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 800;
   transition:
     transform 170ms ease,
@@ -13972,7 +13974,7 @@ button.secura-workspace-card:hover
   b {
   margin-top: 15px;
   color: var(--secura-ink);
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 }
 
 .security-review-figma-detail-empty
@@ -13982,7 +13984,7 @@ button.secura-workspace-card:hover
   max-width: 380px;
   margin: 6px 0 0;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.6;
 }
 
@@ -14069,7 +14071,7 @@ button.secura-workspace-card:hover
   h2 {
   margin: 16px 0 7px;
   color: var(--secura-ink);
-  font-size: 20px;
+  font-size: calc(20px * var(--secura-font-scale));
   letter-spacing: -0.4px;
 }
 
@@ -14077,7 +14079,7 @@ button.secura-workspace-card:hover
   > p:not(.secura-eyebrow) {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   line-height: 1.65;
 }
 
@@ -14091,7 +14093,7 @@ button.secura-workspace-card:hover
   background: var(--secura-surface-soft);
   padding: 11px;
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -14112,7 +14114,7 @@ button.secura-workspace-card:hover
   button {
   min-height: 40px;
   border-radius: 10px;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -14264,7 +14266,7 @@ button.secura-workspace-card:hover
   > p:last-child {
   max-width: 800px;
   margin-top: 9px;
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
   line-height: 1.65;
 }
 
@@ -14301,7 +14303,7 @@ button.secura-workspace-card:hover
   span {
   position: relative;
   z-index: 1;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   letter-spacing: 0.1px;
 }
 
@@ -14310,7 +14312,7 @@ button.secura-workspace-card:hover
   position: relative;
   z-index: 1;
   margin-top: 12px;
-  font-size: 34px;
+  font-size: calc(34px * var(--secura-font-scale));
   letter-spacing: -1px;
 }
 
@@ -14353,7 +14355,7 @@ button.secura-workspace-card:hover
 
 .security-review-figma-search
   input {
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .security-review-figma-tabs {
@@ -14367,7 +14369,7 @@ button.secura-workspace-card:hover
   min-height: 38px;
   border-radius: 9px;
   padding: 8px 13px;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .security-review-figma-tabs
@@ -14403,12 +14405,12 @@ button.secura-workspace-card:hover
 
 .security-review-figma-heading {
   min-height: 48px;
-  font-size: 8.5px;
+  font-size: calc(8.5px * var(--secura-font-scale));
   letter-spacing: 0.72px;
 }
 
 .security-review-figma-data-row {
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   transition:
     background 165ms ease-out,
     box-shadow 165ms ease-out;
@@ -14436,16 +14438,16 @@ button.secura-workspace-card:hover
 
 .security-review-figma-data-row
   b {
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .security-review-figma-file {
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .security-review-figma-status {
   padding: 6px 9px;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 /* Fill the list card gracefully when the queue is short. */
@@ -14502,7 +14504,7 @@ button.secura-workspace-card:hover
   display: block;
   color:
     var(--secura-ink);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .security-review-queue-note
@@ -14511,7 +14513,7 @@ button.secura-workspace-card:hover
   margin: 5px 0 0;
   color:
     var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.6;
 }
 
@@ -14528,7 +14530,7 @@ button.secura-workspace-card:hover
 
 .security-review-figma-detail-title
   h2 {
-  font-size: 26px;
+  font-size: calc(26px * var(--secura-font-scale));
   letter-spacing: -0.65px;
 }
 
@@ -14539,20 +14541,20 @@ button.secura-workspace-card:hover
 
 .security-review-figma-detail-list
   dt {
-  font-size: 8.5px;
+  font-size: calc(8.5px * var(--secura-font-scale));
   letter-spacing: 0.75px;
 }
 
 .security-review-figma-detail-list
   dd {
   margin-top: 6px;
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   line-height: 1.6;
 }
 
 .security-review-related-link {
   margin-top: 15px;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .security-review-figma-actions {
@@ -14563,7 +14565,7 @@ button.secura-workspace-card:hover
 .security-review-figma-approve,
 .security-review-figma-reject {
   min-height: 45px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .security-review-figma-approve:hover {
@@ -14600,14 +14602,14 @@ button.secura-workspace-card:hover
 .security-review-figma-empty
   b {
   margin-top: 17px;
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
 }
 
 .security-review-figma-detail-empty
   p,
 .security-review-figma-empty
   p {
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .security-review-figma-loading {
@@ -14636,23 +14638,23 @@ button.secura-workspace-card:hover
 .security-review-figma-modal
   h2 {
   margin-top: 17px;
-  font-size: 22px;
+  font-size: calc(22px * var(--secura-font-scale));
 }
 
 .security-review-figma-modal
   > p:not(.secura-eyebrow) {
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .security-review-figma-modal-file {
   min-height: 44px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .security-review-figma-modal-actions
   button {
   min-height: 43px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   transition:
     transform 160ms ease-out,
     box-shadow 160ms ease-out,
@@ -14732,7 +14734,7 @@ button.secura-workspace-card:hover
 
 @media (max-width: 620px) {
   .security-review-figma-header h1 {
-    font-size: 31px;
+    font-size: calc(31px * var(--secura-font-scale));
   }
 
   .security-review-figma-summary {
@@ -14869,7 +14871,7 @@ button.secura-workspace-card:hover
   margin: 5px 0 0;
   color:
     var(--secura-ink);
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
   letter-spacing: -0.15px;
 }
 
@@ -14880,7 +14882,7 @@ button.secura-workspace-card:hover
   width: max-content;
   border-radius: 999px;
   padding: 6px 8px;
-  font-size: 7px;
+  font-size: calc(7px * var(--secura-font-scale));
   font-style: normal;
   font-weight: 800;
   white-space: nowrap;
@@ -14936,7 +14938,7 @@ button.secura-workspace-card:hover
   small {
   color:
     var(--secura-muted);
-  font-size: 7px;
+  font-size: calc(7px * var(--secura-font-scale));
   font-weight: 800;
   letter-spacing: 0.55px;
   text-transform: uppercase;
@@ -14954,7 +14956,7 @@ button.secura-workspace-card:hover
     Menlo,
     Consolas,
     monospace;
-  font-size: 7.5px;
+  font-size: calc(7.5px * var(--secura-font-scale));
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -14977,7 +14979,7 @@ button.secura-workspace-card:hover
   gap: 7px;
   color:
     var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   line-height: 1.5;
 }
 
@@ -15003,7 +15005,7 @@ button.secura-workspace-card:hover
     var(--secura-primary);
   padding: 8px 10px;
   color: white;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
   white-space: nowrap;
   transition:
@@ -15036,7 +15038,7 @@ button.secura-workspace-card:hover
   padding-top: 9px;
   color:
     var(--secura-muted);
-  font-size: 7.5px;
+  font-size: calc(7.5px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -15044,7 +15046,7 @@ button.secura-workspace-card:hover
   margin: 14px 0 0;
   border-radius: 9px;
   padding: 9px 10px;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 700;
   line-height: 1.5;
 }
@@ -15186,7 +15188,7 @@ button.secura-workspace-card:hover
 
 .security-review-figma-header
   > p:last-child {
-  font-size: 14px;
+  font-size: calc(14px * var(--secura-font-scale));
 }
 
 /* Summary cards */
@@ -15203,13 +15205,13 @@ button.secura-workspace-card:hover
 
 .security-review-figma-summary
   span {
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .security-review-figma-summary
   strong {
   margin-top: 13px;
-  font-size: 38px;
+  font-size: calc(38px * var(--secura-font-scale));
 }
 
 /* Better left/right balance */
@@ -15249,14 +15251,14 @@ button.secura-workspace-card:hover
 
 .security-review-figma-search
   input {
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 }
 
 .security-review-figma-tabs
   button {
   min-height: 42px;
   padding: 9px 14px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 /* Table readability */
@@ -15279,18 +15281,18 @@ button.secura-workspace-card:hover
 
 .security-review-figma-heading {
   min-height: 52px;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .security-review-figma-data-row,
 .security-review-figma-data-row b,
 .security-review-figma-file {
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 }
 
 .security-review-figma-status {
   padding: 7px 10px;
-  font-size: 8.5px;
+  font-size: calc(8.5px * var(--secura-font-scale));
 }
 
 /* Replace the tiny note with an actual workflow block */
@@ -15353,7 +15355,7 @@ button.secura-workspace-card:hover
   margin: 5px 0 0;
   color:
     var(--secura-ink);
-  font-size: 16px;
+  font-size: calc(16px * var(--secura-font-scale));
   letter-spacing: -0.25px;
 }
 
@@ -15363,7 +15365,7 @@ button.secura-workspace-card:hover
   margin: 5px 0 0;
   color:
     var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -15440,7 +15442,7 @@ button.secura-workspace-card:hover
   b {
   color:
     var(--secura-ink);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .security-review-workflow-guide-steps
@@ -15448,7 +15450,7 @@ button.secura-workspace-card:hover
   margin-top: 5px;
   color:
     var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.5;
 }
 
@@ -15475,7 +15477,7 @@ button.secura-workspace-card:hover
 
 .security-review-figma-detail-title
   h2 {
-  font-size: 30px;
+  font-size: calc(30px * var(--secura-font-scale));
 }
 
 .security-review-figma-detail-list
@@ -15485,13 +15487,13 @@ button.secura-workspace-card:hover
 
 .security-review-figma-detail-list
   dt {
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .security-review-figma-detail-list
   dd {
   margin-top: 7px;
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 }
 
 /* Original-file inspection card */
@@ -15517,12 +15519,12 @@ button.secura-workspace-card:hover
 .security-review-file-inspection-heading
   h3 {
   margin-top: 6px;
-  font-size: 14px;
+  font-size: calc(14px * var(--secura-font-scale));
 }
 
 .security-review-integrity-badge {
   padding: 7px 10px;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .security-review-file-inspection-grid {
@@ -15538,13 +15540,13 @@ button.secura-workspace-card:hover
 
 .security-review-file-inspection-grid
   small {
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .security-review-file-inspection-grid
   code {
   margin-top: 6px;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .security-review-file-inspection-state {
@@ -15555,32 +15557,32 @@ button.secura-workspace-card:hover
 .security-review-file-inspection-state
   > div {
   gap: 8px;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .security-review-open-original {
   min-height: 42px;
   border-radius: 10px;
   padding: 9px 13px;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .security-review-file-inspection-note {
   margin-top: 13px;
   padding-top: 11px;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .security-review-related-link {
   margin-top: 17px;
-  font-size: 9.5px;
+  font-size: calc(9.5px * var(--secura-font-scale));
 }
 
 .security-review-decision-lock {
   margin-top: 16px;
   border-radius: 10px;
   padding: 11px 12px;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .security-review-figma-actions {
@@ -15591,7 +15593,7 @@ button.secura-workspace-card:hover
 .security-review-figma-approve,
 .security-review-figma-reject {
   min-height: 49px;
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 /* Better responsive collapse */
@@ -15772,12 +15774,12 @@ button.secura-workspace-card:hover
   .security-review-figma-data-row,
   .security-review-figma-data-row b,
   .security-review-figma-file {
-    font-size: 11px;
+    font-size: calc(11px * var(--secura-font-scale));
   }
 
   .security-review-figma-status {
     padding: 6px 8px;
-    font-size: 8px;
+    font-size: calc(8px * var(--secura-font-scale));
   }
 }
 
@@ -21534,7 +21536,7 @@ html[data-theme="dark"] .security-profile-pro__error {
   box-shadow: var(--secura-shadow);
   padding: 0 12px;
   color: var(--secura-ink);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 800;
   letter-spacing: 0.1px;
   transition:
@@ -22703,7 +22705,7 @@ html.secura-theme-transitioning *::after {
   border-radius: 10px;
   background: var(--secura-surface-soft);
   color: var(--secura-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   font-weight: 900;
   transition:
     background 180ms ease,
@@ -22741,14 +22743,14 @@ html.secura-theme-transitioning *::after {
 
 .anonymize-progress-copy b {
   color: var(--secura-ink);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   font-weight: 850;
 }
 
 .anonymize-progress-copy small {
   overflow: hidden;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.35;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -22780,13 +22782,13 @@ html.secura-theme-transitioning *::after {
 
 .anonymize-card-heading-row .secura-eyebrow {
   margin: 0 0 4px;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .anonymize-card-heading-row h2 {
   margin: 0;
   color: var(--secura-ink);
-  font-size: 17px;
+  font-size: calc(17px * var(--secura-font-scale));
   letter-spacing: -0.3px;
 }
 
@@ -22832,7 +22834,7 @@ html.secura-theme-transitioning *::after {
   background: var(--secura-surface-soft);
   padding: 9px 10px;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .anonymize-check-grid svg {
@@ -22865,7 +22867,7 @@ html.secura-theme-transitioning *::after {
 .anonymize-ai-result-summary small {
   display: block;
   color: var(--secura-muted);
-  font-size: 7.5px;
+  font-size: calc(7.5px * var(--secura-font-scale));
   font-weight: 850;
   letter-spacing: 0.08em;
 }
@@ -22874,14 +22876,14 @@ html.secura-theme-transitioning *::after {
   display: inline-block;
   margin-top: 7px;
   color: var(--secura-primary-dark);
-  font-size: 25px;
+  font-size: calc(25px * var(--secura-font-scale));
   line-height: 1;
 }
 
 .anonymize-ai-result-summary span {
   margin-left: 6px;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .anonymize-detected-chips {
@@ -22901,7 +22903,7 @@ html.secura-theme-transitioning *::after {
   background: var(--secura-surface-soft);
   padding: 6px 8px;
   color: var(--secura-muted);
-  font-size: 8.5px;
+  font-size: calc(8.5px * var(--secura-font-scale));
   font-weight: 750;
 }
 
@@ -22932,7 +22934,7 @@ html.secura-theme-transitioning *::after {
 
 .anonymize-ready-copy .secura-eyebrow {
   margin: 0 0 5px;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .anonymize-ready-icon {
@@ -22954,7 +22956,7 @@ html.secura-theme-transitioning *::after {
 .anonymize-ready-copy b {
   display: block;
   color: var(--secura-ink);
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
 }
 
 .anonymize-ready-copy p:last-child {
@@ -22962,7 +22964,7 @@ html.secura-theme-transitioning *::after {
   max-width: 380px;
   margin: 5px 0 0;
   color: var(--secura-muted);
-  font-size: 9.5px;
+  font-size: calc(9.5px * var(--secura-font-scale));
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -22984,7 +22986,7 @@ html.secura-theme-transitioning *::after {
   background: var(--secura-lilac);
   padding: 9px 12px;
   color: var(--secura-primary-dark);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 850;
   transition:
     transform 180ms ease,
@@ -23010,7 +23012,7 @@ html.secura-theme-transitioning *::after {
 .anonymize-report-subtitle {
   margin: 6px 0 0;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .anonymize-detection-list-smart {
@@ -23083,7 +23085,7 @@ html.secura-theme-transitioning *::after {
 .anonymize-detection-list-smart article b {
   display: block;
   color: var(--secura-ink);
-  font-size: 19px;
+  font-size: calc(19px * var(--secura-font-scale));
   line-height: 1;
 }
 
@@ -23095,7 +23097,7 @@ html.secura-theme-transitioning *::after {
   background: transparent;
   padding: 0;
   color: var(--secura-muted);
-  font-size: 8.5px;
+  font-size: calc(8.5px * var(--secura-font-scale));
   line-height: 1.35;
   box-shadow: none;
 }
@@ -23115,7 +23117,7 @@ html.secura-theme-transitioning *::after {
   background: var(--secura-surface-soft);
   padding: 4px 7px;
   color: var(--secura-muted);
-  font-size: 7px;
+  font-size: calc(7px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -23162,7 +23164,7 @@ html.secura-theme-transitioning *::after {
 .anonymize-protection-heading h2 {
   margin: 6px 0 0;
   color: var(--secura-ink);
-  font-size: 15px;
+  font-size: calc(15px * var(--secura-font-scale));
   letter-spacing: -0.2px;
 }
 
@@ -23174,7 +23176,7 @@ html.secura-theme-transitioning *::after {
   background: var(--secura-success-soft);
   padding: 6px 9px;
   color: var(--secura-success);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 850;
   white-space: nowrap;
 }
@@ -23227,7 +23229,7 @@ html.secura-theme-transitioning *::after {
   display: block;
   overflow: hidden;
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -23236,7 +23238,7 @@ html.secura-theme-transitioning *::after {
   display: block;
   margin-top: 4px;
   color: var(--secura-muted);
-  font-size: 7.5px;
+  font-size: calc(7.5px * var(--secura-font-scale));
   line-height: 1.35;
 }
 
@@ -23572,7 +23574,7 @@ html[data-theme="dark"]
 .secura-glass-theme-switch__label {
   min-width: 31px;
   color: var(--secura-ink);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -23834,12 +23836,12 @@ html[data-theme="dark"]
 
 .secura-sidebar-glass-note b {
   color: var(--secura-ink);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .secura-sidebar-glass-note small {
   color: var(--secura-muted);
-  font-size: 8.5px;
+  font-size: calc(8.5px * var(--secura-font-scale));
   line-height: 1.4;
 }
 
@@ -23979,7 +23981,7 @@ html[data-theme="dark"]
   gap: 8px;
   align-self: flex-start;
   color: var(--secura-ink);
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
   font-weight: 850;
 }
 
@@ -23999,7 +24001,7 @@ html[data-theme="dark"]
   box-shadow:
     0 10px 20px
     rgba(88, 81, 191, 0.22);
-  font-size: 14px;
+  font-size: calc(14px * var(--secura-font-scale));
   font-weight: 900;
 }
 
@@ -24010,7 +24012,7 @@ html[data-theme="dark"]
 .secura-modern-kicker {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 850;
   letter-spacing: 1.35px;
 }
@@ -24029,7 +24031,7 @@ html[data-theme="dark"]
   margin: 0;
   max-width: 640px;
   color: var(--secura-muted);
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -24096,14 +24098,14 @@ html[data-theme="dark"]
   max-width: 130px;
   overflow: hidden;
   color: var(--secura-ink);
-  font-size: 10.5px;
+  font-size: calc(10.5px * var(--secura-font-scale));
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .secura-modern-account-button small {
   color: var(--secura-muted);
-  font-size: 8.5px;
+  font-size: calc(8.5px * var(--secura-font-scale));
 }
 
 .secura-modern-account-button > svg {
@@ -24118,7 +24120,7 @@ html[data-theme="dark"]
   border-radius: 13px;
   padding: 0 12px;
   color: var(--secura-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 800;
   transition:
     transform 170ms ease,
@@ -24144,7 +24146,7 @@ html[data-theme="dark"]
 .secura-modern-intro h2 {
   margin: 6px 0 4px;
   color: var(--secura-ink);
-  font-size: 20px;
+  font-size: calc(20px * var(--secura-font-scale));
   font-weight: 680;
   letter-spacing: -0.55px;
 }
@@ -24152,7 +24154,7 @@ html[data-theme="dark"]
 .secura-modern-intro > div:first-child > p:last-child {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .secura-modern-live-status {
@@ -24188,12 +24190,12 @@ html[data-theme="dark"]
 
 .secura-modern-live-status b {
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .secura-modern-live-status small {
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .secura-modern-error {
@@ -24206,7 +24208,7 @@ html[data-theme="dark"]
     var(--secura-danger-soft);
   padding: 10px 12px;
   color: var(--secura-danger);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .secura-modern-stats {
@@ -24278,7 +24280,7 @@ html[data-theme="dark"]
 .secura-modern-stat__value {
   margin-top: 15px;
   color: var(--secura-ink);
-  font-size: 28px;
+  font-size: calc(28px * var(--secura-font-scale));
   font-weight: 760;
   letter-spacing: -1px;
   line-height: 1;
@@ -24287,14 +24289,14 @@ html[data-theme="dark"]
 .secura-modern-stat__label {
   margin-top: 6px;
   color: var(--secura-ink);
-  font-size: 10.5px;
+  font-size: calc(10.5px * var(--secura-font-scale));
   font-weight: 760;
 }
 
 .secura-modern-stat__note {
   margin-top: 3px;
   color: var(--secura-muted);
-  font-size: 8.5px;
+  font-size: calc(8.5px * var(--secura-font-scale));
   line-height: 1.4;
 }
 
@@ -24364,7 +24366,7 @@ html[data-theme="dark"]
 .secura-modern-panel-heading h2 {
   margin: 5px 0 0;
   color: var(--secura-ink);
-  font-size: 17px;
+  font-size: calc(17px * var(--secura-font-scale));
   font-weight: 670;
   letter-spacing: -0.4px;
 }
@@ -24378,7 +24380,7 @@ html[data-theme="dark"]
     rgba(255, 255, 255, 0.32);
   padding: 5px 8px;
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -24462,12 +24464,12 @@ html[data-theme="dark"]
 
 .secura-modern-tool__copy b {
   color: var(--secura-ink);
-  font-size: 10.5px;
+  font-size: calc(10.5px * var(--secura-font-scale));
 }
 
 .secura-modern-tool__copy small {
   color: var(--secura-muted);
-  font-size: 8.5px;
+  font-size: calc(8.5px * var(--secura-font-scale));
   line-height: 1.45;
 }
 
@@ -24525,7 +24527,7 @@ html[data-theme="dark"]
 .secura-modern-access-panel h3 {
   margin: 18px 0 6px;
   color: var(--secura-ink);
-  font-size: 18px;
+  font-size: calc(18px * var(--secura-font-scale));
   font-weight: 670;
   letter-spacing: -0.45px;
 }
@@ -24533,7 +24535,7 @@ html[data-theme="dark"]
 .secura-modern-access-panel > p {
   margin: 0;
   color: var(--secura-muted);
-  font-size: 9.5px;
+  font-size: calc(9.5px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -24560,7 +24562,7 @@ html[data-theme="dark"]
     var(--secura-modern-violet-soft);
   color:
     var(--secura-modern-violet);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 900;
 }
 
@@ -24571,12 +24573,12 @@ html[data-theme="dark"]
 
 .secura-modern-flow b {
   color: var(--secura-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .secura-modern-flow small {
   color: var(--secura-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   line-height: 1.35;
 }
 
@@ -24613,7 +24615,7 @@ html[data-theme="dark"]
     rgba(255, 255, 255, 0.28);
   padding: 0 10px;
   color: var(--secura-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   transition:
     transform 160ms ease,
     border-color 160ms ease,
@@ -24636,7 +24638,7 @@ html[data-theme="dark"]
 
 .secura-modern-access-panel__links b {
   color: var(--secura-ink);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 /* ---------- Responsive ---------- */
@@ -24825,7 +24827,7 @@ html[data-theme="dark"] {
 }
 
 .secura-bold-theme-switch__mode b {
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   letter-spacing: .2px;
 }
 
@@ -25062,12 +25064,12 @@ html[data-theme="light"]
 
 .secura-sidebar-bold__footer b {
   color: #ffffff;
-  font-size: 9.5px;
+  font-size: calc(9.5px * var(--secura-font-scale));
 }
 
 .secura-sidebar-bold__footer small {
   color: #8f98ba;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .secura-workspace-main--bold {
@@ -25225,7 +25227,7 @@ html[data-theme="light"]
 .secura-bold-kicker {
   margin: 0;
   color: #9fa9d0;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 900;
   letter-spacing: 1.5px;
 }
@@ -25257,7 +25259,7 @@ html[data-theme="light"]
   max-width: 600px;
   margin: 0;
   color: #aeb7d3;
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
   line-height: 1.65;
 }
 
@@ -25441,14 +25443,14 @@ html[data-theme="light"]
   max-width: 115px;
   overflow: hidden;
   color: #ffffff;
-  font-size: 9.5px;
+  font-size: calc(9.5px * var(--secura-font-scale));
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .secura-bold-account small {
   color: #9fa9c8;
-  font-size: 7.5px;
+  font-size: calc(7.5px * var(--secura-font-scale));
 }
 
 .secura-bold-account > svg {
@@ -25483,7 +25485,7 @@ html[data-theme="light"]
 .secura-bold-section-head h2 {
   margin: 6px 0 0;
   color: var(--bold-ink);
-  font-size: 20px;
+  font-size: calc(20px * var(--secura-font-scale));
   font-weight: 720;
   letter-spacing: -.6px;
 }
@@ -25501,7 +25503,7 @@ html[data-theme="light"]
   box-shadow:
     0 10px 22px
     rgba(69,53,122,.07);
-  font-size: 8.5px;
+  font-size: calc(8.5px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -25525,7 +25527,7 @@ html[data-theme="light"]
     rgba(224,93,108,.10);
   padding: 10px 12px;
   color: #e76b78;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .secura-bold-stats {
@@ -25610,7 +25612,7 @@ html[data-theme="light"]
   display: block;
   margin-top: 14px;
   color: var(--bold-ink);
-  font-size: 29px;
+  font-size: calc(29px * var(--secura-font-scale));
   line-height: 1;
 }
 
@@ -25618,14 +25620,14 @@ html[data-theme="light"]
   display: block;
   margin-top: 6px;
   color: var(--bold-ink);
-  font-size: 10.5px;
+  font-size: calc(10.5px * var(--secura-font-scale));
 }
 
 .secura-bold-stat small {
   display: block;
   margin-top: 3px;
   color: var(--bold-muted);
-  font-size: 8.5px;
+  font-size: calc(8.5px * var(--secura-font-scale));
 }
 
 .secura-bold-stat.tone-purple
@@ -25702,7 +25704,7 @@ html[data-theme="light"]
 .secura-bold-workflow__head h2 {
   margin: 6px 0 0;
   color: var(--bold-ink);
-  font-size: 17px;
+  font-size: calc(17px * var(--secura-font-scale));
   font-weight: 720;
 }
 
@@ -25714,7 +25716,7 @@ html[data-theme="light"]
     rgba(139,43,226,.08);
   padding: 5px 8px;
   color: var(--bold-violet);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 900;
 }
 
@@ -25813,12 +25815,12 @@ html[data-theme="light"]
 
 .secura-bold-tool__copy b {
   color: var(--bold-ink);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .secura-bold-tool__copy small {
   color: var(--bold-muted);
-  font-size: 8.5px;
+  font-size: calc(8.5px * var(--secura-font-scale));
   line-height: 1.45;
 }
 
@@ -25882,7 +25884,7 @@ html[data-theme="light"]
 .secura-bold-workflow > p {
   margin: 13px 0 0;
   color: var(--bold-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.55;
 }
 
@@ -25911,7 +25913,7 @@ html[data-theme="light"]
       var(--bold-violet)
     );
   color: #ffffff;
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
   font-weight: 900;
   box-shadow:
     0 8px 18px
@@ -25925,12 +25927,12 @@ html[data-theme="light"]
 
 .secura-bold-flow article b {
   color: var(--bold-ink);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
 }
 
 .secura-bold-flow article small {
   color: var(--bold-muted);
-  font-size: 8px;
+  font-size: calc(8px * var(--secura-font-scale));
 }
 
 .secura-bold-flow > i {
@@ -25964,7 +25966,7 @@ html[data-theme="light"]
     rgba(139,43,226,.045);
   padding: 0 10px;
   color: var(--bold-muted);
-  font-size: 8.5px;
+  font-size: calc(8.5px * var(--secura-font-scale));
   transition:
     transform .16s ease,
     border-color .16s ease,
@@ -26840,7 +26842,7 @@ html[data-theme="light"]
 .bold-profile-header h1 {
   margin: 6px 0 5px;
   color: var(--bold-ink);
-  font-size: 36px;
+  font-size: calc(36px * var(--secura-font-scale));
   font-weight: 760;
   letter-spacing: -1.35px;
 }
@@ -26848,7 +26850,7 @@ html[data-theme="light"]
 .bold-profile-header > div:first-child > p:last-child {
   margin: 0;
   color: var(--bold-muted);
-  font-size: 12.5px;
+  font-size: calc(12.5px * var(--secura-font-scale));
   line-height: 1.5;
 }
 
@@ -26878,7 +26880,7 @@ html[data-theme="light"]
     rgba(69, 53, 122, 0.08);
   padding: 0 11px;
   color: var(--bold-muted);
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   font-weight: 800;
 }
 
@@ -26923,7 +26925,7 @@ html[data-theme="light"]
   margin-bottom: 12px;
   border-radius: 11px;
   padding: 10px 12px;
-  font-size: 9.5px;
+  font-size: calc(9.5px * var(--secura-font-scale));
 }
 
 .bold-profile-feedback.success {
@@ -27073,7 +27075,7 @@ html[data-theme="light"]
       rgba(43, 199, 245, 0.16)
     );
   color: var(--bold-violet);
-  font-size: 28px;
+  font-size: calc(28px * var(--secura-font-scale));
   font-weight: 850;
 }
 
@@ -27109,7 +27111,7 @@ html[data-theme="light"]
 .bold-profile-identity h2 {
   margin: 16px 0 4px;
   color: var(--bold-ink);
-  font-size: 21px;
+  font-size: calc(21px * var(--secura-font-scale));
   font-weight: 730;
   letter-spacing: -0.55px;
 }
@@ -27117,7 +27119,7 @@ html[data-theme="light"]
 .bold-profile-identity > p {
   margin: 0;
   color: var(--bold-muted);
-  font-size: 11.5px;
+  font-size: calc(11.5px * var(--secura-font-scale));
   overflow-wrap: anywhere;
 }
 
@@ -27134,7 +27136,7 @@ html[data-theme="light"]
     rgba(139, 43, 226, 0.09);
   padding: 6px 9px;
   color: var(--bold-violet);
-  font-size: 10.5px;
+  font-size: calc(10.5px * var(--secura-font-scale));
   font-weight: 850;
 }
 
@@ -27152,7 +27154,7 @@ html[data-theme="light"]
   background:
     rgba(139, 43, 226, 0.05);
   color: var(--bold-violet);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   font-weight: 800;
   transition:
     transform 160ms ease,
@@ -27171,7 +27173,7 @@ html[data-theme="light"]
 .bold-profile-photo-help {
   margin-top: 7px;
   color: var(--bold-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   line-height: 1.45;
 }
 
@@ -27210,12 +27212,12 @@ html[data-theme="light"]
 
 .bold-profile-access-note b {
   color: var(--bold-ink);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .bold-profile-access-note small {
   color: var(--bold-muted);
-  font-size: 10.5px;
+  font-size: calc(10.5px * var(--secura-font-scale));
   line-height: 1.5;
 }
 
@@ -27241,14 +27243,14 @@ html[data-theme="light"]
 .bold-profile-card__head h2 {
   margin: 5px 0 4px;
   color: var(--bold-ink);
-  font-size: 19px;
+  font-size: calc(19px * var(--secura-font-scale));
   font-weight: 720;
 }
 
 .bold-profile-card__head > div > p:last-child {
   margin: 0;
   color: var(--bold-muted);
-  font-size: 11.5px;
+  font-size: calc(11.5px * var(--secura-font-scale));
   line-height: 1.45;
 }
 
@@ -27282,7 +27284,7 @@ html[data-theme="light"]
 
 .bold-profile-edit-grid label > span {
   color: var(--bold-muted);
-  font-size: 10.5px;
+  font-size: calc(10.5px * var(--secura-font-scale));
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.6px;
@@ -27329,7 +27331,7 @@ html[data-theme="dark"] .bold-profile-input input {
   box-shadow: none;
   padding: 0;
   color: var(--bold-ink);
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
   font-weight: 550;
   caret-color: var(--bold-violet);
 }
@@ -27360,7 +27362,7 @@ html[data-theme="dark"] .bold-profile-input input {
   gap: 7px;
   border-radius: 10px;
   padding: 0 12px;
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   font-weight: 850;
 }
 
@@ -27436,7 +27438,7 @@ html[data-theme="dark"] .bold-profile-input input {
 
 .bold-profile-facts small {
   color: var(--bold-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -27444,7 +27446,7 @@ html[data-theme="dark"] .bold-profile-input input {
 
 .bold-profile-facts b {
   color: var(--bold-ink);
-  font-size: 12.5px;
+  font-size: calc(12.5px * var(--secura-font-scale));
   overflow-wrap: anywhere;
 }
 
@@ -27470,13 +27472,13 @@ html[data-theme="dark"] .bold-profile-input input {
 
 .bold-profile-managed-note b {
   color: var(--bold-ink);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .bold-profile-managed-note p {
   margin: 0;
   color: var(--bold-muted);
-  font-size: 10.5px;
+  font-size: calc(10.5px * var(--secura-font-scale));
   line-height: 1.5;
 }
 
@@ -27579,13 +27581,13 @@ html[data-theme="dark"] .bold-profile-page {
 }
 
 .bold-profile-page .secura-bold-kicker {
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   letter-spacing: 1.2px;
 }
 
 .bold-profile-header__actions .bold-profile-back,
 .bold-profile-header__actions .bold-profile-status {
-  font-size: 10.5px;
+  font-size: calc(10.5px * var(--secura-font-scale));
 }
 
 .bold-profile-identity .bold-profile-photo-action:disabled,
@@ -27914,7 +27916,7 @@ html[data-theme="dark"] .secura-bold-library .library-summary > article {
   background: rgba(194, 100, 103, .10);
   padding: 4px 9px;
   color: #b3545a;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 750;
   line-height: 1.2;
   white-space: nowrap;
@@ -28132,7 +28134,7 @@ html[data-theme="dark"] .secura-bold-library > .library-modal-backdrop {
 }
 .secura-bold-original-access .access-page-header .secura-eyebrow {
   color: var(--bold-violet);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   letter-spacing: 1.6px;
 }
 .secura-bold-original-access .access-page-header h1 {
@@ -28146,7 +28148,7 @@ html[data-theme="dark"] .secura-bold-library > .library-modal-backdrop {
 .secura-bold-original-access .access-page-header > p:last-child {
   max-width: 700px;
   color: var(--bold-muted);
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
   line-height: 1.6;
 }
 
@@ -28193,13 +28195,13 @@ html[data-theme="dark"] .secura-bold-library > .library-modal-backdrop {
   transform: none;
 }
 .secura-bold-original-access .access-summary-grid b {
-  font-size: 28px;
+  font-size: calc(28px * var(--secura-font-scale));
   font-weight: 770;
   line-height: 1;
   color: var(--bold-ink);
 }
 .secura-bold-original-access .access-summary-grid p {
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   color: var(--bold-muted);
 }
 .secura-bold-original-access .access-summary-icon {
@@ -28250,7 +28252,7 @@ html[data-theme="dark"] .secura-bold-library > .library-modal-backdrop {
   background: rgba(139,43,226,.035);
   padding: 9px 14px;
   color: var(--bold-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   box-shadow: none;
 }
 .secura-bold-original-access .access-tabs-real button:hover:not(.selected) {
@@ -28275,7 +28277,7 @@ html[data-theme="dark"] .secura-bold-library > .library-modal-backdrop {
 .secura-bold-original-access .access-control-bar > p {
   flex: 1;
   color: var(--bold-muted);
-  font-size: 10.5px;
+  font-size: calc(10.5px * var(--secura-font-scale));
   line-height: 1.5;
 }
 
@@ -28326,21 +28328,21 @@ html[data-theme="dark"] .secura-bold-library > .library-modal-backdrop {
 }
 .secura-bold-original-access .access-request-file b {
   color: var(--bold-ink);
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
 }
 .secura-bold-original-access .access-request-file p,
 .secura-bold-original-access .access-request-meta p,
 .secura-bold-original-access .access-owner-reason p,
 .secura-bold-original-access .access-owner-reason em {
   color: var(--bold-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   overflow-wrap: anywhere;
 }
 .secura-bold-original-access .access-request-meta small,
 .secura-bold-original-access .access-request-status small,
 .secura-bold-original-access .access-owner-reason small {
   color: var(--bold-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   letter-spacing: .5px;
 }
 .secura-bold-original-access .access-status-badge {
@@ -28349,7 +28351,7 @@ html[data-theme="dark"] .secura-bold-library > .library-modal-backdrop {
   border: 1px solid transparent;
   border-radius: 999px;
   padding: 6px 11px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   line-height: 1.3;
   white-space: normal;
 }
@@ -28389,7 +28391,7 @@ html[data-theme="dark"] .secura-bold-library > .library-modal-backdrop {
   min-height: 39px;
   border-radius: 10px;
   padding: 9px 15px;
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   font-weight: 800;
 }
 .secura-bold-original-access .access-approve-button {
@@ -28440,16 +28442,16 @@ html[data-theme="dark"] .secura-bold-library > .library-modal-backdrop {
 .secura-bold-original-access .access-empty-icon i {background: var(--bold-violet)}
 .secura-bold-original-access .access-empty-state b {
   color: var(--bold-ink);
-  font-size: 15px;
+  font-size: calc(15px * var(--secura-font-scale));
 }
 .secura-bold-original-access .access-empty-state p {
   color: var(--bold-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 .secura-bold-original-access .access-empty-state button {
   background: linear-gradient(125deg,var(--bold-purple),var(--bold-magenta));
   color: #fff;
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 .secura-bold-original-access .access-empty-state button:hover {
   background: linear-gradient(125deg,var(--bold-violet),var(--bold-magenta));
@@ -28506,7 +28508,7 @@ html[data-theme="dark"] .secura-bold-original-access .access-confirm-modal {
 }
 .secura-bold-original-access .access-confirm-modal h2 {
   color: var(--bold-ink);
-  font-size: 20px;
+  font-size: calc(20px * var(--secura-font-scale));
   font-weight: 720;
 }
 .secura-bold-original-access .access-confirm-modal .secura-eyebrow {color: var(--bold-violet)}
@@ -28516,7 +28518,7 @@ html[data-theme="dark"] .secura-bold-original-access .access-confirm-modal {
   border-radius: 12px;
   background: rgba(224,93,108,.075);
   color: var(--bold-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   line-height: 1.6;
 }
 .secura-bold-original-access .access-modal-close {color: var(--bold-muted)}
@@ -28524,7 +28526,7 @@ html[data-theme="dark"] .secura-bold-original-access .access-confirm-modal {
   min-height: 38px;
   border-radius: 10px;
   padding: 9px 15px;
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 .secura-bold-original-access .access-cancel-button {
   border: 1px solid var(--bold-line);
@@ -28584,8 +28586,8 @@ html[data-theme="dark"] .secura-bold-original-access .access-confirm-modal {
     width: 36px;
     height: 36px;
   }
-  .secura-bold-original-access .access-summary-grid b {font-size: 24px}
-  .secura-bold-original-access .access-summary-grid p {font-size: 10px}
+  .secura-bold-original-access .access-summary-grid b {font-size: calc(24px * var(--secura-font-scale))}
+  .secura-bold-original-access .access-summary-grid p {font-size: calc(10px * var(--secura-font-scale))}
   .secura-bold-original-access .access-tabs-real {width: 100%}
   .secura-bold-original-access .access-tabs-real button {flex: 1;justify-content: center}
   .secura-bold-original-access .access-confirm-modal {padding: 23px 19px}
@@ -28716,11 +28718,11 @@ html[data-theme="dark"] .secura-bold-original-access .access-confirm-modal {
 }
 .secura-bold-approved .approved-library-summary article b {
   color: var(--bold-ink);
-  font-size: 28px;
+  font-size: calc(28px * var(--secura-font-scale));
 }
 .secura-bold-approved .approved-library-summary article p {
   color: var(--bold-muted);
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 }
 .secura-bold-approved .approved-library-card {
   overflow: hidden;
@@ -28746,11 +28748,11 @@ html[data-theme="dark"] .secura-bold-original-access .access-confirm-modal {
 }
 .secura-bold-approved .approved-library-toolbar-copy b {
   color: var(--bold-ink);
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 }
 .secura-bold-approved .approved-library-toolbar-copy small {
   color: var(--bold-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 .secura-bold-approved .approved-library-search {
   width: min(100%, 355px);
@@ -28768,7 +28770,7 @@ html[data-theme="dark"] .secura-bold-original-access .access-confirm-modal {
 .secura-bold-approved .approved-library-search input {
   background: transparent;
   color: var(--bold-ink);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 .secura-bold-approved .approved-library-table-wrap {
   padding: 17px 19px 21px;
@@ -28932,7 +28934,7 @@ html[data-theme="dark"] .secura-bold-approved > .approved-details-backdrop {
   color: var(--bold-ink);
   overflow-wrap: anywhere;
   word-break: break-word;
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 .secura-bold-approved .approved-hash-comparison {
   border: 1px solid rgba(43,199,245,.17);
@@ -29193,7 +29195,7 @@ html[data-theme="light"] .secura-bold-approved .approved-hash-section > div {
 }
 
 .secura-bold-dashboard .secura-bold-kicker {
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   letter-spacing: 1.3px;
   line-height: 1.5;
 }
@@ -29208,7 +29210,7 @@ html[data-theme="light"] .secura-bold-approved .approved-hash-section > div {
 
 .secura-bold-dashboard .secura-bold-hero__copy > p:last-of-type {
   max-width: 510px;
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
   line-height: 1.7;
   color: #c5cce2;
 }
@@ -29225,11 +29227,11 @@ html[data-theme="light"] .secura-bold-approved .approved-hash-section > div {
 
 .secura-bold-dashboard .secura-bold-account b {
   max-width: 125px;
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .secura-bold-dashboard .secura-bold-account small {
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .secura-bold-dashboard .secura-bold-logout {
@@ -29276,7 +29278,7 @@ html[data-theme="light"] .secura-bold-approved .approved-hash-section > div {
 
 .secura-bold-dashboard .secura-bold-stat strong {
   margin-top: 13px;
-  font-size: 32px;
+  font-size: calc(32px * var(--secura-font-scale));
   line-height: 1.1;
   font-weight: 800;
   letter-spacing: -.8px;
@@ -29285,7 +29287,7 @@ html[data-theme="light"] .secura-bold-approved .approved-hash-section > div {
 .secura-bold-dashboard .secura-bold-stat b {
   margin-top: 6px;
   color: var(--bold-ink);
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
   line-height: 1.35;
   font-weight: 750;
 }
@@ -29293,7 +29295,7 @@ html[data-theme="light"] .secura-bold-approved .approved-hash-section > div {
 .secura-bold-dashboard .secura-bold-stat small {
   margin-top: 4px;
   color: var(--bold-muted);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   line-height: 1.35;
 }
 
@@ -29314,13 +29316,13 @@ html[data-theme="light"] .secura-bold-approved .approved-hash-section > div {
 .secura-bold-dashboard .secura-bold-panel-head h2,
 .secura-bold-dashboard .secura-bold-workflow__head h2 {
   margin-top: 6px;
-  font-size: 18px;
+  font-size: calc(18px * var(--secura-font-scale));
   line-height: 1.35;
   letter-spacing: -.3px;
 }
 
 .secura-bold-dashboard .secura-bold-panel-head > span {
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   padding: 6px 9px;
 }
 
@@ -29347,13 +29349,13 @@ html[data-theme="light"] .secura-bold-approved .approved-hash-section > div {
 }
 
 .secura-bold-dashboard .secura-bold-tool__copy b {
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
   line-height: 1.3;
   font-weight: 760;
 }
 
 .secura-bold-dashboard .secura-bold-tool__copy small {
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   line-height: 1.55;
   color: var(--bold-muted);
 }
@@ -29361,7 +29363,7 @@ html[data-theme="light"] .secura-bold-approved .approved-hash-section > div {
 /* Two-stage approval explanation: clearer typography and deliberate spacing. */
 .secura-bold-dashboard .secura-bold-workflow > p {
   margin-top: 13px;
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   line-height: 1.6;
 }
 
@@ -29377,16 +29379,16 @@ html[data-theme="light"] .secura-bold-approved .approved-hash-section > div {
 .secura-bold-dashboard .secura-bold-flow article > span {
   width: 35px;
   height: 35px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 
 .secura-bold-dashboard .secura-bold-flow article b {
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
   line-height: 1.3;
 }
 
 .secura-bold-dashboard .secura-bold-flow article small {
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   line-height: 1.4;
 }
 
@@ -29403,11 +29405,11 @@ html[data-theme="light"] .secura-bold-approved .approved-hash-section > div {
   min-height: 43px;
   border-radius: 11px;
   padding: 0 13px;
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 
 .secura-bold-dashboard .secura-bold-workflow__links b {
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 }
 
 /* Medium screens: retain the layout, without cramped hero text. */

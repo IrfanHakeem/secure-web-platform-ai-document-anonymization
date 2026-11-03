@@ -147,7 +147,7 @@ html[data-theme="light"] body .secura-workspace-shell.secura-neo-admin-sync:has(
 .secura-neo-admin-sync .admin-users-header .secura-eyebrow,
 .secura-neo-admin-sync .sd-hero .sd-eyebrow {
   color:#dcb4ff !important;
-  font-size:10px !important;
+  font-size:calc(10px * var(--secura-font-scale)) !important;
   font-weight:850 !important;
   line-height:1.5;
   letter-spacing:1.65px !important;
@@ -170,7 +170,7 @@ html[data-theme="light"] body .secura-workspace-shell.secura-neo-admin-sync:has(
   margin:0 !important;
   max-width:630px !important;
   color:#d8d6ee !important;
-  font-size:12.5px !important;
+  font-size:calc(12.5px * var(--secura-font-scale)) !important;
   line-height:1.62 !important;
 }
 /* Primary CTA: exactly ONE surface. Old pseudo/inner border decorations removed.
@@ -197,7 +197,7 @@ html[data-theme="light"] body .secura-workspace-shell.secura-neo-admin-sync:has(
   box-shadow:0 8px 24px rgba(135,66,231,.24) !important;
   color:#fff !important;
   -webkit-text-fill-color:#fff !important;
-  font-size:12px !important;
+  font-size:calc(12px * var(--secura-font-scale)) !important;
   font-weight:800 !important;
   letter-spacing:0;
   white-space:nowrap;
@@ -269,7 +269,7 @@ html[data-theme="light"] body .secura-workspace-shell.secura-neo-admin-sync:has(
 .secura-neo-admin-sync .sd-directory__head { padding:22px !important; }
 .secura-neo-admin-sync .admin-users-toolbar { min-height:72px; gap:12px; }
 .secura-neo-admin-sync .sd-directory__head { display:flex; align-items:center; justify-content:space-between; gap:14px; }
-.secura-neo-admin-sync .sd-directory h2 { font-size:18px; color:var(--admin-sync-ink); }
+.secura-neo-admin-sync .sd-directory h2 { font-size:calc(18px * var(--secura-font-scale)); color:var(--admin-sync-ink); }
 .secura-neo-admin-sync .admin-users-row:not(.admin-users-heading):hover,
 .secura-neo-admin-sync .sd-table tbody tr:hover {
   background:rgba(145,103,248,.075) !important;
@@ -374,7 +374,7 @@ html body .secura-neo-admin-sync .admin-users-search input:focus {
 }
 @media (max-width:560px) {
   .secura-neo-admin-sync .admin-users-header h1,
-  .secura-neo-admin-sync .sd-hero h1 { font-size:29px !important; }
+  .secura-neo-admin-sync .sd-hero h1 { font-size:calc(29px * var(--secura-font-scale)) !important; }
   .secura-neo-admin-sync .sd-toolbar { padding-inline:12px; }
 }
 @media (prefers-reduced-motion:reduce) {
@@ -398,7 +398,7 @@ html body .secura-neo-admin-sync .admin-users-search input:focus {
   border-radius:11px;
   background:var(--admin-sync-panel);
   color:var(--admin-sync-ink);
-  font-size:12px;
+  font-size:calc(12px * var(--secura-font-scale));
   font-weight:750;
   transition:transform .24s,background .24s,border-color .24s;
 }
@@ -419,9 +419,9 @@ html body .secura-neo-admin-sync .admin-users-search input:focus {
   box-shadow:0 20px 48px rgba(4,4,20,.14);
   animation:adminSyncEnter .46s ease both;
 }
-.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__header .secura-eyebrow { color:#d5b2ff; letter-spacing:1.5px; font-size:10px; }
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__header .secura-eyebrow { color:#d5b2ff; letter-spacing:1.5px; font-size:calc(10px * var(--secura-font-scale)); }
 .secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__header h1 { color:#fff; font-size:clamp(29px,2.7vw,39px); }
-.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__header > div > p:last-child { color:#d7d7ed; font-size:13px; }
+.secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__header > div > p:last-child { color:#d7d7ed; font-size:calc(13px * var(--secura-font-scale)); }
 .secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__identity-card,
 .secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__card,
 .secura-neo-admin-profile-shell .role-profile-admin .admin-security-card {
@@ -634,7 +634,7 @@ html[data-theme] .secura-neo-admin-profile-shell .role-profile-admin .security-p
   .secura-neo-admin-sync .admin-users-header,
   .secura-neo-admin-sync .secura-departments-v106 .sd-hero { padding:23px 20px !important; }
   .secura-neo-admin-sync .admin-users-header h1,
-  .secura-neo-admin-sync .secura-departments-v106 .sd-hero h1 { font-size:30px !important; }
+  .secura-neo-admin-sync .secura-departments-v106 .sd-hero h1 { font-size:calc(30px * var(--secura-font-scale)) !important; }
   .secura-neo-admin-profile-shell { padding:17px 13px 55px !important; }
   .secura-neo-admin-profile-shell .role-profile-admin .security-profile-pro__header { padding:23px 20px !important; }
 }

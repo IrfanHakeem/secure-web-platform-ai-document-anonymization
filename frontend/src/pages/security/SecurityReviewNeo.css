@@ -89,7 +89,7 @@ html[data-theme="light"] .secura-soc-review-main .security-review-figma-header {
 }
 .secura-soc-review-main .security-review-figma-header .secura-eyebrow {
   display: inline-flex; align-items: center; gap: 8px;
-  width: max-content; color: #e5c5ff; font-size: 10px;
+  width: max-content; color: #e5c5ff; font-size: calc(10px * var(--secura-font-scale));
   font-weight: 850; letter-spacing: 1.65px;
   margin: 0;
 }
@@ -105,7 +105,7 @@ html[data-theme="light"] .secura-soc-review-main .security-review-figma-header h
 html[data-theme="light"] .secura-soc-review-main .security-review-figma-header .secura-eyebrow { color: #8242c9; }
 .secura-soc-review-main .security-review-figma-header > p:last-child {
   max-width: 620px; color: #c8d0e7; margin: 0;
-  font-size: 12px; line-height: 1.7;
+  font-size: calc(12px * var(--secura-font-scale)); line-height: 1.7;
 }
 html[data-theme="light"] .secura-soc-review-main .security-review-figma-header > p:last-child { color: #69708d; }
 
@@ -140,7 +140,7 @@ html[data-theme="light"] .secura-soc-review-main .security-review-figma-header >
   transform: translateY(-3px); border-color: rgba(187,143,255,.39);
 }
 .secura-soc-review-main .security-review-figma-summary span {
-  position: relative; color: var(--rv-muted); font-size: 11px; font-weight: 760;
+  position: relative; color: var(--rv-muted); font-size: calc(11px * var(--secura-font-scale)); font-weight: 760;
   letter-spacing: 0; margin: 0;
 }
 .secura-soc-review-main .security-review-figma-summary strong {
@@ -185,7 +185,7 @@ html[data-theme="light"] .secura-soc-review-main .security-review-figma-header >
 }
 .secura-soc-review-main .security-review-figma-tools::before {
   content: 'ACCESS REQUEST INBOX'; display: block;
-  width: 100%; color: var(--rv-purple); font-size: 10px; font-weight: 900;
+  width: 100%; color: var(--rv-purple); font-size: calc(10px * var(--secura-font-scale)); font-weight: 900;
   letter-spacing: 1.3px; margin-bottom: 0;
 }
 .secura-soc-review-main .security-review-figma-search {
@@ -204,7 +204,7 @@ html[data-theme="dark"] .secura-soc-review-main .security-review-figma-search in
   display: block; flex: 1; width: 100%; min-width: 0; height: 40px;
   margin: 0; padding: 0; border: 0 !important; outline: none !important;
   box-shadow: none !important; background: transparent !important;
-  color: var(--rv-ink); font-weight: 560; font-size: 12px;
+  color: var(--rv-ink); font-weight: 560; font-size: calc(12px * var(--secura-font-scale));
 }
 .secura-soc-review-main .security-review-figma-search input::placeholder { color: var(--rv-muted); opacity: .8; }
 .secura-soc-review-main .security-review-figma-search button { color: var(--rv-muted); }
@@ -215,7 +215,7 @@ html[data-theme="dark"] .secura-soc-review-main .security-review-figma-search in
 .secura-soc-review-main .security-review-figma-tabs button {
   min-height: 32px; padding: 7px 11px; border: 1px solid var(--rv-line);
   border-radius: 9px; background: var(--rv-panel-raised);
-  color: var(--rv-muted); font-size: 10px; font-weight: 760;
+  color: var(--rv-muted); font-size: calc(10px * var(--secura-font-scale)); font-weight: 760;
   transition: background .17s,color .17s,transform .17s,border-color .17s;
 }
 .secura-soc-review-main .security-review-figma-tabs button:hover:not(.active) {
@@ -243,12 +243,12 @@ html[data-theme="dark"] .secura-soc-review-main .security-review-figma-search in
 }
 .secura-soc-review-main .security-review-figma-heading {
   min-height: 42px; color: var(--rv-muted); background: var(--rv-panel-soft);
-  font-weight: 830; font-size: 9px; letter-spacing: .65px;
+  font-weight: 830; font-size: calc(9px * var(--secura-font-scale)); letter-spacing: .65px;
   border-bottom: 1px solid var(--rv-line);
 }
 .secura-soc-review-main .security-review-figma-data-row {
   position: relative; width: 100%; text-align: left; color: var(--rv-ink);
-  font-size: 10px; background: transparent; border: 0;
+  font-size: calc(10px * var(--secura-font-scale)); background: transparent; border: 0;
   border-bottom: 1px solid var(--rv-line);
   box-shadow: none; animation: rvEnter .27s ease-out both;
   transition: background .18s ease,border-color .18s ease;
@@ -261,12 +261,12 @@ html[data-theme="dark"] .secura-soc-review-main .security-review-figma-search in
   box-shadow: inset 3px 0 0 var(--rv-purple);
 }
 .secura-soc-review-main .security-review-figma-data-row.selected::before { display: none; }
-.secura-soc-review-main .security-review-figma-data-row b { color: var(--rv-ink); font-size: 10px; }
-.secura-soc-review-main .security-review-figma-file { font-size: 10px; color: var(--rv-ink); font-weight: 770; overflow-wrap: anywhere; }
+.secura-soc-review-main .security-review-figma-data-row b { color: var(--rv-ink); font-size: calc(10px * var(--secura-font-scale)); }
+.secura-soc-review-main .security-review-figma-file { font-size: calc(10px * var(--secura-font-scale)); color: var(--rv-ink); font-weight: 770; overflow-wrap: anywhere; }
 .secura-soc-review-main .security-review-figma-status {
   display: inline-flex; align-items: center; justify-content: center;
   width: max-content; min-height: 24px; border-radius: 99px; padding: 4px 9px;
-  font-style: normal; font-weight: 840; font-size: 9px; white-space: nowrap;
+  font-style: normal; font-weight: 840; font-size: calc(9px * var(--secura-font-scale)); white-space: nowrap;
 }
 .secura-soc-review-main .security-review-figma-status.pending { color: var(--rv-amber); background: rgba(245,168,58,.13); }
 .secura-soc-review-main .security-review-figma-status.approved { color: var(--rv-green); background: rgba(66,206,152,.12); }
@@ -279,7 +279,7 @@ html[data-theme="dark"] .secura-soc-review-main .security-review-figma-search in
   animation: rvEnter .26s both;
 }
 .secura-soc-review-main .security-review-figma-detail-content > .secura-eyebrow {
-  margin: 0; color: var(--rv-purple); font-size: 10px; font-weight: 880; letter-spacing: 1.35px;
+  margin: 0; color: var(--rv-purple); font-size: calc(10px * var(--secura-font-scale)); font-weight: 880; letter-spacing: 1.35px;
 }
 .secura-soc-review-main .security-review-figma-detail-title {
   display: flex; align-items: center; justify-content: space-between;
@@ -287,7 +287,7 @@ html[data-theme="dark"] .secura-soc-review-main .security-review-figma-search in
   border-bottom: 1px solid var(--rv-line);
 }
 .secura-soc-review-main .security-review-figma-detail-title h2 {
-  color: var(--rv-ink); font-size: 24px; font-weight: 850; letter-spacing: -.8px; margin: 0;
+  color: var(--rv-ink); font-size: calc(24px * var(--secura-font-scale)); font-weight: 850; letter-spacing: -.8px; margin: 0;
 }
 .secura-soc-review-main .security-review-figma-detail-list {
   display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr);
@@ -299,16 +299,16 @@ html[data-theme="dark"] .secura-soc-review-main .security-review-figma-search in
 .secura-soc-review-main .security-review-figma-detail-list > div:nth-child(4),
 .secura-soc-review-main .security-review-figma-detail-list > div:nth-child(3) { grid-column: 1 / -1; }
 .secura-soc-review-main .security-review-figma-detail-list dt {
-  color: var(--rv-muted); font-size: 9px; font-weight: 800; letter-spacing: .5px;
+  color: var(--rv-muted); font-size: calc(9px * var(--secura-font-scale)); font-weight: 800; letter-spacing: .5px;
 }
 .secura-soc-review-main .security-review-figma-detail-list dd {
-  margin: 7px 0 0; color: var(--rv-ink); font-size: 12px; font-weight: 690;
+  margin: 7px 0 0; color: var(--rv-ink); font-size: calc(12px * var(--secura-font-scale)); font-weight: 690;
   overflow-wrap: anywhere; line-height: 1.52;
 }
 .secura-soc-review-main .security-review-figma-owner-approved { color: var(--rv-green); font-weight: 830; }
 .secura-soc-review-main .security-review-related-link {
   margin: 13px 0; align-self: flex-start; color: var(--rv-purple);
-  font-size: 11px; font-weight: 790; padding: 0; border: 0; background: transparent;
+  font-size: calc(11px * var(--secura-font-scale)); font-weight: 790; padding: 0; border: 0; background: transparent;
 }
 .secura-soc-review-main .security-review-related-link:hover { color: var(--rv-cyan); }
 
@@ -327,13 +327,13 @@ html[data-theme="dark"] .secura-soc-review-main .security-review-figma-search in
 }
 .secura-soc-review-main .security-review-file-inspection-heading > div { flex: 1; min-width: 130px; }
 .secura-soc-review-main .security-review-file-inspection-heading .secura-eyebrow {
-  color: var(--rv-cyan); font-size: 9px; font-weight: 820; letter-spacing: .75px; margin: 0 0 4px;
+  color: var(--rv-cyan); font-size: calc(9px * var(--secura-font-scale)); font-weight: 820; letter-spacing: .75px; margin: 0 0 4px;
 }
 .secura-soc-review-main .security-review-file-inspection-heading h3 {
-  color: var(--rv-ink); font-size: 13px; font-weight: 810; line-height: 1.28; margin: 0;
+  color: var(--rv-ink); font-size: calc(13px * var(--secura-font-scale)); font-weight: 810; line-height: 1.28; margin: 0;
 }
 .secura-soc-review-main .security-review-integrity-badge {
-  font-style: normal; font-weight: 800; font-size: 10px;
+  font-style: normal; font-weight: 800; font-size: calc(10px * var(--secura-font-scale));
   border: 1px solid var(--rv-line); border-radius: 99px; padding: 5px 9px;
 }
 .secura-soc-review-main .security-review-integrity-badge.verified { color: var(--rv-green); background: rgba(70,201,147,.11); }
@@ -347,11 +347,11 @@ html[data-theme="dark"] .secura-soc-review-main .security-review-figma-search in
   padding: 10px; background: var(--rv-panel-soft);
 }
 .secura-soc-review-main .security-review-file-inspection-grid small {
-  display: block; color: var(--rv-muted); font-weight: 770; font-size: 9px; margin-bottom: 6px;
+  display: block; color: var(--rv-muted); font-weight: 770; font-size: calc(9px * var(--secura-font-scale)); margin-bottom: 6px;
 }
 .secura-soc-review-main .security-review-file-inspection-grid code {
   display: block; overflow-wrap: anywhere; white-space: normal;
-  color: var(--rv-ink); font-size: 10px; letter-spacing: .1px;
+  color: var(--rv-ink); font-size: calc(10px * var(--secura-font-scale)); letter-spacing: .1px;
 }
 .secura-soc-review-main .security-review-file-inspection-state {
   display: flex; align-items: center; justify-content: space-between;
@@ -359,25 +359,25 @@ html[data-theme="dark"] .secura-soc-review-main .security-review-figma-search in
 }
 .secura-soc-review-main .security-review-file-inspection-state > div {
   display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;
-  font-size: 10px; line-height: 1.55; color: var(--rv-muted);
+  font-size: calc(10px * var(--secura-font-scale)); line-height: 1.55; color: var(--rv-muted);
 }
 .secura-soc-review-main .security-review-file-inspection-state svg { flex-shrink: 0; }
 .secura-soc-review-main .security-review-open-original {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   min-height: 39px; border: 1px solid rgba(171,131,248,.42);
   border-radius: 10px; background: rgba(161,103,237,.17);
-  padding: 8px 13px; font-weight: 800; font-size: 11px; color: var(--rv-purple);
+  padding: 8px 13px; font-weight: 800; font-size: calc(11px * var(--secura-font-scale)); color: var(--rv-purple);
   transition: transform .18s,background .18s,border-color .18s;
 }
 .secura-soc-review-main .security-review-open-original:hover:not(:disabled) {
   transform: translateY(-2px); background: rgba(161,103,237,.25);
 }
 .secura-soc-review-main .security-review-file-inspection-note {
-  margin: 12px 0 0; color: var(--rv-muted); font-size: 9px; line-height: 1.65;
+  margin: 12px 0 0; color: var(--rv-muted); font-size: calc(9px * var(--secura-font-scale)); line-height: 1.65;
 }
 .secura-soc-review-main .security-review-decision-lock {
   padding: 10px 12px; border-radius: 10px; border: 1px solid var(--rv-line);
-  color: var(--rv-muted); background: var(--rv-panel-soft); font-size: 10px; line-height: 1.6;
+  color: var(--rv-muted); background: var(--rv-panel-soft); font-size: calc(10px * var(--secura-font-scale)); line-height: 1.6;
 }
 .secura-soc-review-main .security-review-decision-lock.unlocked { color: var(--rv-green); border-color: rgba(85,220,166,.26); background: rgba(77,188,137,.08); }
 .secura-soc-review-main .security-review-decision-lock.partial { color: var(--rv-amber); border-color: rgba(239,183,77,.28); background: rgba(233,154,65,.08); }
@@ -387,7 +387,7 @@ html[data-theme="dark"] .secura-soc-review-main .security-review-figma-search in
 }
 .secura-soc-review-main .security-review-figma-actions button {
   display: inline-flex; align-items: center; justify-content: center;
-  min-height: 43px; border-radius: 11px; font-weight: 820; font-size: 12px;
+  min-height: 43px; border-radius: 11px; font-weight: 820; font-size: calc(12px * var(--secura-font-scale));
   transition: background .2s,opacity .2s,transform .2s;
 }
 .secura-soc-review-main .security-review-figma-approve {
@@ -410,10 +410,10 @@ html[data-theme="dark"] .secura-soc-review-main .security-review-figma-search in
   width: 60px; height: 60px; border-radius: 19px;
 }
 .secura-soc-review-main :is(.security-review-figma-empty,.security-review-figma-detail-empty) b {
-  color: var(--rv-ink); font-size: 15px; font-weight: 830;
+  color: var(--rv-ink); font-size: calc(15px * var(--secura-font-scale)); font-weight: 830;
 }
 .secura-soc-review-main :is(.security-review-figma-empty,.security-review-figma-detail-empty) p {
-  color: var(--rv-muted); font-size: 11px; line-height: 1.6;
+  color: var(--rv-muted); font-size: calc(11px * var(--secura-font-scale)); line-height: 1.6;
 }
 .secura-soc-review-main .security-review-figma-loading { padding: 20px; }
 .secura-soc-review-main .security-review-figma-loading > div { background: linear-gradient(110deg,var(--rv-panel-raised),var(--rv-panel-soft),var(--rv-panel-raised)); background-size: 200%; animation: rvSkeleton 1.3s linear infinite; }
@@ -432,13 +432,13 @@ html[data-theme="dark"] .secura-soc-review-main .security-review-figma-search in
   box-shadow: 0 26px 100px rgba(0,0,0,.4); border-radius: 21px; padding: 28px;
 }
 .secura-soc-review-main .security-review-figma-modal::-webkit-scrollbar { display: none; }
-.secura-soc-review-main .security-review-figma-modal > h2 { color: var(--rv-ink); font-size: 23px; }
-.secura-soc-review-main .security-review-figma-modal > p:not(.secura-eyebrow) { color: var(--rv-muted); font-size: 12px; }
+.secura-soc-review-main .security-review-figma-modal > h2 { color: var(--rv-ink); font-size: calc(23px * var(--secura-font-scale)); }
+.secura-soc-review-main .security-review-figma-modal > p:not(.secura-eyebrow) { color: var(--rv-muted); font-size: calc(12px * var(--secura-font-scale)); }
 .secura-soc-review-main .security-review-figma-modal .secura-eyebrow { color: var(--rv-purple); }
 .secura-soc-review-main .security-review-figma-modal-file {
-  color: var(--rv-ink); background: var(--rv-panel-soft); border-color: var(--rv-line); font-size: 11px;
+  color: var(--rv-ink); background: var(--rv-panel-soft); border-color: var(--rv-line); font-size: calc(11px * var(--secura-font-scale));
 }
-.secura-soc-review-main .security-review-figma-modal-actions button { min-height: 44px; border-radius: 11px; font-weight: 820; font-size: 12px; }
+.secura-soc-review-main .security-review-figma-modal-actions button { min-height: 44px; border-radius: 11px; font-weight: 820; font-size: calc(12px * var(--secura-font-scale)); }
 .secura-soc-review-main .security-review-figma-modal-actions .secondary {
   color: var(--rv-ink); border-color: var(--rv-line); background: var(--rv-panel-raised);
 }
@@ -447,7 +447,7 @@ html[data-theme="dark"] .secura-soc-review-main .security-review-figma-search in
 .secura-soc-review-main .security-review-figma-modal-close { color: var(--rv-muted); }
 .secura-soc-review-main .security-review-figma-success,
 .secura-soc-review-main .security-review-figma-error {
-  color: var(--rv-ink); margin: 0 0 14px; font-size: 11px;
+  color: var(--rv-ink); margin: 0 0 14px; font-size: calc(11px * var(--secura-font-scale));
   border-radius: 12px; padding: 13px 15px;
 }
 .secura-soc-review-main .security-review-figma-success { background: rgba(65,196,135,.11); border-color: rgba(65,196,135,.3); color: var(--rv-green); }
@@ -476,11 +476,11 @@ html[data-theme="dark"] .secura-soc-review-main .security-review-figma-search in
 @media (max-width: 720px) {
   .secura-soc-review-main .security-review-figma-header { padding: 24px 23px; min-height: 166px; border-radius: 17px; }
   .secura-soc-review-main .security-review-figma-header::after { right: -215px; }
-  .secura-soc-review-main .security-review-figma-header h1 { font-size: 29px; }
-  .secura-soc-review-main .security-review-figma-header > p:last-child { font-size: 11px; }
+  .secura-soc-review-main .security-review-figma-header h1 { font-size: calc(29px * var(--secura-font-scale)); }
+  .secura-soc-review-main .security-review-figma-header > p:last-child { font-size: calc(11px * var(--secura-font-scale)); }
   .secura-soc-review-main .security-review-figma-summary { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .secura-soc-review-main .security-review-figma-summary article { min-height: 119px; padding: 15px; }
-  .secura-soc-review-main .security-review-figma-summary strong { font-size: 30px; }
+  .secura-soc-review-main .security-review-figma-summary strong { font-size: calc(30px * var(--secura-font-scale)); }
   .secura-soc-review-main .security-review-figma-tools { padding: 17px 14px; }
   .secura-soc-review-main .security-review-figma-detail-content { padding: 20px 16px; }
   .secura-soc-review-main .security-review-figma-detail-list { grid-template-columns: 1fr 1fr; }
@@ -502,8 +502,8 @@ html[data-theme="dark"] .secura-soc-review-main .security-review-figma-search in
 }
 @media (max-width: 420px) {
   .secura-soc-review-main .security-review-figma-summary { gap: 8px; }
-  .secura-soc-review-main .security-review-figma-summary span { font-size: 10px; }
-  .secura-soc-review-main .security-review-figma-summary strong { font-size: 29px; }
+  .secura-soc-review-main .security-review-figma-summary span { font-size: calc(10px * var(--secura-font-scale)); }
+  .secura-soc-review-main .security-review-figma-summary strong { font-size: calc(29px * var(--secura-font-scale)); }
   .secura-soc-review-main .security-review-figma-detail-list { grid-template-columns: 1fr; }
   .secura-soc-review-main .security-review-figma-detail-list > div { grid-column: 1 / -1; }
 }
@@ -625,7 +625,7 @@ html[data-theme="light"] .secura-soc-review-main .security-review-figma-tabs {
   padding: 12px 17px;
   border-top: 1px solid var(--rv-line);
   color: var(--rv-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   font-weight: 720;
   background: var(--rv-panel);
 }
@@ -643,7 +643,7 @@ html[data-theme="light"] .secura-soc-review-main .security-review-figma-tabs {
   padding: 7px 0 10px;
   margin: 0;
 }
-.secura-soc-review-main .security-review-figma-detail-title h2 { font-size: 20px; }
+.secura-soc-review-main .security-review-figma-detail-title h2 { font-size: calc(20px * var(--secura-font-scale)); }
 .secura-soc-review-main .security-review-figma-detail-list {
   column-gap: 12px;
   margin-bottom: 5px;
@@ -651,10 +651,10 @@ html[data-theme="light"] .secura-soc-review-main .security-review-figma-tabs {
 .secura-soc-review-main .security-review-figma-detail-list > div {
   padding: 7px 0;
 }
-.secura-soc-review-main .security-review-figma-detail-list dt { font-size: 9px; }
+.secura-soc-review-main .security-review-figma-detail-list dt { font-size: calc(9px * var(--secura-font-scale)); }
 .secura-soc-review-main .security-review-figma-detail-list dd {
   margin: 3px 0 0;
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   line-height: 1.32;
 }
 .secura-soc-review-main .security-review-file-inspection {
@@ -679,20 +679,20 @@ html[data-theme="light"] .secura-soc-review-main .security-review-figma-tabs {
 }
 .secura-soc-review-main .security-review-file-inspection-grid small { margin-bottom: 3px; }
 .secura-soc-review-main .security-review-file-inspection-state { gap: 6px; }
-.secura-soc-review-main .security-review-file-inspection-state > div { font-size: 10px; line-height: 1.35; }
+.secura-soc-review-main .security-review-file-inspection-state > div { font-size: calc(10px * var(--secura-font-scale)); line-height: 1.35; }
 .secura-soc-review-main .security-review-open-original {
   min-height: 34px;
   padding: 6px 10px;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 .secura-soc-review-main .security-review-file-inspection-note {
   margin-top: 6px;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   line-height: 1.4;
 }
 .secura-soc-review-main .security-review-related-link {
   margin: 7px 0;
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 }
 .secura-soc-review-main .security-review-decision-lock {
   margin: 3px 0 7px;
@@ -723,13 +723,13 @@ html[data-theme="light"] .secura-soc-review-main .security-review-figma-tabs {
 .secura-soc-review-main .secura-review-rejection-note span {
   display: block;
   font-weight: 850;
-  font-size: 9px;
+  font-size: calc(9px * var(--secura-font-scale));
   letter-spacing: 1px;
   color: var(--rv-danger);
 }
 .secura-soc-review-main .secura-review-rejection-note p {
   margin: 7px 0 0;
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
   line-height: 1.55;
   white-space: pre-wrap;
   color: var(--rv-ink);
@@ -745,12 +745,12 @@ html[data-theme="light"] .secura-soc-review-main .security-review-figma-tabs {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
   color: var(--rv-ink);
   font-weight: 800;
 }
 .secura-soc-review-main .secura-review-rejection-field label span {
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   color: var(--rv-amber);
 }
 .secura-soc-review-main .secura-review-rejection-field textarea {
@@ -767,7 +767,7 @@ html[data-theme="light"] .secura-soc-review-main .security-review-figma-tabs {
   outline: none;
   box-shadow: none;
   font: inherit;
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
   line-height: 1.55;
 }
 .secura-soc-review-main .secura-review-rejection-field textarea:focus {
@@ -782,7 +782,7 @@ html[data-theme="light"] .secura-soc-review-main .security-review-figma-tabs {
   justify-content: space-between;
   gap: 10px;
   color: var(--rv-muted);
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
   line-height: 1.4;
 }
 .secura-soc-review-main .secura-review-rejection-field small strong { color: var(--rv-purple); }
@@ -793,7 +793,7 @@ html[data-theme="light"] .secura-soc-review-main .security-review-figma-tabs {
   border: 1px solid rgba(232,92,118,.40);
   background: rgba(232,92,118,.11);
   color: var(--rv-danger);
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 }
 .secura-soc-review-main .security-review-figma-modal-actions button:disabled { opacity: .5; cursor: not-allowed; }
 .secura-soc-review-main .security-review-figma-modal button,

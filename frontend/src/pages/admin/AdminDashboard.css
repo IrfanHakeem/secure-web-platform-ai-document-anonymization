@@ -42,7 +42,7 @@ html[data-theme="dark"] .secura-admin-v10 {
     linear-gradient(135deg,rgba(139,43,226,.04),transparent 38%);
 }
 .secura-admin-v10__content {width:100%;max-width:1240px;margin:0 auto;min-height:calc(100vh - 2 * clamp(16px,2.1vh,24px));min-height:calc(100dvh - 2 * clamp(16px,2.1vh,24px));display:flex;flex-direction:column}
-.secura-admin-v10__kicker {margin:0;color:var(--admin-violet);font-size:10px;font-weight:850;letter-spacing:1.5px}
+.secura-admin-v10__kicker {margin:0;color:var(--admin-violet);font-size:calc(10px * var(--secura-font-scale));font-weight:850;letter-spacing:1.5px}
 .secura-admin-v10__hero {
   position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,290px);
   align-items:center;min-height:clamp(224px,25vh,252px);padding:22px 30px;gap:20px;flex-shrink:0;
@@ -55,21 +55,21 @@ html[data-theme="dark"] .secura-admin-v10__hero {background:linear-gradient(119d
 .secura-admin-v10__hero-mesh {position:absolute;inset:0;pointer-events:none;opacity:.23;background-image:linear-gradient(rgba(255,255,255,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.09) 1px,transparent 1px);background-size:42px 42px}
 .secura-admin-v10__hero-copy,.secura-admin-v10__visual,.secura-admin-v10__hero-account {position:relative;z-index:1}
 .secura-admin-v10__hero-copy {align-self:center;animation:adminV10Enter .62s cubic-bezier(.22,1,.36,1) both}
-.secura-admin-v10__brand {display:flex;align-items:center;gap:9px;margin-bottom:27px;font-size:15px;font-weight:850}
-.secura-admin-v10__brand-mark {display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:linear-gradient(140deg,#bc37e5,#7968fa);box-shadow:0 10px 25px rgba(159,55,235,.3);color:#fff;font-size:16px;font-weight:900}
+.secura-admin-v10__brand {display:flex;align-items:center;gap:9px;margin-bottom:27px;font-size:calc(15px * var(--secura-font-scale));font-weight:850}
+.secura-admin-v10__brand-mark {display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:linear-gradient(140deg,#bc37e5,#7968fa);box-shadow:0 10px 25px rgba(159,55,235,.3);color:#fff;font-size:calc(16px * var(--secura-font-scale));font-weight:900}
 .secura-admin-v10__brand > span:last-child {display:grid;gap:2px}
-.secura-admin-v10__brand small {font-size:8px;letter-spacing:1.4px;font-weight:850;color:#aeb9dc}
+.secura-admin-v10__brand small {font-size:calc(8px * var(--secura-font-scale));letter-spacing:1.4px;font-weight:850;color:#aeb9dc}
 .secura-admin-v10__hero .secura-admin-v10__kicker {color:#b9bbf4}
 .secura-admin-v10__hero h1 {margin:11px 0 11px;max-width:700px;font-size:clamp(33px,3.6vw,49px);font-weight:800;letter-spacing:-1.9px;line-height:1.08;color:#fff}
 .secura-admin-v10__hero h1 em {font-style:normal;background:linear-gradient(95deg,#e3a1ff,#ef82d5,#a9cdff);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:adminV10Shimmer 7s ease-in-out infinite}
-.secura-admin-v10__hero-description {margin:0;max-width:490px;color:#c1cae3;font-size:13px;line-height:1.7}
+.secura-admin-v10__hero-description {margin:0;max-width:490px;color:#c1cae3;font-size:calc(13px * var(--secura-font-scale));line-height:1.7}
 .secura-admin-v10__hero-account {position:absolute;z-index:5;right:24px;top:23px;display:flex;gap:8px;align-items:center}
 .secura-admin-v10__account,.secura-admin-v10__signout {display:flex;align-items:center;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.065);color:#fff;backdrop-filter:blur(14px);cursor:pointer;transition:background .2s ease,transform .2s ease}
 .secura-admin-v10__account:hover,.secura-admin-v10__signout:hover {transform:translateY(-2px);background:rgba(255,255,255,.14)}
 .secura-admin-v10__account {border-radius:13px;padding:5px 8px;gap:8px;text-align:left}
 .secura-admin-v10__account > span:nth-child(2) {display:grid;gap:2px;max-width:110px;min-width:0}
-.secura-admin-v10__account b {font-size:11px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.secura-admin-v10__account small {color:#bac5de;font-size:9px}
+.secura-admin-v10__account b {font-size:calc(11px * var(--secura-font-scale));font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.secura-admin-v10__account small {color:#bac5de;font-size:calc(9px * var(--secura-font-scale))}
 .secura-admin-v10__avatar {display:grid;place-items:center;width:37px!important;height:37px!important;border-radius:11px!important;flex:none;overflow:hidden}
 .secura-admin-v10__avatar img {width:100%;height:100%;object-fit:cover}
 .secura-admin-v10__signout {width:44px;height:44px;justify-content:center;border-radius:13px}
@@ -83,13 +83,13 @@ html[data-theme="dark"] .secura-admin-v10__hero {background:linear-gradient(119d
 .secura-admin-v10__visual-chip {position:absolute;display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:rgba(126,111,226,.36);border:1px solid rgba(255,255,255,.12);color:#e7daff;backdrop-filter:blur(9px)}
 .secura-admin-v10__visual-chip--left {left:7px;top:50px}.secura-admin-v10__visual-chip--right {right:8px;bottom:35px;color:#98e6bc}
 .secura-admin-v10__section-heading {display:flex;justify-content:space-between;align-items:flex-end;gap:14px;margin:clamp(18px,2.8vh,30px) 1px clamp(10px,1.45vh,15px);flex-shrink:0}
-.secura-admin-v10__section-heading h2 {margin:6px 0 5px;font-size:23px;letter-spacing:-.65px;font-weight:760;color:var(--admin-ink)}
-.secura-admin-v10__section-heading p:last-child {margin:0;color:var(--admin-muted);font-size:12px}
-.secura-admin-v10__refresh {display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:37px;white-space:nowrap;padding:0 13px;border:1px solid var(--admin-border);border-radius:11px;background:var(--admin-card);color:var(--admin-ink);font-size:11px;font-weight:750;cursor:pointer;transition:transform .18s ease,border-color .18s ease}
+.secura-admin-v10__section-heading h2 {margin:6px 0 5px;font-size:calc(23px * var(--secura-font-scale));letter-spacing:-.65px;font-weight:760;color:var(--admin-ink)}
+.secura-admin-v10__section-heading p:last-child {margin:0;color:var(--admin-muted);font-size:calc(12px * var(--secura-font-scale))}
+.secura-admin-v10__refresh {display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:37px;white-space:nowrap;padding:0 13px;border:1px solid var(--admin-border);border-radius:11px;background:var(--admin-card);color:var(--admin-ink);font-size:calc(11px * var(--secura-font-scale));font-weight:750;cursor:pointer;transition:transform .18s ease,border-color .18s ease}
 .secura-admin-v10__refresh:hover:not(:disabled) {transform:translateY(-2px);border-color:var(--admin-violet)}
 .secura-admin-v10__refresh:disabled {opacity:.6;cursor:wait}
 .secura-admin-v10__spin {animation:adminV10Turn 1s linear infinite}
-.secura-admin-v10__error {display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:12px 15px;border-radius:12px;background:rgba(214,93,115,.12);border:1px solid rgba(214,93,115,.32);color:var(--admin-ink);font-size:12px}
+.secura-admin-v10__error {display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:12px 15px;border-radius:12px;background:rgba(214,93,115,.12);border:1px solid rgba(214,93,115,.32);color:var(--admin-ink);font-size:calc(12px * var(--secura-font-scale))}
 .secura-admin-v10__error span {flex:1}.secura-admin-v10__error button {padding:7px 12px;border-radius:8px;border:1px solid var(--admin-border);background:var(--admin-card);color:var(--admin-ink);cursor:pointer}
 .secura-admin-v10__stats {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
 .secura-admin-v10__stat {position:relative;min-height:clamp(145px,17.8vh,180px);padding:18px 19px;border:1px solid var(--admin-border);border-radius:19px;overflow:hidden;background:linear-gradient(145deg,var(--admin-card),var(--admin-card-2));box-shadow:var(--admin-shadow)}
@@ -100,16 +100,16 @@ html[data-theme="dark"] .secura-admin-v10__hero {background:linear-gradient(119d
 .secura-admin-v10__stat--green {--stripe-a:#55bf92;--stripe-b:#43cce4;--accent-bg:rgba(64,191,149,.1);--accent:#3fc996}
 .secura-admin-v10__stat--pink {--stripe-a:#ed78c7;--stripe-b:#c337e8;--accent-bg:rgba(206,85,170,.1);--accent:#df79ce}
 .secura-admin-v10__stat-icon {position:relative;z-index:1;display:grid;place-items:center;width:39px;height:39px;border-radius:12px;background:var(--accent-bg);color:var(--accent)}
-.secura-admin-v10__stat strong {display:block;margin:13px 0 4px;font-size:31px;line-height:1;font-weight:830;color:var(--admin-ink)}
-.secura-admin-v10__stat b {display:block;font-size:12px;font-weight:800;color:var(--admin-ink)}
-.secura-admin-v10__stat small {display:block;margin-top:4px;font-size:10px;color:var(--admin-muted)}
+.secura-admin-v10__stat strong {display:block;margin:13px 0 4px;font-size:calc(31px * var(--secura-font-scale));line-height:1;font-weight:830;color:var(--admin-ink)}
+.secura-admin-v10__stat b {display:block;font-size:calc(12px * var(--secura-font-scale));font-weight:800;color:var(--admin-ink)}
+.secura-admin-v10__stat small {display:block;margin-top:4px;font-size:calc(10px * var(--secura-font-scale));color:var(--admin-muted)}
 .secura-admin-v10__main-grid {display:grid;grid-template-columns:minmax(0,1.7fr) minmax(280px,.79fr);gap:14px;margin-top:clamp(11px,1.7vh,16px);align-items:stretch;flex:1;min-height:clamp(300px,33vh,355px)}
 .secura-admin-v10__tools,.secura-admin-v10__account-panel {padding:19px;border:1px solid var(--admin-border);border-radius:20px;background:linear-gradient(145deg,var(--admin-card),var(--admin-card-2));box-shadow:var(--admin-shadow);min-width:0}
 .secura-admin-v10__tools,.secura-admin-v10__account-panel {display:flex;flex-direction:column}
 .secura-admin-v10__panel-heading {display:flex;justify-content:space-between;align-items:center;gap:12px}
-.secura-admin-v10__panel-heading h2 {margin:7px 0 0;color:var(--admin-ink);font-size:19px;letter-spacing:-.35px}
-.secura-admin-v10__panel-heading p:last-child {margin:6px 0 0;color:var(--admin-muted);font-size:11px}
-.secura-admin-v10__panel-count {flex:none;padding:6px 11px;border-radius:99px;border:1px solid rgba(147,88,233,.24);background:rgba(142,57,230,.09);color:var(--admin-violet);font-size:10px;font-weight:800}
+.secura-admin-v10__panel-heading h2 {margin:7px 0 0;color:var(--admin-ink);font-size:calc(19px * var(--secura-font-scale));letter-spacing:-.35px}
+.secura-admin-v10__panel-heading p:last-child {margin:6px 0 0;color:var(--admin-muted);font-size:calc(11px * var(--secura-font-scale))}
+.secura-admin-v10__panel-count {flex:none;padding:6px 11px;border-radius:99px;border:1px solid rgba(147,88,233,.24);background:rgba(142,57,230,.09);color:var(--admin-violet);font-size:calc(10px * var(--secura-font-scale));font-weight:800}
 .secura-admin-v10__tool-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:17px;flex:1}
 .secura-admin-v10__tool {position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;min-height:clamp(190px,22vh,256px);text-align:left;padding:17px;border:1px solid var(--admin-border);border-radius:16px;background:rgba(129,98,220,.055);cursor:pointer;color:var(--admin-ink);overflow:hidden;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
 .secura-admin-v10__tool:after {content:"";position:absolute;width:120px;height:120px;right:-67px;bottom:-67px;border-radius:50%;background:rgba(169,54,232,.12);transition:transform .2s ease}
@@ -119,25 +119,25 @@ html[data-theme="dark"] .secura-admin-v10__hero {background:linear-gradient(119d
 .secura-admin-v10__tool-icon--purple {background:rgba(151,77,242,.14);color:var(--admin-violet)}
 .secura-admin-v10__tool-icon--cyan {background:rgba(30,165,221,.13);color:var(--admin-cyan)}
 .secura-admin-v10__tool-copy {position:relative;z-index:1;display:flex;flex-direction:column;gap:8px;margin-top:14px}
-.secura-admin-v10__tool-copy b {color:var(--admin-ink);font-size:13px;font-weight:830}
-.secura-admin-v10__tool-copy small {color:var(--admin-muted);font-size:11px;line-height:1.55}
-.secura-admin-v10__tool-copy > span {display:inline-flex;align-items:center;gap:7px;margin-top:8px;color:var(--admin-violet);font-size:10px;font-weight:850}
+.secura-admin-v10__tool-copy b {color:var(--admin-ink);font-size:calc(13px * var(--secura-font-scale));font-weight:830}
+.secura-admin-v10__tool-copy small {color:var(--admin-muted);font-size:calc(11px * var(--secura-font-scale));line-height:1.55}
+.secura-admin-v10__tool-copy > span {display:inline-flex;align-items:center;gap:7px;margin-top:8px;color:var(--admin-violet);font-size:calc(10px * var(--secura-font-scale));font-weight:850}
 .secura-admin-v10__tool-corner {position:absolute;top:18px;right:17px;color:var(--admin-muted);transition:transform .18s ease}
 .secura-admin-v10__tool:hover .secura-admin-v10__tool-corner {transform:translate(3px,-3px);color:var(--admin-violet)}
 .secura-admin-v10__panel-symbol {display:grid;place-items:center;width:39px;height:39px;border-radius:12px;background:rgba(139,43,226,.14);color:var(--admin-violet)}
-.secura-admin-v10__account-description {margin:11px 0;color:var(--admin-muted);font-size:11px;line-height:1.6}
+.secura-admin-v10__account-description {margin:11px 0;color:var(--admin-muted);font-size:calc(11px * var(--secura-font-scale));line-height:1.6}
 .secura-admin-v10__account-number {display:flex;align-items:baseline;gap:10px;margin-top:12px}
-.secura-admin-v10__account-number strong {color:var(--admin-ink);font-size:40px;line-height:1;font-weight:800}
-.secura-admin-v10__account-number span {font-size:11px;color:var(--admin-muted)}
+.secura-admin-v10__account-number strong {color:var(--admin-ink);font-size:calc(40px * var(--secura-font-scale));line-height:1;font-weight:800}
+.secura-admin-v10__account-number span {font-size:calc(11px * var(--secura-font-scale));color:var(--admin-muted)}
 .secura-admin-v10__progress {height:9px;border-radius:99px;background:rgba(137,122,191,.16);overflow:hidden;margin:10px 0 11px}
 .secura-admin-v10__progress > span {display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#8c45ef,#44cdb6);transition:width .55s ease}
-.secura-admin-v10__detail-row {display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--admin-border);font-size:11px}
+.secura-admin-v10__detail-row {display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--admin-border);font-size:calc(11px * var(--secura-font-scale))}
 .secura-admin-v10__detail-row > span {display:flex;align-items:center;gap:7px;color:var(--admin-muted)}
 .secura-admin-v10__detail-row b {font-weight:850;color:var(--admin-ink)}
 .secura-admin-v10__dot {width:8px;height:8px;border-radius:50%;background:var(--admin-violet)}
 .secura-admin-v10__dot--active {background:var(--admin-green)}
 .secura-admin-v10__dot--inactive {background:#ec9b8c}
-.secura-admin-v10__updated {margin:auto 0 0; padding-top:10px;font-size:10px;color:var(--admin-muted);text-align:right}
+.secura-admin-v10__updated {margin:auto 0 0; padding-top:10px;font-size:calc(10px * var(--secura-font-scale));color:var(--admin-muted);text-align:right}
 .secura-admin-v10 button:focus-visible {outline:2px solid var(--admin-violet);outline-offset:3px}
 @keyframes adminV10Enter {from {opacity:0;transform:translateY(13px)}to {opacity:1;transform:translateY(0)}}
 @keyframes adminV10Turn {to {transform:rotate(360deg)}}
@@ -177,8 +177,8 @@ html[data-theme="dark"] .secura-admin-v10__hero {background:linear-gradient(119d
 @media (max-width:380px) {
   .secura-admin-v10__hero-account {position:relative;top:auto;right:auto;justify-content:flex-end;grid-row:1}
   .secura-admin-v10__hero-copy {padding-top:5px}
-  .secura-admin-v10__stat b {font-size:11px}
-  .secura-admin-v10__stat small {font-size:9px}
+  .secura-admin-v10__stat b {font-size:calc(11px * var(--secura-font-scale))}
+  .secura-admin-v10__stat small {font-size:calc(9px * var(--secura-font-scale))}
 }
 
 /* Compact only when viewport is physically short, preserving the full-size look elsewhere. */
@@ -191,13 +191,13 @@ html[data-theme="dark"] .secura-admin-v10__hero {background:linear-gradient(119d
   .secura-admin-v10__visual {width:155px;height:155px;left:-145px;top:16px;margin-top:0}
   .secura-admin-v10__visual-core {width:78px;height:78px}
   .secura-admin-v10__section-heading {margin-top:clamp(12px,2.1vh,18px);margin-bottom:9px}
-  .secura-admin-v10__section-heading h2 {font-size:21px}
+  .secura-admin-v10__section-heading h2 {font-size:calc(21px * var(--secura-font-scale))}
   .secura-admin-v10__stat {min-height:clamp(118px,16.8vh,139px);padding:14px 17px}
   .secura-admin-v10__stat-icon {width:34px;height:34px}
-  .secura-admin-v10__stat strong {margin-top:9px;font-size:27px}
+  .secura-admin-v10__stat strong {margin-top:9px;font-size:calc(27px * var(--secura-font-scale))}
   .secura-admin-v10__main-grid {min-height:clamp(250px,35vh,300px);margin-top:10px}
   .secura-admin-v10__tools,.secura-admin-v10__account-panel {padding:15px}
-  .secura-admin-v10__panel-heading h2 {margin-top:5px;font-size:18px}
+  .secura-admin-v10__panel-heading h2 {margin-top:5px;font-size:calc(18px * var(--secura-font-scale))}
   .secura-admin-v10__panel-heading p:last-child {margin-top:5px}
   .secura-admin-v10__tool-grid {margin-top:10px}
   .secura-admin-v10__tool {min-height:clamp(142px,21vh,172px);padding:13px}
@@ -205,7 +205,7 @@ html[data-theme="dark"] .secura-admin-v10__hero {background:linear-gradient(119d
   .secura-admin-v10__tool-copy {margin-top:9px;gap:6px}
   .secura-admin-v10__account-description {margin:8px 0;line-height:1.4}
   .secura-admin-v10__account-number {margin-top:8px}
-  .secura-admin-v10__account-number strong {font-size:34px}
+  .secura-admin-v10__account-number strong {font-size:calc(34px * var(--secura-font-scale))}
   .secura-admin-v10__progress {margin:8px 0}
   .secura-admin-v10__detail-row {padding:7px 0}
 }

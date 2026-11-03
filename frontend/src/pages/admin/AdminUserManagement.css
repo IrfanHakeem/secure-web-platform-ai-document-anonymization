@@ -226,7 +226,7 @@ html[data-theme="dark"] .secura-admin-users-v10 .admin-users-header {
 
   color: #d9b4ff;
 
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 
   letter-spacing: 1.7px;
 
@@ -252,7 +252,7 @@ html[data-theme="dark"] .secura-admin-users-v10 .admin-users-header {
 
   max-width: 530px;
 
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
 
   line-height: 1.65;
 
@@ -284,7 +284,7 @@ html[data-theme="dark"] .secura-admin-users-v10 .admin-users-header {
 
   box-shadow: 0 13px 29px rgba(161, 43, 209, .31);
 
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 
   font-weight: 800;
 
@@ -416,7 +416,7 @@ html[data-theme="dark"] .secura-admin-users-v10 .admin-users-header {
 
   color: var(--adm-ink);
 
-  font-size: 29px;
+  font-size: calc(29px * var(--secura-font-scale));
 
   line-height: 1;
 
@@ -430,7 +430,7 @@ html[data-theme="dark"] .secura-admin-users-v10 .admin-users-header {
 
   color: var(--adm-ink);
 
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 
   font-weight: 800;
 
@@ -444,7 +444,7 @@ html[data-theme="dark"] .secura-admin-users-v10 .admin-users-header {
 
   color: var(--adm-muted);
 
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 
 }
 
@@ -492,7 +492,7 @@ html[data-theme="dark"] .secura-admin-users-v10 .admin-users-header {
 
   color: var(--adm-purple);
 
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 
   font-weight: 850;
 
@@ -506,7 +506,7 @@ html[data-theme="dark"] .secura-admin-users-v10 .admin-users-header {
 
   margin: 6px 0 0;
 
-  font-size: 19px;
+  font-size: calc(19px * var(--secura-font-scale));
 
   line-height: 1.2;
 
@@ -522,7 +522,7 @@ html[data-theme="dark"] .secura-admin-users-v10 .admin-users-header {
 
   color: var(--adm-muted);
 
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 
   text-align: right;
 
@@ -590,7 +590,7 @@ html[data-theme="dark"] .secura-admin-users-v10 .admin-users-header {
 
   box-shadow: none !important;
 
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 
   font-weight: 550;
 
@@ -628,7 +628,7 @@ html[data-theme="dark"] .secura-admin-users-v10 .admin-users-header {
 
   color: var(--adm-muted);
 
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 
   font-weight: 750;
 
@@ -718,7 +718,7 @@ html[data-theme="dark"] .secura-admin-users-v10 .admin-users-header {
 
   color: var(--adm-ink);
 
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 
   transition: background .16s ease;
 
@@ -744,7 +744,7 @@ html[data-theme="dark"] .secura-admin-users-v10 .admin-users-heading {
 
 .secura-admin-users-v10 .admin-users-heading span {
 
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 
   font-weight: 850;
 
@@ -792,19 +792,19 @@ html[data-theme="dark"] .secura-admin-users-v10 .admin-users-row:not(.admin-user
 
   color: var(--adm-purple);
 
-  font-size: 13px;
+  font-size: calc(13px * var(--secura-font-scale));
 
 }
 
 .secura-admin-users-v10 .admin-user-identity { gap: 10px; }
 
-.secura-admin-users-v10 .admin-user-identity b { color: var(--adm-ink); font-size: 12px; font-weight: 780; }
+.secura-admin-users-v10 .admin-user-identity b { color: var(--adm-ink); font-size: calc(12px * var(--secura-font-scale)); font-weight: 780; }
 
-.secura-admin-users-v10 .admin-user-identity small { color: var(--adm-muted); font-size: 10px; overflow-wrap: anywhere; }
+.secura-admin-users-v10 .admin-user-identity small { color: var(--adm-muted); font-size: calc(10px * var(--secura-font-scale)); overflow-wrap: anywhere; }
 
-.secura-admin-users-v10 .admin-user-identity em { color: var(--adm-muted); font-size: 10px; }
+.secura-admin-users-v10 .admin-user-identity em { color: var(--adm-muted); font-size: calc(10px * var(--secura-font-scale)); }
 
-.secura-admin-users-v10 .admin-department-value { color: var(--adm-muted); font-size: 11px; }
+.secura-admin-users-v10 .admin-department-value { color: var(--adm-muted); font-size: calc(11px * var(--secura-font-scale)); }
 
 .secura-admin-users-v10 .admin-role-badge,
 
@@ -826,7 +826,7 @@ html[data-theme="dark"] .secura-admin-users-v10 .admin-users-row:not(.admin-user
 
   border-radius: 999px;
 
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 
   font-weight: 800;
 
@@ -866,7 +866,7 @@ html[data-theme="dark"] .secura-admin-users-v10 .admin-users-row:not(.admin-user
 
   color: var(--adm-ink);
 
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 
   font-weight: 750;
 
@@ -938,9 +938,9 @@ html[data-theme="dark"] .secura-admin-users-v10 .admin-users-row:not(.admin-user
 
 }
 
-.secura-admin-users-v10 .admin-users-empty b { color: var(--adm-ink); font-size: 15px; }
+.secura-admin-users-v10 .admin-users-empty b { color: var(--adm-ink); font-size: calc(15px * var(--secura-font-scale)); }
 
-.secura-admin-users-v10 .admin-users-empty p { color: var(--adm-muted); font-size: 12px; }
+.secura-admin-users-v10 .admin-users-empty p { color: var(--adm-muted); font-size: calc(12px * var(--secura-font-scale)); }
 
 .secura-admin-users-v10 .admin-users-success,
 
@@ -958,7 +958,7 @@ html[data-theme="dark"] .secura-admin-users-v10 .admin-users-row:not(.admin-user
 
   border-radius: 12px;
 
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 
 }
 
@@ -1048,7 +1048,7 @@ html[data-theme="dark"] .secura-admin-users-v10 :is(.admin-user-modal,.admin-sma
 
   color: var(--adm-purple);
 
-  font-size: 10px;
+  font-size: calc(10px * var(--secura-font-scale));
 
   letter-spacing: 1.4px;
 
@@ -1060,7 +1060,7 @@ html[data-theme="dark"] .secura-admin-users-v10 :is(.admin-user-modal,.admin-sma
 
   color: var(--adm-ink);
 
-  font-size: 24px;
+  font-size: calc(24px * var(--secura-font-scale));
 
   font-weight: 790;
 
@@ -1074,7 +1074,7 @@ html[data-theme="dark"] .secura-admin-users-v10 :is(.admin-user-modal,.admin-sma
 
   color: var(--adm-muted);
 
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 
   line-height: 1.55;
 
@@ -1112,7 +1112,7 @@ html[data-theme="dark"] .secura-admin-users-v10 :is(.admin-user-modal,.admin-sma
 
   color: var(--adm-ink);
 
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 
   font-weight: 760;
 
@@ -1138,7 +1138,7 @@ html[data-theme="dark"] .secura-admin-users-v10 :is(.admin-user-modal,.admin-sma
 
   color: var(--adm-ink);
 
-  font-size: 12px;
+  font-size: calc(12px * var(--secura-font-scale));
 
   outline: 0;
 
@@ -1180,7 +1180,7 @@ html[data-theme="dark"] .secura-admin-users-v10 :is(.admin-user-modal,.admin-sma
 
 .secura-admin-users-v10 .admin-status-note svg { color: var(--adm-purple); flex-shrink: 0; }
 
-.secura-admin-users-v10 :is(.admin-create-note,.admin-status-note) p { margin: 0; font-size: 11px; line-height: 1.55; }
+.secura-admin-users-v10 :is(.admin-create-note,.admin-status-note) p { margin: 0; font-size: calc(11px * var(--secura-font-scale)); line-height: 1.55; }
 
 /* Clear visual distinction for activate/deactivate confirmations. */
 
@@ -1224,7 +1224,7 @@ html[data-theme="dark"] .secura-admin-users-v10 :is(.admin-user-modal,.admin-sma
 
   border-radius: 11px;
 
-  font-size: 11px;
+  font-size: calc(11px * var(--secura-font-scale));
 
   font-weight: 800;
 
@@ -1298,7 +1298,7 @@ html[data-theme="dark"] .secura-admin-users-v10 :is(.admin-user-modal,.admin-sma
 
   .secura-admin-users-v10 .admin-users-header { padding: 26px 21px; flex-direction: column; align-items: flex-start; }
 
-  .secura-admin-users-v10 .admin-users-header h1 { font-size: 31px; }
+  .secura-admin-users-v10 .admin-users-header h1 { font-size: calc(31px * var(--secura-font-scale)); }
 
   .secura-admin-users-v10 .admin-create-user-button { width: 100%; justify-content: center; }
 
@@ -1306,7 +1306,7 @@ html[data-theme="dark"] .secura-admin-users-v10 :is(.admin-user-modal,.admin-sma
 
   .secura-admin-users-v10__stat { min-height: 129px; padding: 14px; }
 
-  .secura-admin-users-v10__stat strong { font-size: 26px; }
+  .secura-admin-users-v10__stat strong { font-size: calc(26px * var(--secura-font-scale)); }
 
   .secura-admin-users-v10__directory-heading { flex-direction: column; align-items: flex-start; }
 
@@ -1440,7 +1440,7 @@ html .secura-neo-admin-sync .secura-admin-users-v10 .admin-create-user-button {
 }
 html .secura-neo-admin-sync .secura-admin-users-v10__hero-hint {
   display:inline-flex; align-items:center; gap:9px;
-  margin-top:19px; color:#c6bce6; font-size:11px; line-height:1.4;
+  margin-top:19px; color:#c6bce6; font-size:calc(11px * var(--secura-font-scale)); line-height:1.4;
 }
 html .secura-neo-admin-sync .secura-admin-users-v10__hero-hint svg { color:#b697ff; }
 /* ============================================================
@@ -1560,7 +1560,7 @@ html .secura-neo-admin-sync .secura-admin-users-v10__stat strong {
   display: block;
   margin: 0 0 5px !important;
   color: #f5f4ff !important;
-  font-size: 31px !important;
+  font-size: calc(31px * var(--secura-font-scale)) !important;
   font-weight: 850 !important;
   line-height: 1.08 !important;
   letter-spacing: -.6px !important;
@@ -1569,7 +1569,7 @@ html .secura-neo-admin-sync .secura-admin-users-v10__stat b {
   display: block;
   margin: 0 !important;
   color: #f5f3ff !important;
-  font-size: 13px !important;
+  font-size: calc(13px * var(--secura-font-scale)) !important;
   font-weight: 850 !important;
   line-height: 1.35 !important;
 }
@@ -1577,7 +1577,7 @@ html .secura-neo-admin-sync .secura-admin-users-v10__stat small {
   display: block;
   margin: 6px 0 0 !important;
   color: #aab4d2 !important;
-  font-size: 11px !important;
+  font-size: calc(11px * var(--secura-font-scale)) !important;
   line-height: 1.45 !important;
 }
 html .secura-neo-admin-sync .secura-admin-users-v10__stat:hover {
@@ -1620,18 +1620,18 @@ html .secura-neo-admin-sync .secura-admin-users-v10__directory-intro {
   color:#bb86fa; background:rgba(153,91,255,.14);
 }
 html .secura-neo-admin-sync .secura-admin-users-v10__directory-heading span.secura-admin-users-v10__directory-label {
-  font-size:10px !important; color:var(--adm-purple) !important;
+  font-size:calc(10px * var(--secura-font-scale)) !important; color:var(--adm-purple) !important;
   font-weight:850; letter-spacing:1.2px;
 }
 html .secura-neo-admin-sync .secura-admin-users-v10__directory-heading h2 {
-  margin:5px 0 0 !important; font-size:18px !important; line-height:1.28;
+  margin:5px 0 0 !important; font-size:calc(18px * var(--secura-font-scale)) !important; line-height:1.28;
   color:var(--adm-ink); font-weight:850;
 }
 .secura-neo-admin-sync .secura-admin-users-v10__directory-intro small {
-  display:block; color:var(--adm-muted); font-size:11px; margin-top:5px; line-height:1.4;
+  display:block; color:var(--adm-muted); font-size:calc(11px * var(--secura-font-scale)); margin-top:5px; line-height:1.4;
 }
 html .secura-neo-admin-sync .secura-admin-users-v10__directory-heading > p {
-  margin:0 !important; color:var(--adm-muted); font-size:10.5px; text-align:right;
+  margin:0 !important; color:var(--adm-muted); font-size:calc(10.5px * var(--secura-font-scale)); text-align:right;
 }
 html .secura-neo-admin-sync .secura-admin-users-v10 .admin-users-toolbar {
   display:flex; align-items:center; justify-content:space-between;
@@ -1653,7 +1653,7 @@ html .secura-neo-admin-sync .secura-admin-users-v10 .admin-users-search input {
 }
 html .secura-neo-admin-sync .secura-admin-users-v10 .admin-users-filters button {
   border:1px solid var(--adm-line) !important; background:rgba(140,96,237,.055) !important;
-  color:var(--adm-muted); border-radius:9px; min-height:33px; font-size:11px;
+  color:var(--adm-muted); border-radius:9px; min-height:33px; font-size:calc(11px * var(--secura-font-scale));
 }
 html .secura-neo-admin-sync .secura-admin-users-v10 .admin-users-filters button.selected {
   background:linear-gradient(115deg,#8d54ef,#9547da) !important;
@@ -1696,9 +1696,9 @@ html .secura-neo-admin-sync .secura-admin-users-v10 .admin-users-row:not(.admin-
   html .secura-neo-admin-sync .secura-admin-users-v10__stats { grid-template-columns:repeat(2,minmax(0,1fr)) !important; gap:9px !important; }
   html .secura-neo-admin-sync .secura-admin-users-v10__stat { min-height:156px !important; padding:15px !important; }
   html .secura-neo-admin-sync .secura-admin-users-v10__stat-icon { width:36px !important; height:36px !important; flex-basis:36px; }
-  html .secura-neo-admin-sync .secura-admin-users-v10__stat strong { font-size:27px !important; }
-  html .secura-neo-admin-sync .secura-admin-users-v10__stat b { font-size:11.5px !important; }
-  html .secura-neo-admin-sync .secura-admin-users-v10__stat small { font-size:10px !important; }
+  html .secura-neo-admin-sync .secura-admin-users-v10__stat strong { font-size:calc(27px * var(--secura-font-scale)) !important; }
+  html .secura-neo-admin-sync .secura-admin-users-v10__stat b { font-size:calc(11.5px * var(--secura-font-scale)) !important; }
+  html .secura-neo-admin-sync .secura-admin-users-v10__stat small { font-size:calc(10px * var(--secura-font-scale)) !important; }
   html .secura-neo-admin-sync .secura-admin-users-v10 .admin-create-user-button { width:100%; }
   html .secura-neo-admin-sync .secura-admin-users-v10 .admin-users-toolbar { padding:10px 13px 14px !important; }
   html .secura-neo-admin-sync .secura-admin-users-v10 .admin-users-table-wrap { padding:0 10px 14px !important; }

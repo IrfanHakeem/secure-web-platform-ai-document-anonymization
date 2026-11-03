@@ -72,14 +72,14 @@ function ProtectedRoute() {
           }
           .secura-verify-title {
             margin: 2px 0 0;
-            font-size: 13px;
+            font-size: calc(13px * var(--secura-font-scale));
             font-weight: 750;
             letter-spacing: .005em;
           }
           .secura-verify-description {
             margin: 0;
             color: #a6aec6;
-            font-size: 11px;
+            font-size: calc(11px * var(--secura-font-scale));
             line-height: 1.7;
           }
           .secura-verify-spinner {
@@ -99,7 +99,7 @@ function ProtectedRoute() {
             border: 1px solid rgba(180, 153, 255, .36);
             border-radius: 10px;
             padding: 9px 13px;
-            font-size: 11px;
+            font-size: calc(11px * var(--secura-font-scale));
             font-weight: 750;
             cursor: pointer;
           }
