@@ -1,6 +1,7 @@
 import hashlib
 import hmac
 import os
+import re
 from datetime import datetime, timedelta, timezone
 
 import bcrypt
@@ -39,6 +40,36 @@ if not JWT_SECRET_KEY:
     raise RuntimeError(
         "JWT_SECRET_KEY is not configured."
     )
+
+
+def validate_password_strength(
+    password: str
+) -> tuple[bool, str | None]:
+    """Return (is_valid, error_message).
+
+    Enforces a reasonable FYP-grade password policy without
+    being so strict that users abandon the flow.
+    """
+
+    if len(password) < 8:
+        return False, "Password must be at least 8 characters"
+
+    if len(password.encode("utf-8")) > 72:
+        return False, "Password is too long for bcrypt"
+
+    if not re.search(r"[A-Z]", password):
+        return False, "Password must contain an uppercase letter"
+
+    if not re.search(r"[a-z]", password):
+        return False, "Password must contain a lowercase letter"
+
+    if not re.search(r"[0-9]", password):
+        return False, "Password must contain a number"
+
+    if not re.search(r"[^A-Za-z0-9]", password):
+        return False, "Password must contain a special character"
+
+    return True, None
 
 
 def hash_password(
@@ -83,6 +114,7 @@ def create_access_token(
 
     payload = {
         "sub": str(user_id),
+        "type": "access",
         "exp": expires_at,
     }
 
@@ -97,11 +129,18 @@ def decode_access_token(
     token: str
 ) -> dict:
 
-    return jwt.decode(
+    payload = jwt.decode(
         token,
         JWT_SECRET_KEY,
         algorithms=[JWT_ALGORITHM]
     )
+
+    if payload.get("type") != "access":
+        raise jwt.InvalidTokenError(
+            "Invalid access token type"
+        )
+
+    return payload
 
 
 def hash_otp(
@@ -147,6 +186,7 @@ def create_password_reset_token(
     payload = {
         "sub": str(user_id),
         "otp_id": otp_id,
+        "type": "password_reset",
         "purpose":
             "admin_password_reset",
         "exp": expires_at,
@@ -170,11 +210,12 @@ def decode_password_reset_token(
     )
 
     if (
-        payload.get("purpose")
+        payload.get("type") != "password_reset"
+        or payload.get("purpose")
         != "admin_password_reset"
     ):
         raise jwt.InvalidTokenError(
-            "Invalid reset token purpose"
+            "Invalid reset token"
         )
 
     return payload

@@ -24,6 +24,7 @@ from app.core.security import (
     decode_password_reset_token,
     hash_otp,
     hash_password,
+    validate_password_strength,
     verify_otp_hash,
     verify_password,
 )
@@ -58,6 +59,14 @@ OTP_REQUESTS_PER_IP = 8
 OTP_VERIFICATIONS_PER_IP = 30
 OTP_RESETS_PER_IP = 20
 RATE_LIMIT_WINDOW_MINUTES = 15
+
+# Login brute-force protection (OWASP API2 / API4).
+# Account-level is the primary defense (tight, per-user).
+# IP-level is a broader spray throttle and is intentionally
+# looser so a shared NAT gateway is not knocked out by one client.
+LOGIN_FAILURES_PER_ACCOUNT = 10
+LOGIN_FAILURES_PER_IP = 100
+LOGIN_RATE_LIMIT_WINDOW_MINUTES = 15
 
 
 def get_client_ip(request: Request) -> str:
@@ -140,6 +149,64 @@ def _check_ip_limit(
         )
 
 
+def _check_login_rate_limit(
+    db: Session,
+    request: Request,
+    *,
+    user_id: int | None,
+) -> None:
+    now = datetime.now(timezone.utc)
+    since = now - timedelta(
+        minutes=LOGIN_RATE_LIMIT_WINDOW_MINUTES
+    )
+
+    # Account-level lockout: only counts failures against a
+    # *known* account (password attempts), so a targeted brute
+    # force is throttled tightly without punishing the whole
+    # NAT gateway for unknown-email scans.
+    if user_id is not None:
+        account_failures = _recent_event_count(
+            db,
+            action="LOGIN_FAILED",
+            user_id=user_id,
+            since=since,
+        )
+
+        if account_failures >= LOGIN_FAILURES_PER_ACCOUNT:
+            raise HTTPException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                detail=(
+                    "Too many login attempts for this account. "
+                    "Please try again later."
+                ),
+                headers={
+                    "Retry-After": str(
+                        LOGIN_RATE_LIMIT_WINDOW_MINUTES * 60
+                    )
+                },
+            )
+
+    # IP-level throttle: broader, counts every failure (known and
+    # unknown accounts) to slow down credential-stuffing / spraying.
+    ip_failures = _recent_event_count(
+        db,
+        action="LOGIN_FAILED",
+        ip_address=get_client_ip(request),
+        since=since,
+    )
+
+    if ip_failures >= LOGIN_FAILURES_PER_IP:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many login attempts. Please try again later.",
+            headers={
+                "Retry-After": str(
+                    LOGIN_RATE_LIMIT_WINDOW_MINUTES * 60
+                )
+            },
+        )
+
+
 @router.post(
     "/login",
     response_model=TokenResponse,
@@ -163,6 +230,12 @@ def login(
         select(User).where(
             func.lower(User.email) == email
         )
+    )
+
+    _check_login_rate_limit(
+        db,
+        request,
+        user_id=user.id if user else None,
     )
 
     if user is None:
@@ -539,16 +612,14 @@ def admin_reset_password(
 
     new_password = reset_data.new_password
 
-    if (
-        len(new_password) < 8
-        or len(new_password.encode("utf-8")) > 72
-    ):
+    password_valid, password_error = (
+        validate_password_strength(new_password)
+    )
+
+    if not password_valid:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=(
-                "Password must be at least 8 characters "
-                "and at most 72 UTF-8 bytes"
-            ),
+            detail=password_error,
         )
 
     user.password_hash = hash_password(

@@ -1,7 +1,10 @@
-﻿from contextlib import asynccontextmanager
+﻿import os
+from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import Response
 
 from app.api.admin_departments import (
     router as admin_departments_router,
@@ -80,6 +83,60 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    """Add defense-in-depth HTTP response headers (OWASP API8).
+
+    These headers protect browser-facing clients. They are harmless to
+    pure API consumers and can be disabled by setting the
+    ``SECURA_SECURITY_HEADERS`` environment variable to ``"0"``.
+    """
+
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+
+        if os.getenv("SECURA_SECURITY_HEADERS", "1") == "0":
+            return response
+
+        if isinstance(response, Response):
+            headers = response.headers
+
+            # Prevent MIME-sniffing of untrusted uploads.
+            headers.setdefault(
+                "X-Content-Type-Options", "nosniff"
+            )
+
+            # Disable framing / clickjacking.
+            headers.setdefault(
+                "X-Frame-Options", "DENY"
+            )
+
+            # Restrict referrer leakage on cross-origin navigations.
+            headers.setdefault(
+                "Referrer-Policy", "no-referrer"
+            )
+
+            # A permissive-yet-safe default for an SPA that only talks
+            # to this same-origin API. Tighten ``script-src`` / ``connect-src``
+            # to exact production origins before a public release.
+            headers.setdefault(
+                "Content-Security-Policy",
+                "default-src 'self'; "
+                "base-uri 'self'; "
+                "object-src 'none'; "
+                "frame-ancestors 'none'; "
+                "img-src 'self' data: blob:; "
+                "connect-src 'self' http://127.0.0.1:8000 http://localhost:8000; "
+                "script-src 'self'; "
+                "style-src 'self' 'unsafe-inline'; "
+                "form-action 'self'",
+            )
+
+        return response
+
+
+app.add_middleware(SecurityHeadersMiddleware)
 
 
 app.include_router(

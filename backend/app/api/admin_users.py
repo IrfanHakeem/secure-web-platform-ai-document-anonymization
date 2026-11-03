@@ -12,7 +12,10 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.dependencies import require_role
-from app.core.security import hash_password
+from app.core.security import (
+    hash_password,
+    validate_password_strength,
+)
 from app.models.department import Department
 from app.models.role import Role
 from app.models.user import User
@@ -190,12 +193,16 @@ def create_user(
             detail="Password cannot be empty",
         )
 
-    if len(
-        user_data.password.encode("utf-8")
-    ) > 72:
+    password_valid, password_error = (
+        validate_password_strength(
+            user_data.password
+        )
+    )
+
+    if not password_valid:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Password is too long for bcrypt",
+            detail=password_error,
         )
 
     existing_username = db.scalar(
@@ -500,14 +507,14 @@ def reset_user_password(
             ),
         )
 
-    if len(
-        new_password.encode("utf-8")
-    ) > 72:
+    password_valid, password_error = (
+        validate_password_strength(new_password)
+    )
+
+    if not password_valid:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=(
-                "Password is too long for bcrypt"
-            ),
+            detail=password_error,
         )
 
     target_user.password_hash = (
